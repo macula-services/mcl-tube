@@ -76,6 +76,15 @@ ENV MCL_NODE_HOST=127.0.0.1
 ENV MCL_COOKIE=mcl_tube
 ENV MCL_HEALTH_PORT=8490
 
+# The owner web UI and read API. LOOPBACK by default: the UI has no
+# authentication of its own and the container runs on host networking, so an
+# owner reaches it over an SSH tunnel. Change MCL_TUBE_HTTP_IP only knowingly.
+ENV MCL_TUBE_HTTP_PORT=8491
+ENV MCL_TUBE_HTTP_IP=127.0.0.1
+
+# The node identity key: a NAMED volume in deploy/docker-compose.yml. It is the
+# node the realm grants provider authorization to, so it must outlive the
+# container.
 VOLUME ["/etc/mcl/secrets"]
 
 EXPOSE 8490

@@ -3,6 +3,18 @@
 %% half-configured realm announces itself where nobody can attribute it, which
 %% looks exactly like a healthy node.
 [
+    {guide_tube_lifecycle, [
+        %% The realm NAME the catalog topics carry (io.macula); MCL_REALM is its
+        %% sha256 tag. The service refuses to start unless they agree.
+        {realm_name, "${MCL_REALM_NAME}"}
+    ]},
+    {mcl_tube, [
+        %% The owner web UI and read API. LOOPBACK unless you mean otherwise:
+        %% the UI has no authentication of its own, and the container runs on
+        %% host networking.
+        {http_port, ${MCL_TUBE_HTTP_PORT}},
+        {http_ip,   "${MCL_TUBE_HTTP_IP}"}
+    ]},
     {mcl_om, [
         %% Without this, mcl_om_identity:load_node_key/0 returns `undefined'
         %% forever and identity_key/0 stays {error, no_identity_key} -- a
@@ -15,6 +27,12 @@
         {identity_key_path, "/etc/mcl/secrets/identity.key"},
         {health_port,       ${MCL_HEALTH_PORT}},
         {capability_topic,  <<"_mesh.cap.">>},
+        %% The org the four procedures are served under: `mcl-tube/<name>'.
+        %% One org per service, named after the repo. The realm must have
+        %% granted THIS node a provider authorization for it (D25), or nothing
+        %% is advertised and /health says so.
+        {org,               <<"mcl-tube">>},
+        {service_name,      <<"mcl-tube">>},
         %% THE REALM IS AN APPLICATION ENV, NOT A SHELL VARIABLE, and this file
         %% is the only place the two meet. mcl_om_identity:realm() reads
         %% application:get_env(mcl_om, realm); exporting MCL_REALM in the

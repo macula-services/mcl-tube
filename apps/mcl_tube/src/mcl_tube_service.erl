@@ -1,21 +1,18 @@
-%% @doc The mcl_om service contract: what this service is and may do.
+%% @doc The mcl_om service contract for mcl-tube.
 %%
-%% SIX CALLBACKS, ALL REQUIRED. mcl_om resolves them BY NAME at startup, on a
-%% live node, so a service that forgets one dies with `undef' where nobody is
-%% watching. The `-behaviour' attribute below is what turns that into a compile
-%% error instead, and the generated test suite guards the attribute itself.
+%% Video channels over the mesh. An owner uploads and publishes clips through
+%% the local web UI; anyone looks a channel, a clip or its content up, and
+%% streams a clip, over four org-namespaced procedures under `mcl-tube'. The
+%% catalog is announced on io.macula/mcl-tube/tube/catalog/*_v1.
 %%
-%% IT ANNOUNCES NOTHING AND ASKS FOR NOTHING, on purpose. A service that does
-%% nothing yet has no capability to offer and needs no authority from the realm.
-%% Advertising a capability before it exists puts a lie on the mesh that another
-%% service can find and call. Both lists grow when the thing they name exists,
-%% and a generated test fails when they change, so growing them is a deliberate
-%% act rather than a comment someone forgot.
+%% SIX CALLBACKS, ALL REQUIRED. mcl_om resolves them BY NAME at startup, so the
+%% `-behaviour' attribute below turns a missing one into a compile error.
 -module(mcl_tube_service).
 
 -behaviour(mcl_om_service).
 
 -export([info/0, start/1, stop/1, health/0, capabilities/0, identity_spec/0]).
+-export([grant_health/1]).
 %% ==========================================================================
 %% AND TWO OPTIONAL ONES, WHICH TURN THE STORE ON
 %% ==========================================================================
@@ -44,18 +41,46 @@ info() ->
       version => <<"0.1.0">>,
       description => <<"Video channels over the mesh: owners publish clips, anyone looks them up and streams them">>}.
 
-start(_Opts) -> mcl_tube_sup:start_link().
+%% The realm name the catalog topics carry must be the realm the pool is in,
+%% or every announcement goes where no catalogue listens.
+start(_Opts) ->
+    ok = tube_catalog_topic:check_realm_name(),
+    mcl_tube_sup:start_link().
 
 stop(_State) -> ok.
 
-%% Green once the supervision tree is up. Replace this with a real probe of
-%% whatever this service needs in order to do its job. A dark mesh is usually NOT
-%% a health failure: decide that deliberately rather than by default.
-health() -> ok.
+%% Health is whether callers can REACH this service: without its realm-issued
+%% provider grant the procedures are never advertised, and the node looks
+%% healthy while every call resolves to nothing. A dark mesh is not a fault
+%% here; the grant checker keeps its last answer until the mesh is back.
+health() ->
+    grant_health(grant_status()).
 
-%% WHAT THIS SERVICE ANNOUNCES IT CAN DO. Other services find this one by these
-%% names, so each entry is a promise that something answers.
-capabilities() -> [].
+grant_status() ->
+    try check_provider_grant:status()
+    catch _:_ -> #{}
+    end.
+
+%% @doc Health from the per-procedure grant status. Exported for tests.
+-spec grant_health(#{binary() => granted | missing}) -> ok | {degraded, term()}.
+grant_health(Status) ->
+    missing(lists:sort([Proc || {Proc, missing} <- maps:to_list(Status)])).
+
+missing([])      -> ok;
+missing(Missing) -> {degraded, {no_provider_grant, Missing}}.
+
+%% The four procedures, registered by mcl_om as `mcl-tube/<name>' (the org
+%% comes from config). The watch is a stream, served by macula_streamer; the
+%% others are request and reply.
+capabilities() ->
+    [#{name => <<"lookup_channel">>, version => 1,
+       handler => {advertise_channel_lookup, []}},
+     #{name => <<"lookup_video_clip">>, version => 1,
+       handler => {advertise_video_clip_lookup, []}},
+     #{name => <<"lookup_content">>, version => 1,
+       handler => {advertise_content_lookup, []}},
+     #{name => <<"watch_video_clip">>, version => 1,
+       handler => {stream_video_clip_by_id, []}, kind => streamer}].
 
 %% THE AUTHORITY THIS SERVICE ASKS THE REALM FOR, and deliberately nothing more.
 %% Ask for exactly the topics you publish and subscribe to. Popped, an attacker

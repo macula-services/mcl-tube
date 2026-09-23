@@ -55,14 +55,87 @@ info_version_matches_the_application_test() ->
     #{version := Reported} = ?SERVICE:info(),
     ?assertEqual(list_to_binary(Vsn), Reported).
 
-health_is_green_test() ->
+%%==============================================================================
+%% The RPC contract: what callers dial
+%%==============================================================================
+
+%% The four procedures, org-qualified the way mcl_om registers them. This is
+%% the contract the portal's watch and thumbnail controllers call. A change
+%% here is a new name, not an edit.
+the_procedures_are_the_published_contract_test() ->
+    ?assertEqual([<<"mcl-tube/lookup_channel">>, <<"mcl-tube/lookup_content">>,
+                  <<"mcl-tube/lookup_video_clip">>, <<"mcl-tube/watch_video_clip">>],
+                 lists:sort([mcl_om_capabilities:org_procedure(<<"mcl-tube">>, Name)
+                             || #{name := Name} <- ?SERVICE:capabilities()])).
+
+every_procedure_has_its_handler_test() ->
+    ?assertEqual(#{<<"lookup_channel">> => {advertise_channel_lookup, []},
+                   <<"lookup_video_clip">> => {advertise_video_clip_lookup, []},
+                   <<"lookup_content">> => {advertise_content_lookup, []},
+                   <<"watch_video_clip">> => {stream_video_clip_by_id, []}},
+                 maps:from_list([{N, H} || #{name := N, handler := H} <- ?SERVICE:capabilities()])).
+
+%% The watch is a stream, served by macula_streamer; the rest are request and
+%% reply.
+only_the_watch_is_a_stream_test() ->
+    ?assertEqual([<<"watch_video_clip">>],
+                 [N || #{name := N, kind := streamer} <- ?SERVICE:capabilities()]).
+
+%% The org the procedures are registered under is deploy config, so the
+%% shipped config must name the org the contract promises.
+the_shipped_config_names_the_org_test() ->
+    {ok, Text} = file:read_file(alongside("config/sys.config.src")),
+    ?assertNotEqual(nomatch, binary:match(Text, <<"{org,               <<\"mcl-tube\">>}">>)).
+
+%%==============================================================================
+%% Health: whether callers can reach it
+%%==============================================================================
+
+%% Serving an org-namespaced procedure needs a realm-issued provider grant
+%% (D25). Without one the procedures are never advertised and every call
+%% resolves to nothing, while the node looks healthy. Health says so, and
+%% names what is missing.
+a_missing_provider_grant_is_degraded_test() ->
+    ?assertEqual({degraded, {no_provider_grant, [<<"mcl-tube/watch_video_clip">>]}},
+                 ?SERVICE:grant_health(#{<<"mcl-tube/lookup_channel">> => granted,
+                                         <<"mcl-tube/watch_video_clip">> => missing})).
+
+every_grant_present_is_ok_test() ->
+    ?assertEqual(ok, ?SERVICE:grant_health(#{<<"mcl-tube/lookup_channel">> => granted})).
+
+%% Before the first check there is nothing to report yet; the mesh may not
+%% be up, and that is not a fault.
+no_check_yet_is_ok_test() ->
+    ?assertEqual(ok, ?SERVICE:grant_health(#{})).
+
+health_without_the_grant_checker_running_is_ok_test() ->
     ?assertEqual(ok, ?SERVICE:health()).
 
-%% An empty list is the correct answer for a service that does nothing yet. The
-%% assertion is here so that adding a capability breaks a test and makes someone
-%% write down what the service can now actually do.
-announces_no_capability_yet_test() ->
-    ?assertEqual([], ?SERVICE:capabilities()).
+%%==============================================================================
+%% The owner web UI
+%%==============================================================================
+
+%% The owner UI uploads, reconfigures and retracts, and has no authentication
+%% of its own. Under host networking an all-interfaces bind hands those to
+%% anyone who can reach the port, so it binds loopback unless told otherwise.
+the_owner_ui_binds_loopback_by_default_test() ->
+    ok = application:unset_env(?APP, http_ip),
+    ?assertEqual({127, 0, 0, 1}, proplists:get_value(ip, mcl_tube_sup:socket_opts())).
+
+the_owner_ui_bind_address_is_configurable_test() ->
+    ok = application:set_env(?APP, http_ip, "::1"),
+    try ?assertEqual({0, 0, 0, 0, 0, 0, 0, 1},
+                     proplists:get_value(ip, mcl_tube_sup:socket_opts()))
+    after application:unset_env(?APP, http_ip)
+    end.
+
+%%==============================================================================
+%% Start
+%%==============================================================================
+
+start_refuses_without_a_realm_name_test() ->
+    ok = application:unset_env(guide_tube_lifecycle, realm_name),
+    ?assertError({mcl_tube_realm_name_unset, realm_name}, ?SERVICE:start(#{})).
 
 identity_spec_has_the_shape_mcl_om_expects_test() ->
     #{scope := Scope, actions := Actions,
@@ -72,24 +145,18 @@ identity_spec_has_the_shape_mcl_om_expects_test() ->
     ?assert(is_list(Resources)),
     ?assert(is_integer(Ttl) andalso Ttl > 0).
 
-%% A resource this service is not authorised for is a publish the realm would
-%% refuse once UCAN delegation lands. Asking for nothing and claiming nothing
-%% must stay in step, so the two are asserted together.
-authority_matches_what_is_announced_test() ->
+%% The authority is the D25 provider grant, issued by the realm per procedure,
+%% not a UCAN this service asks for.
+identity_spec_asks_for_nothing_test() ->
     #{actions := Actions, resources := Resources} = ?SERVICE:identity_spec(),
-    ?assertEqual([], ?SERVICE:capabilities()),
     ?assertEqual([], Actions),
     ?assertEqual([], Resources).
 
-%% The supervisor starts and stops cleanly on its own, without mcl_om. It has
-%% no children as generated; this asserts the tree is startable, not that it does
-%% any work.
-supervisor_starts_and_stops_test() ->
-    {ok, Pid} = mcl_tube_sup:start_link(),
-    ?assert(is_process_alive(Pid)),
-    ?assertEqual([], supervisor:which_children(Pid)),
-    unlink(Pid),
-    exit(Pid, shutdown).
+%% Two children: the owner UI's listener and the grant checker behind health.
+supervisor_children_test() ->
+    {ok, {_Flags, Children}} = mcl_tube_sup:init([]),
+    ?assertEqual([check_provider_grant, {ranch_embedded_sup, mcl_tube_http}],
+                 lists:sort([Id || #{id := Id} <- Children])).
 
 %%==============================================================================
 %% The config the store cannot boot without

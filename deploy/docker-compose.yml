@@ -49,6 +49,13 @@ services:
       # No default. A service that guesses its realm announces itself where
       # nobody can attribute it, and that looks exactly like a healthy node.
       - MCL_REALM=${MCL_REALM:?set MCL_REALM to the 64-hex realm tag}
+      # The same realm by NAME, which the catalog topics carry. The service
+      # refuses to start unless sha256 of this is MCL_REALM.
+      - MCL_REALM_NAME=${MCL_REALM_NAME:?set MCL_REALM_NAME to the realm name, e.g. io.macula}
+      # The owner web UI. Loopback unless you mean otherwise: it has no
+      # authentication of its own.
+      - MCL_TUBE_HTTP_PORT=${MCL_TUBE_HTTP_PORT:-8491}
+      - MCL_TUBE_HTTP_IP=${MCL_TUBE_HTTP_IP:-127.0.0.1}
       # The TRUST ANCHOR, and a different thing from MCL_REALM above: that is
       # an identifier, this is the realm's public signing key, hex encoded.
       # Without it nothing org-namespaced resolves, the boot claim never

@@ -1,91 +1,113 @@
 # mcl-tube
 
-**Video channels over the mesh: owners publish clips, anyone looks them up and streams them**
+**Video channels over the mesh: owners publish clips, anyone looks them up and streams them.**
 
-## Status: scaffold
+This exists so a channel owner can publish video from their own box and anyone
+on the mesh can find it and watch it, with no platform in between.
 
-The service boots, joins the mesh and answers `/health` on 8490. It
-does nothing else yet.
+## Status
 
-It announces no capability and asks the realm for no authority, because it can do
-nothing yet. Both lists grow when the thing they name exists. Advertising a
-capability before it exists puts a lie on the mesh where another service can find
-it and call it.
+Built and tested locally, **not yet deployed**. Runs on macula 12 through
+`mcl_om`. It replaces `hecate-services/hecate-tube` and inherits nothing from
+it: no store, no identity, no topic, no procedure name.
 
-## Running it
+## What it does
 
-    rebar3 compile
-    rebar3 eunit
-    rebar3 lint
+- An **owner** creates a channel, uploads clips (each is scanned before it can
+  be published), publishes, retracts and archives them, through a web UI
+  served locally by the service.
+- **Anyone** on the mesh looks a channel, a clip or a piece of content (a
+  thumbnail, a logo) up, and streams a published clip, over four procedures.
+- The catalog is **announced** on four facts, so a catalogue (the portal's)
+  can list channels and clips without asking.
 
-    scripts/health.sh                      # against a running node
+Four apps, one per department:
 
-Building the image needs a Rust toolchain, because macula ships a QUIC NIF and
-the alpine build compiles it from source rather than fetching one linked against
-a different libc.
+| App | Department | What it holds |
+|---|---|---|
+| `guide_tube_lifecycle` | CMD | the channel and clip lifecycles, event sourced, and the catalog announcements |
+| `project_tube` | PRJ | the read model, in memory, rebuilt from the store at boot |
+| `query_tube` | QRY | the lookups and the watch stream |
+| `mcl_tube` | service | the owner web UI, the provider-grant check, the mcl_om contract |
 
-    podman build -t mcl-tube -f Containerfile .
+The design is in `plans/` (the event storm and plan it was built from).
+
+## The contract
+
+### Procedures
+
+Served under the org `mcl-tube`, so callers dial `mcl-tube/<name>`:
+
+| Procedure | Kind | Answers |
+|---|---|---|
+| `mcl-tube/lookup_channel` | request/reply | a channel's current details |
+| `mcl-tube/lookup_video_clip` | request/reply | a clip's details |
+| `mcl-tube/lookup_content` | request/reply | a stored piece of content by mcid |
+| `mcl-tube/watch_video_clip` | stream | a published clip's bytes |
+
+### Facts
+
+Canonical macula app facts in `io.macula/mcl-tube/tube/catalog/`:
+
+| Topic | When |
+|---|---|
+| `channel_announced_v1` | a channel was created or reconfigured, and on a heartbeat |
+| `video_clip_published_v1` | a clip became visible |
+| `video_clip_retracted_v1` | a clip was retracted or archived |
+| `video_clip_viewed_v1` | a clip was watched to the end, once per view |
+
+Text fields (names, descriptions, owners, tags) are sent as CBOR text, so every
+stack reads them as strings; ids and mcids stay bytes. Channel and clip
+announcements are upserts by id, safe to receive twice. A view is announced
+exactly once, live, when it is recorded, because a consumer counts views by
+fact.
+
+Both lists are pinned by tests (`mcl_tube_service_tests`,
+`tube_catalog_topic_tests`). A change is a new name, not an edit.
 
 ## Configuration
 
 | Variable | Default | Meaning |
-|----------|---------|---------|
-| `MCL_REALM` | required | 64-hex realm tag, the `sha256` of the realm's name. No default: a service that guesses its realm announces itself where nobody can attribute it. |
-| `MCL_REALM_KEY` | required | The realm's public signing key, hex encoded: the **trust anchor**, not an identifier. Every org-namespaced advertisement is verified against it, so without it nothing resolves, the boot claim never reaches the realm, and the service stays green while unreachable. Public material, not a secret. |
-| `MACULA_STATION_SEEDS` | required | Station hosts to dial, `host[:port]`, comma-separated. No default: naming a realm costs nothing, dialling a production station from every dev clone does. |
-| `MACULA_STATION_NODE_IDS` | required | The matching 64-hex station node ids, comma-separated, index-paired with the seeds. The 11.x dial is pinned (D5): mcl_om refuses to boot a pool with an unpinned seed. |
-| `MCL_HEALTH_PORT` | `8490` | Health endpoint. Host networking makes a collision a silent bind failure, so check the host before changing.  |
-| `MCL_NODE_NAME` | `mcl_tube` | Erlang node name. |
-| `MCL_NODE_HOST` | `127.0.0.1` | Erlang node host. |
-| `MCL_COOKIE` | `mcl_tube` | Erlang cookie. |
+|---|---|---|
+| `MCL_REALM` | required | 64-hex realm tag, sha256 of the realm name |
+| `MCL_REALM_NAME` | required | the realm name the catalog topics carry, e.g. `io.macula`. The service **refuses to start** unless its sha256 is `MCL_REALM` |
+| `MCL_REALM_KEY` | required | the realm's public signing key, hex |
+| `MACULA_STATION_SEEDS` | required | station hosts, `host[:port]`, comma-separated |
+| `MACULA_STATION_NODE_IDS` | required | the matching 64-hex station node ids |
+| `MCL_TUBE_HTTP_PORT` | `8491` | the owner web UI |
+| `MCL_TUBE_HTTP_IP` | `127.0.0.1` | where the owner web UI binds. **It has no authentication of its own**, and the container runs on host networking: reach it over an SSH tunnel, and widen this only knowingly |
+| `MCL_DATA` | `/bulk0/mcl-tube` | (compose) host directory for the store, the clips and the content cache |
+| `MCL_HEALTH_PORT` | `8490` | health endpoint |
 
-`deploy/docker-compose.yml` runs it, and carries what the service knows about
-itself. If you deploy through something else, let that carry **placement**: which
-host, which station, which realm, which secret store. Keeping the two apart is
-what stops a config table in a README and the real environment drifting.
+## Deploy
 
-## Deployment
+What an operator does, in order:
 
-CI builds on every push to `main` and pushes
-`ghcr.io/macula-services/mcl-tube:latest` plus the semver tag. Pull `:latest` under
-watchtower and a merge is a deploy, while a rollback is pinning to a semver tag.
+1. Set `MCL_REALM` and `MCL_REALM_NAME`, and mount the data directory on a
+   bulk drive. `deploy/docker-compose.yml` also mounts the named identity
+   volume `mcl-tube-secrets`; keep it, because the next step is tied to it.
+2. **Have the realm grant this node its provider authorization.** Serving an
+   org-namespaced procedure needs a realm-issued grant (D25) naming this node's
+   id, and a person admits it on the realm. Until then nothing is advertised,
+   every call resolves to nothing, and `/health` says
+   `{degraded, {no_provider_grant, [...]}}` naming each procedure still
+   missing one. A new identity is a new, unadmitted node.
+3. Reach the owner UI over a tunnel:
+   `ssh -L 8491:127.0.0.1:8491 <box>`, then browse to `http://localhost:8491/`.
 
-Two things CI cannot do for you, both of which have bitten:
+## Health
 
-1. The registry package may be created **private**, and the pull then fails on
-   the host with a bare `unauthorized` that names nothing. Check it after the
-   first build. On ghcr the `org.opencontainers.image.source` label in the
-   Containerfile is what links the package to the repository.
-2. The host needs `MCL_REALM` and the pinned station pair supplied from
-   somewhere they are not committed.
+`/health` answers whether callers can **reach** the service: it reports every
+procedure the realm has not granted this node a provider authorization for. A
+dark mesh is not a fault; the last answer stands until the mesh is back.
 
-## The service contract
+## Build and test
 
-Six callbacks in `mcl_tube_service`, all required, all resolved **by name** by
-`mcl_om` at startup on a live node. The `-behaviour(mcl_om_service)`
-attribute turns a missing one into a compile error rather than an `undef` where
-nobody is watching, and the eunit suite guards the attribute itself.
+    rebar3 eunit
+    rebar3 lint
 
-### The store
+OTP 28, pinned in `.tool-versions`, the `Containerfile` and CI.
 
-This service was scaffolded with `store=1`, so it owns a `reckon-db` store called
-`mcl_tube_store`. `store_id/0` and `data_dir/0` are exported, `mcl_om:boot/1`
-opens the store and its evoq subscription before `start/1` fires, and
-`config/sys.config.src` carries the `evoq` adapter block that boot requires.
+## License
 
-⚠ **The store id is written in two places**, `store_id/0` and the `evoq` block,
-and nothing makes them agree by itself. A generated test compares them, along
-with a second one asserting the `evoq` block is present at all. Keep both.
-
-⚠ **`deploy/docker-compose.yml` mounts a volume, and on a node it must.** Without
-it the record lives inside the container and every recreate destroys it, which is
-the same as not keeping one.
-
-The store is node-local. To make it span every node running the same `store_id`,
-export the optional `store_mode/0` callback returning `cluster`, and `mcl_om`
-starts it with reckon-db discovery and Ra clustering. It is not generated,
-because `single` is the default and a scaffold should not decide that for you.
-
-## Licence
-
-Apache-2.0.
+Apache-2.0. See [LICENSE](LICENSE).
