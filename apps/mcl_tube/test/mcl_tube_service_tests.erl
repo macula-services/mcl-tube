@@ -91,25 +91,19 @@ the_shipped_config_names_the_org_test() ->
 %% Health: whether callers can reach it
 %%==============================================================================
 
-%% Serving an org-namespaced procedure needs a realm-issued provider grant
-%% (D25). Without one the procedures are never advertised and every call
-%% resolves to nothing, while the node looks healthy. Health says so, and
-%% names what is missing.
-a_missing_provider_grant_is_degraded_test() ->
-    ?assertEqual({degraded, {no_provider_grant, [<<"mcl-tube/watch_video_clip">>]}},
-                 ?SERVICE:grant_health(#{<<"mcl-tube/lookup_channel">> => granted,
-                                         <<"mcl-tube/watch_video_clip">> => missing})).
-
-every_grant_present_is_ok_test() ->
-    ?assertEqual(ok, ?SERVICE:grant_health(#{<<"mcl-tube/lookup_channel">> => granted})).
-
-%% Before the first check there is nothing to report yet; the mesh may not
-%% be up, and that is not a fault.
-no_check_yet_is_ok_test() ->
-    ?assertEqual(ok, ?SERVICE:grant_health(#{})).
-
-health_without_the_grant_checker_running_is_ok_test() ->
+%% A missing D25 provider grant is reported by mcl_om itself (>= 0.26.3): its
+%% /health combines this service's own verdict with the grant verdict for
+%% every procedure. So the service's own health is about nothing else, and
+%% is ok.
+the_service_itself_is_healthy_test() ->
     ?assertEqual(ok, ?SERVICE:health()).
+
+%% The grant check lives in mcl_om now. A build that resolved an mcl_om older
+%% than 0.26.3 would compile and silently lose it, so the function it rests on
+%% is asserted to exist in the mcl_om this was built against.
+the_resolved_mcl_om_reports_provider_grants_test() ->
+    {module, _} = code:ensure_loaded(mcl_om_capabilities),
+    ?assert(erlang:function_exported(mcl_om_capabilities, provider_grants, 0)).
 
 %%==============================================================================
 %% The owner web UI
@@ -170,11 +164,10 @@ identity_spec_asks_for_nothing_test() ->
     ?assertEqual([], Actions),
     ?assertEqual([], Resources).
 
-%% Two children: the owner UI's listener and the grant checker behind health.
+%% One child: the owner UI's listener.
 supervisor_children_test() ->
     {ok, {_Flags, Children}} = mcl_tube_sup:init([]),
-    ?assertEqual([check_provider_grant, {ranch_embedded_sup, mcl_tube_http}],
-                 lists:sort([Id || #{id := Id} <- Children])).
+    ?assertEqual([{ranch_embedded_sup, mcl_tube_http}], [Id || #{id := Id} <- Children]).
 
 %%==============================================================================
 %% The config the store cannot boot without

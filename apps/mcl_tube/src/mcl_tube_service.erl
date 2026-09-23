@@ -12,7 +12,6 @@
 -behaviour(mcl_om_service).
 
 -export([info/0, start/1, stop/1, health/0, capabilities/0, identity_spec/0]).
--export([grant_health/1]).
 %% ==========================================================================
 %% AND TWO OPTIONAL ONES, WHICH TURN THE STORE ON
 %% ==========================================================================
@@ -49,25 +48,10 @@ start(_Opts) ->
 
 stop(_State) -> ok.
 
-%% Health is whether callers can REACH this service: without its realm-issued
-%% provider grant the procedures are never advertised, and the node looks
-%% healthy while every call resolves to nothing. A dark mesh is not a fault
-%% here; the grant checker keeps its last answer until the mesh is back.
-health() ->
-    grant_health(grant_status()).
-
-grant_status() ->
-    try check_provider_grant:status()
-    catch _:_ -> #{}
-    end.
-
-%% @doc Health from the per-procedure grant status. Exported for tests.
--spec grant_health(#{binary() => granted | missing}) -> ok | {degraded, term()}.
-grant_health(Status) ->
-    missing(lists:sort([Proc || {Proc, missing} <- maps:to_list(Status)])).
-
-missing([])      -> ok;
-missing(Missing) -> {degraded, {no_provider_grant, Missing}}.
+%% Nothing of the service's own can fail here. Whether callers can REACH it
+%% (each procedure's realm-issued D25 provider grant) is reported by mcl_om's
+%% /health itself, combined with this verdict.
+health() -> ok.
 
 %% The four procedures, registered by mcl_om as `mcl-tube/<name>' (the org
 %% comes from config). The watch is a stream, served by macula_streamer; the

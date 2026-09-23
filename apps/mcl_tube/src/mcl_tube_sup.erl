@@ -1,6 +1,5 @@
-%% @doc Supervises the service's own processes: the HTTP listener serving the
-%% owner's web UI and the QRY read API on one port, and the provider-grant
-%% check behind health.
+%% @doc Supervises the service's own process: the HTTP listener serving the
+%% owner's web UI and the QRY read API on one port.
 %%
 %% The listener has no authentication of its own, and the container runs on
 %% host networking, so it binds LOOPBACK unless `http_ip' says otherwise: an
@@ -16,11 +15,7 @@ start_link() -> supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->
     {ok, {#{strategy => one_for_one, intensity => 5, period => 10},
-          [http_listener(),
-           #{id => check_provider_grant,
-             start => {check_provider_grant, start_link, []},
-             restart => permanent, shutdown => 5000, type => worker,
-             modules => [check_provider_grant]}]}}.
+          [http_listener()]}}.
 
 http_listener() ->
     Routes = tube_owner_ui_routes:routes() ++ query_tube_sup:routes(),

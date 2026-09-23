@@ -19,6 +19,6 @@ Ported from `hecate-services/hecate-tube` (main 41f693d plus the unmerged
 - **The owner web UI binds loopback by default.** It has no authentication of
   its own and bound every interface under host networking, which handed upload,
   reconfigure and retract to anyone who could reach the port.
-- **Health reports a missing provider grant**, per procedure, instead of `ok`.
+- **Health reports a missing provider grant**, per procedure (through mcl_om 0.26.3's own check), instead of `ok`.
 - **Refuses to start** when the realm name the topics carry does not hash to
   the realm tag.
