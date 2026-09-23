@@ -1,0 +1,17 @@
+{application, mcl_tube, [
+    {description, "Video channels over the mesh: owners publish clips, anyone looks them up and streams them"},
+    {vsn, "0.1.0"},
+    {registered, [mcl_tube_sup]},
+    {mod, {mcl_tube_app, []}},
+    {applications, [
+        kernel,
+        stdlib,
+        crypto,
+        %% Mesh SDK, realm identity, capabilities, health.
+        mcl_om
+    ]},
+    {env, []},
+    {modules, []},
+    {licenses, ["Apache-2.0"]},
+    {links, [{"GitHub", "https://github.com/macula-services/mcl-tube"}]}
+]}.
