@@ -41,7 +41,8 @@ jobs:
       # again in hecate-stations, the first scaffolded service to actually
       # exercise read_model_id/0 in CI -- install all four, not just
       # whichever one happened to be exercised first.
-      - run: apt-get update && apt-get install -y --no-install-recommends cmake build-essential libsnappy-dev liblz4-dev libzstd-dev libbz2-dev curl
+      # ffmpeg: the upload scan's tests run ffprobe/ffmpeg against a real clip.
+      - run: apt-get update && apt-get install -y --no-install-recommends cmake build-essential libsnappy-dev liblz4-dev libzstd-dev libbz2-dev curl ffmpeg
       - name: Install Rust toolchain
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \

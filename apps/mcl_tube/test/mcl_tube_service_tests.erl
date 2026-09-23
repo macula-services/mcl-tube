@@ -130,6 +130,24 @@ the_owner_ui_bind_address_is_configurable_test() ->
     end.
 
 %%==============================================================================
+%% The upload scan needs ffmpeg, in the image and in CI
+%%==============================================================================
+
+%% video_clip_scan shells out to ffprobe/ffmpeg. An image without them rejects
+%% EVERY upload as {executable_not_found, "ffprobe"} while the service looks
+%% healthy. The port once shipped exactly that, taking the scaffold's
+%% Containerfile over the one that installed ffmpeg; CI caught it only because
+%% the scan's own test runs against a real clip.
+the_runtime_image_installs_ffmpeg_test() ->
+    {ok, Text} = file:read_file(alongside("Containerfile")),
+    [_Builder, Runtime] = binary:split(Text, <<"FROM docker.io/alpine">>),
+    ?assertNotEqual(nomatch, binary:match(Runtime, <<"ffmpeg">>)).
+
+ci_installs_ffmpeg_for_the_scan_tests_test() ->
+    {ok, Text} = file:read_file(alongside(".github/workflows/lint.yml")),
+    ?assertNotEqual(nomatch, binary:match(Text, <<"ffmpeg">>)).
+
+%%==============================================================================
 %% Start
 %%==============================================================================
 

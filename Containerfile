@@ -63,8 +63,10 @@ LABEL org.opencontainers.image.source="https://github.com/macula-services/mcl-tu
 # library: Error loading shared library liblz4.so.1: No such file or
 # directory" and the whole node exits, since kernel can't start.
 # Confirmed live: this stage shipped without them once already.
+# ffmpeg: the upload scan (video_clip_scan) shells out to ffprobe/ffmpeg. Without
+# it EVERY upload is rejected as {executable_not_found, "ffprobe"}.
 RUN apk add --no-cache ncurses-libs libstdc++ libgcc openssl ca-certificates curl \
-        zstd-libs snappy lz4-libs
+        zstd-libs snappy lz4-libs ffmpeg
 WORKDIR /app
 COPY --from=builder /build/_build/prod/rel/mcl_tube ./
 
