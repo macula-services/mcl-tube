@@ -7,6 +7,11 @@
 -behaviour(evoq_event_handler).
 
 -export([interested_in/0, init/1, handle_event/4]).
+-export([replay_policy/0]).
+
+%% It publishes to the mesh: replay would publish everything again on every
+%% restart, so it does not see replay (evoq >= 1.24).
+replay_policy() -> skip.
 
 interested_in() -> [<<"video_clip_archived_v1">>].
 
