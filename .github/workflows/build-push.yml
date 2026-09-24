@@ -61,3 +61,6 @@ jobs:
           tags: |
             ghcr.io/macula-services/mcl-tube:latest
             ghcr.io/macula-services/mcl-tube:${{ steps.tag.outputs.tag }}
+          # The commit the image was built from, readable from the image itself.
+          build-args: |
+            REVISION=${{ github.sha }}
