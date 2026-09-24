@@ -45,4 +45,5 @@ to_map(#video_clip_viewed_v1{} = E) ->
         viewer_ref => E#video_clip_viewed_v1.viewer_ref
     }.
 
+-spec clip_id(t()) -> binary().
 clip_id(#video_clip_viewed_v1{clip_id = V}) -> V.

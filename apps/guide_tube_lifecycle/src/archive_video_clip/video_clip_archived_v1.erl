@@ -43,4 +43,5 @@ to_map(#video_clip_archived_v1{} = E) ->
         archived_at => E#video_clip_archived_v1.archived_at
     }.
 
+-spec clip_id(t()) -> binary().
 clip_id(#video_clip_archived_v1{clip_id = V}) -> V.

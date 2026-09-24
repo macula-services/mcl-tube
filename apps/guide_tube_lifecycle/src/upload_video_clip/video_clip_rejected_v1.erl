@@ -55,5 +55,7 @@ to_map(#video_clip_rejected_v1{} = E) ->
         rejected_at => E#video_clip_rejected_v1.rejected_at
     }.
 
+-spec clip_id(t()) -> binary().
 clip_id(#video_clip_rejected_v1{clip_id = V}) -> V.
+-spec reason(t()) -> binary().
 reason(#video_clip_rejected_v1{reason = V}) -> V.

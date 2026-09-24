@@ -78,6 +78,8 @@ Both lists are pinned by tests (`mcl_tube_service_tests`,
 | `MCL_TUBE_HTTP_IP` | `127.0.0.1` | where the owner web UI binds. **It has no authentication of its own**, and the container runs on host networking: reach it over an SSH tunnel, and widen this only knowingly |
 | `MCL_DATA` | `/bulk0/mcl-tube` | (compose) host directory for the store, the clips and the content cache |
 | `MCL_HEALTH_PORT` | `8490` | health endpoint |
+| `MCL_SERVICE_NAME` | `mcl-tube` | label on the boot claim the realm's operator sees on the Providers desk |
+| `MCL_BOX` | unset | label naming the host, also on the boot claim; set it where you deploy |
 
 ## Deploy
 
@@ -108,7 +110,11 @@ fails once does not flap.
     rebar3 eunit
     rebar3 lint
 
-OTP 28, pinned in `.tool-versions`, the `Containerfile` and CI.
+OTP 28.4.3, pinned in `.tool-versions`, the `Containerfile` and CI, and a test
+fails when they disagree with the VM running it. The image builds in the team's
+`ghcr.io/macula-io/macula-ci-otp` and runs on `ghcr.io/macula-io/macula-pq-runtime`
+(Debian trixie, OpenSSL with ML-DSA), with ffmpeg added, both pinned by dated
+tag and digest; CI runs in the same build image.
 
 ## License
 

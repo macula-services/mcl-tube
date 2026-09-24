@@ -38,5 +38,7 @@ from_map(#{clip_id := Id, channel_id := ChannelId}) ->
 from_map(_) ->
     {error, missing_required_fields}.
 
+-spec clip_id(t()) -> binary().
 clip_id(#retract_video_clip_v1{clip_id = V}) -> V.
+-spec channel_id(t()) -> binary().
 channel_id(#retract_video_clip_v1{channel_id = V}) -> V.

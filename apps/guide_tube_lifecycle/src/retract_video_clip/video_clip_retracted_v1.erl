@@ -41,4 +41,5 @@ to_map(#video_clip_retracted_v1{} = E) ->
         retracted_at => E#video_clip_retracted_v1.retracted_at
     }.
 
+-spec clip_id(t()) -> binary().
 clip_id(#video_clip_retracted_v1{clip_id = V}) -> V.

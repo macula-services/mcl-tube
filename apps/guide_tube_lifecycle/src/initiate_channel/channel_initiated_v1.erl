@@ -58,4 +58,5 @@ to_map(#channel_initiated_v1{} = E) ->
         initiated_at => E#channel_initiated_v1.initiated_at
     }.
 
+-spec channel_id(t()) -> binary().
 channel_id(#channel_initiated_v1{channel_id = V}) -> V.

@@ -41,4 +41,5 @@ to_map(#video_clip_published_v1{} = E) ->
         published_at => E#video_clip_published_v1.published_at
     }.
 
+-spec clip_id(t()) -> binary().
 clip_id(#video_clip_published_v1{clip_id = V}) -> V.

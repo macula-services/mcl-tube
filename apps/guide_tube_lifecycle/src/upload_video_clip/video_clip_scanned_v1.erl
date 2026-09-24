@@ -74,6 +74,9 @@ to_map(#video_clip_scanned_v1{} = E) ->
         scanned_at       => E#video_clip_scanned_v1.scanned_at
     }.
 
+-spec clip_id(t()) -> binary().
 clip_id(#video_clip_scanned_v1{clip_id = V}) -> V.
+-spec duration_ms(t()) -> non_neg_integer().
 duration_ms(#video_clip_scanned_v1{duration_ms = V}) -> V.
+-spec thumbnail_mcid(t()) -> binary() | undefined.
 thumbnail_mcid(#video_clip_scanned_v1{thumbnail_mcid = V}) -> V.

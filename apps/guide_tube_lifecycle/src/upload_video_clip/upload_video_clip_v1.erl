@@ -70,11 +70,19 @@ from_map(#{clip_id := Id, channel_id := ChannelId, name := Name,
 from_map(_) ->
     {error, missing_required_fields}.
 
+-spec clip_id(t()) -> binary().
 clip_id(#upload_video_clip_v1{clip_id = V}) -> V.
+-spec channel_id(t()) -> binary().
 channel_id(#upload_video_clip_v1{channel_id = V}) -> V.
+-spec name(t()) -> binary().
 name(#upload_video_clip_v1{name = V}) -> V.
+-spec description(t()) -> binary().
 description(#upload_video_clip_v1{description = V}) -> V.
+-spec tags(t()) -> [binary()].
 tags(#upload_video_clip_v1{tags = V}) -> V.
+-spec thumbnail_mcid(t()) -> binary() | undefined.
 thumbnail_mcid(#upload_video_clip_v1{thumbnail_mcid = V}) -> V.
+-spec local_ref(t()) -> binary().
 local_ref(#upload_video_clip_v1{local_ref = V}) -> V.
+-spec source(t()) -> binary().
 source(#upload_video_clip_v1{source = V}) -> V.

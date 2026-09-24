@@ -62,9 +62,15 @@ from_map(#{channel_id := Id, name := Name, description := Description,
 from_map(_) ->
     {error, missing_required_fields}.
 
+-spec channel_id(t()) -> binary().
 channel_id(#initiate_channel_v1{channel_id = V}) -> V.
+-spec name(t()) -> binary().
 name(#initiate_channel_v1{name = V}) -> V.
+-spec description(t()) -> binary().
 description(#initiate_channel_v1{description = V}) -> V.
+-spec owner(t()) -> binary().
 owner(#initiate_channel_v1{owner = V}) -> V.
+-spec tags(t()) -> [binary()].
 tags(#initiate_channel_v1{tags = V}) -> V.
+-spec logo_mcid(t()) -> binary() | undefined.
 logo_mcid(#initiate_channel_v1{logo_mcid = V}) -> V.

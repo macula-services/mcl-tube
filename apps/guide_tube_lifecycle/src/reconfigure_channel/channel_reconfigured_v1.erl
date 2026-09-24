@@ -54,4 +54,5 @@ to_map(#channel_reconfigured_v1{} = E) ->
         reconfigured_at => E#channel_reconfigured_v1.reconfigured_at
     }.
 
+-spec channel_id(t()) -> binary().
 channel_id(#channel_reconfigured_v1{channel_id = V}) -> V.

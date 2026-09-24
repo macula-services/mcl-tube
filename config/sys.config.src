@@ -32,7 +32,6 @@
         %% granted THIS node a provider authorization for it (D25), or nothing
         %% is advertised and /health says so.
         {org,               <<"mcl-tube">>},
-        {service_name,      <<"mcl-tube">>},
         %% THE REALM IS AN APPLICATION ENV, NOT A SHELL VARIABLE, and this file
         %% is the only place the two meet. mcl_om_identity:realm() reads
         %% application:get_env(mcl_om, realm); exporting MCL_REALM in the
