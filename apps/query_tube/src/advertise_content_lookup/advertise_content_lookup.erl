@@ -11,13 +11,15 @@
 
 init(_Args) -> {ok, undefined}.
 
-%% `mcid' arrives as an atom key -- same wire round-trip macula's frame
-%% decoder does for every other lookup payload in this app (see
-%% advertise_video_clip_lookup.erl's note on `clip_id').
-handle_request(#{mcid := McidHex}, State) ->
-    reply_from(tube_content_store:read(McidHex), State);
-handle_request(_Payload, State) ->
-    {error, bad_request, State}.
+%% `mcid' is read through mcl_om_wire:field/2, like every other lookup in this
+%% app. macula's frame decoder leaves a key as sent (`{text, <<"mcid">>}') and
+%% delivers a text value as `{text, Hex}'; matching `#{mcid := _}' raw refused
+%% every real caller as a bad request. tube_content_store refuses anything that
+%% is not a hex MCID before it builds a path from it, and that refusal is a bad
+%% request too.
+handle_request(Payload, State) ->
+    reply_from(tube_content_store:read(mcl_om_wire:field(mcid, Payload)), State).
 
 reply_from({ok, Bytes}, State) -> {reply, #{bytes => Bytes}, State};
-reply_from({error, not_found}, State) -> {error, not_found, State}.
+reply_from({error, not_found}, State) -> {error, not_found, State};
+reply_from({error, invalid_mcid}, State) -> {error, bad_request, State}.

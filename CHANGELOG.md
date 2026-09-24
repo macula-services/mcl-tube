@@ -5,6 +5,18 @@
 Ported from `hecate-services/hecate-tube` (main 41f693d plus the unmerged
 `fix/wire-text-and-arg-keys`, 06c58a8) onto `mcl_om` and macula 12.
 
+- **`lookup_content` answers real callers, and only with content.** It matched
+  `#{mcid := _}` raw, but macula 12's decoder leaves the key as sent and
+  delivers the value as `{text, Hex}`, so every mesh caller (macula-portal's
+  thumbnails and logos) got `bad_request`. It reads `mcid` through
+  `mcl_om_wire:field/2` now, and upper-case hex is the same MCID.
+- **The content store accepts only a hex MCID**, on read and on write. It built
+  the file path from the MCID as given, so a value such as `../secret` reached a
+  file outside the content directory; reading the field properly would have
+  opened that to mesh callers. Anything but 2 to 128 hex digits, even in number,
+  is refused (`bad_request` on the procedure). Tests send the request through
+  macula's frame codec and cover traversal on read and on write.
+
 - **On `mcl_om` 0.28 with macula 12.2.** The service answers `mcl-tube/info`,
   which mcl_om adds (public facts: versions, labels, health word, procedures),
   and a test sends that reply through macula's frame codec and checks it names

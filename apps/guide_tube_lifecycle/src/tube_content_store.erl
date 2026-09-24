@@ -12,16 +12,41 @@
 %% (advertise_content_lookup) serves from this local copy instead.
 -module(tube_content_store).
 
--export([persist/2, read/1]).
+-export([persist/2, read/1, mcid_hex/1]).
 
 -spec persist(binary(), binary()) -> ok | {error, term()}.
-persist(McidHex, Bytes) when is_binary(McidHex), is_binary(Bytes) ->
-    ok = filelib:ensure_dir(filename:join(dir(), "placeholder")),
-    file:write_file(path(McidHex), Bytes).
+persist(McidHex, Bytes) when is_binary(Bytes) ->
+    persisted(mcid_hex(McidHex), Bytes).
 
--spec read(binary()) -> {ok, binary()} | {error, not_found}.
-read(McidHex) when is_binary(McidHex) ->
-    as_not_found(file:read_file(path(McidHex))).
+persisted({ok, Hex}, Bytes) ->
+    ok = filelib:ensure_dir(filename:join(dir(), "placeholder")),
+    file:write_file(path(Hex), Bytes);
+persisted({error, _} = Refused, _Bytes) ->
+    Refused.
+
+-spec read(term()) -> {ok, binary()} | {error, not_found | invalid_mcid}.
+read(McidHex) ->
+    read_valid(mcid_hex(McidHex)).
+
+read_valid({ok, Hex}) -> as_not_found(file:read_file(path(Hex)));
+read_valid({error, _} = Refused) -> Refused.
+
+%% @doc ⚠ THE MCID BECOMES A FILENAME, so only hex is let through, and
+%% nothing else a caller sends. A value such as `../secret' used to be joined
+%% onto the content directory as-is: with the directory present, as it is on
+%% any node that has stored a thumbnail, it read a file outside it. An MCID is
+%% hex of its bytes, an even number of hex digits (a 50-byte MCID is 100),
+%% capped at 128. Upper case is the same MCID: tube mints lower case, and a
+%% caller may encode upper (Elixir's Base.encode16 does by default).
+-spec mcid_hex(term()) -> {ok, binary()} | {error, invalid_mcid}.
+mcid_hex(Hex) when is_binary(Hex), byte_size(Hex) >= 2, byte_size(Hex) =< 128,
+                   byte_size(Hex) rem 2 =:= 0 ->
+    hex_only(re:run(Hex, <<"\\A[0-9a-fA-F]+\\z">>, [{capture, none}]), Hex);
+mcid_hex(_Other) ->
+    {error, invalid_mcid}.
+
+hex_only(match, Hex) -> {ok, string:lowercase(Hex)};
+hex_only(nomatch, _Hex) -> {error, invalid_mcid}.
 
 as_not_found({ok, Bytes}) -> {ok, Bytes};
 as_not_found({error, _Reason}) -> {error, not_found}.
