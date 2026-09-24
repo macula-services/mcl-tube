@@ -65,6 +65,11 @@ fact.
 Both lists are pinned by tests (`mcl_tube_service_tests`,
 `tube_catalog_topic_tests`). A change is a new name, not an edit.
 
+Like every mcl service, it also answers `mcl-tube/info`, which mcl_om adds: its
+name, version and description, its org and claim labels, node id, the macula
+and mcl_om versions, uptime, the health word and the procedures it advertises.
+Open to any mesh caller, public facts only.
+
 ## Configuration
 
 | Variable | Default | Meaning |
