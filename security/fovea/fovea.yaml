@@ -1,0 +1,56 @@
+# Fovea assessment header — macula-services/mcl-tube
+# Validated by macula-io/macula-fovea schema/assessment.schema.json (spec v0.3)
+fovea: "0.3"
+system: mcl-tube
+assessment_date: 2026-09-25
+owner: roeland@macula.io
+
+description: >-
+  Security assessment of mcl-tube: video channels over the mesh. Owners
+  publish clips (scanned before publishing) through a local web UI; anyone
+  on the mesh looks up and streams them over four procedures, with the
+  catalog announced on four facts. Four hecate-style apps (CMD/PRJ/QRY +
+  service), an event-sourced store (reckon evoq, store_id mcl_tube_store)
+  with an in-memory read model, and clip content served by mcid. Status:
+  built and tested locally, not yet deployed — the assessment precedes
+  deployment.
+
+scope:
+  in:
+    - "Owner web UI and its session surface (publish, retract, archive)"
+    - "The four procedures: lookup_channel, lookup_video_clip, lookup_content, watch_video_clip (stream)"
+    - "The four catalog facts: channel_announced, video_clip_published, video_clip_retracted, video_clip_viewed"
+    - "Event store and snapshot store (reckon evoq, mcl_tube_store) and the in-memory read model"
+    - "Clip content storage and mcid serving"
+    - "Identity, realm key and crypto profile wiring (mcl_om contract)"
+  out:
+    - "Realm governance and D25 delegation issuance (macula-realm)"
+    - "Mesh transport, DHT and station infrastructure (macula-station)"
+    - "Portal/catalogue consumer that lists channels from the facts"
+    - "Operators' host infrastructure"
+
+attributes:
+  core:
+    - confidentiality
+    - integrity
+    - availability
+    - authenticity
+    - accountability
+  enabled:
+    - possession
+  disabled_justifications:
+    utility: >-
+      Retracted or expired content that is intact but no longer servable
+      manifests to consumers as unavailability of that clip; the failure is
+      priced in availability cells and in the retraction logic of
+      confidentiality cells. Enabling utility would double-count that class.
+
+columns:
+  actors: [internal, external, trusted_partner, machine_agent]
+  lifecycle: [create, acquire, deliver, operate, admin, decommission]
+  data: [at_rest, in_motion, in_use]
+  environment: [physical_natural, socio_legal, temporal]
+
+trust_anchor_registry: trust-anchors.md
+landscape: landscape.md
+cells_dir: cells/
