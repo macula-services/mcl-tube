@@ -17,11 +17,11 @@ defense:
   countermeasures:
     - measure: "Review on merges is the human gate; the info test asserts version floors."
       status: by_design
-      source: git log ("test: the info test asserts version floors")
+      source: 'git log: test: the info test asserts version floors'
     - measure: "Branch protection and review policy are the org's obligation."
       status: org
   recovery:
     - measure: "Revert the commit; the image carries its own revision label for attribution."
       status: by_design
-      source: git log ("build: the image carries its own revision label")
+      source: 'git log: build: the image carries its own revision label'
 notes: "Assumed: tests pin the contract; enforcement of the review gate is the org's."

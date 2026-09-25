@@ -12,10 +12,10 @@ defense:
   detection:
     - measure: "The info test asserts version floors, not an exact release — drift below the floor fails the build."
       status: by_design
-      source: git log ("test: the info test asserts version floors, not an exact release")
+      source: 'git log: test: the info test asserts version floors, not an exact release'
     - measure: "mcl_om 0.28 with macula 12.2 is the declared pairing, the release macula 12.2 needs."
       status: by_design
-      source: rebar.config (deps); git log ("build: mcl_om 0.28 with macula 12.2")
+      source: 'rebar.config deps; git log: build: mcl_om 0.28 with macula 12.2'
   countermeasures:
     - measure: "Test deps are profile-scoped (meck under test); the prod release excludes them."
       status: by_design
@@ -23,5 +23,5 @@ defense:
   recovery:
     - measure: "Re-pin, rebuild, redeploy via the image's revision label."
       status: by_design
-      source: git log ("build: the image carries its own revision label")
+      source: 'git log: build: the image carries its own revision label'
 notes: "Assessed: floors and profile-scoped deps are cited from this repo's rebar.config and history."

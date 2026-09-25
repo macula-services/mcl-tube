@@ -22,6 +22,6 @@ defense:
       status: org
   recovery:
     - measure: "Fix the config and redeploy; a node that never advertised a wrong identity needs no revocation."
-      status: assumed
+      status: org
       source: config/sys.config.src (boot refusal comments)
 notes: "Assumed: the config discipline matches the sibling services; deployment review is the org's."

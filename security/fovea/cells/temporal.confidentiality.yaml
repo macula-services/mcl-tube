@@ -16,7 +16,7 @@ defense:
       source: config/sys.config.src (crypto profile block)
     - measure: "Version floors are asserted by the info test, so a drifting vintage fails the build."
       status: by_design
-      source: git log ("test: the info test asserts version floors, not an exact release")
+      source: 'git log: test: the info test asserts version floors, not an exact release'
   countermeasures:
     - measure: "The profile is a fleet constant, not a per-node choice (macula 12 model)."
       status: by_design
