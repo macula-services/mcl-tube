@@ -1,0 +1,30 @@
+id: at_rest.confidentiality
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Stored material is read by someone who should not read it: channel and
+    clip events in the event store, clip bytes, or the identity key.
+  manifestations:
+    - Host-side read of the store volume or clip content volume.
+    - The identity key file read from the secrets volume.
+defense:
+  detection:
+    - measure: "The service holds owner-published and catalog data at rest; host-level access is the operator's boundary."
+      status: org
+  countermeasures:
+    - measure: >-
+        The identity key lives only in the mounted secrets volume; clip and
+        event storage persist via the deploy volumes, not the image or repo.
+      status: by_design
+      source: config/sys.config.src (identity_key_path); deploy/docker-compose.yml (volumes)
+    - measure: "Disk-level encryption of the volumes is the operator's obligation."
+      status: org
+  recovery:
+    - measure: "Retract-and-republish semantics bound the damage of a read: nothing read at rest grants write authority."
+      status: assumed
+      source: README.md (retraction procedures)
+notes: >-
+  Pre-deployment, assumed: volume layout and key path are documented; the
+  confidentiality of clip bytes is the retraction promise, assessed in
+  operate.confidentiality.

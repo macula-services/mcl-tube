@@ -1,0 +1,26 @@
+id: in_use.authenticity
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    The identity attached to a session while the service processes it is
+    not the owner's: a session is reused, hijacked, or the mesh caller id
+    on a write does not name the owner.
+  manifestations:
+    - A hijacked web-UI session issuing lifecycle commands.
+    - A wire caller whose authenticated node id is not the owner's node.
+defense:
+  detection:
+    - measure: "The service answers mcl-tube/info with its org and claim labels; caller identity on the wire is the platform's authenticated node id."
+      status: by_design
+      source: README.md ("it also answers mcl-tube/info")
+  countermeasures:
+    - measure: "Session authenticity for the owner UI is not yet demonstrated in this repo — the gap this cell records."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Rebuild the read model from the store; a hijacked session's commands are still recorded events, correctable by the owner."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+review_by: 2027-03-31
+notes: "Assumed: platform-level caller identity is inherited; owner-session authenticity is the open item, tracked to the same roadmap date as operate.authenticity."

@@ -1,0 +1,43 @@
+name: security-fovea
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "security/fovea/**"
+      - ".github/workflows/security-fovea.yml"
+  pull_request:
+    paths:
+      - "security/fovea/**"
+      - ".github/workflows/security-fovea.yml"
+
+jobs:
+  fovea:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Report-only while the grid is incomplete: annotations appear, nothing
+      # blocks. Flip to a hard gate (drop continue-on-error) when fovea lint
+      # is clean — do not ship a red gate for an unfinished grid.
+      - name: "fovea lint"
+        continue-on-error: true
+        uses: macula-io/macula-fovea@main
+        with:
+          dir: security/fovea
+          command: lint
+
+      - name: "fovea score"
+        if: always()
+        uses: macula-io/macula-fovea@main
+        with:
+          dir: security/fovea
+          command: score
+
+      - name: "Upload fovea artifacts"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fovea-artifacts
+          path: fovea-artifacts/
+          retention-days: 30

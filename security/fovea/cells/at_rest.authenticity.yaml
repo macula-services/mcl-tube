@@ -1,0 +1,28 @@
+id: at_rest.authenticity
+status: assessed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Stored content is not what it claims to be: a clip or thumbnail served
+    under an mcid that does not match its bytes, or an event in the store
+    that names the wrong origin.
+  manifestations:
+    - A substituted blob served under a published mcid.
+    - A store entry whose provenance is not the owner's publish command.
+defense:
+  detection:
+    - measure: "Content is content-addressed by mcid: what is served under an address is verifiable against that address."
+      status: by_design
+      source: README.md (lookup_content by mcid)
+    - measure: "The event stream is the provenance record: store entries descend from owner commands, not free-standing blobs."
+      status: by_design
+      source: README.md ("event sourced")
+  countermeasures:
+    - measure: "The store takes only hex ids/mcids — shape-checked at the boundary, as the lookup fix shows."
+      status: by_design
+      source: git log ("the store takes only hex")
+  recovery:
+    - measure: "Re-publish under the correct mcid; upsert by id replaces the entry."
+      status: by_design
+      source: README.md ("upserts by id")
+notes: "Assessed: content addressing plus event provenance, cited from the README and commit history."

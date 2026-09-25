@@ -1,0 +1,25 @@
+id: in_use.confidentiality
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Data being processed leaks: the owner's web-UI session, a clip held in
+    memory during the scan before publishing, or the in-memory read model.
+  manifestations:
+    - Session material exposed through the local web UI.
+    - A crash dump capturing clip bytes held during the publish scan.
+defense:
+  detection:
+    - measure: "The read model is in memory and rebuilt from the store; it holds nothing that is not already persisted."
+      status: by_design
+      source: README.md ("read model, in memory")
+  countermeasures:
+    - measure: "The owner UI is local; its exposure surface is the host, whose hardening is the operator's obligation."
+      status: org
+    - measure: "Crash-dump hygiene on the host is the operator's obligation."
+      status: org
+  recovery:
+    - measure: "Restart clears memory; the store rebuilds the state."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+notes: "Assumed: architectural claims cited from the README; no session or dump-hygiene tests exist yet."

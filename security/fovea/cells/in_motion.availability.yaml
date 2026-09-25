@@ -1,0 +1,24 @@
+id: in_motion.availability
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    The service cannot deliver over the mesh: streams stall, lookups time
+    out, or the node cannot reach its peers — and consumers get nothing.
+  manifestations:
+    - A stalled watch_video_clip stream under mesh congestion.
+    - The node unreachable because its transport or station path is down.
+defense:
+  detection:
+    - measure: "mcl-tube/info reports the health word and uptime — the operator's probe into the node's state."
+      status: by_design
+      source: README.md ("answers mcl-tube/info ... uptime, the health word")
+  countermeasures:
+    - measure: "Mesh resilience (station choice, rerouting) is delegated to the substrate; the service contributes its documented contract, not its own healing."
+      status: org
+      source: README.md (mcl_om contract)
+  recovery:
+    - measure: "Consumers re-request; lookups are idempotent reads and streams can restart from the mcid."
+      status: by_design
+      source: README.md (lookup_content by mcid)
+notes: "Assumed pre-deployment: the service documents its dependency on the mesh; live-stream behaviour under congestion is untested."

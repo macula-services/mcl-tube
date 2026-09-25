@@ -1,0 +1,32 @@
+id: operate.confidentiality
+status: roadmap
+owner: roeland@macula.io
+threat:
+  definition: >-
+    A retracted or archived clip keeps being servable: the retraction fact
+    fires, but a consumer can still look it up or stream it from some path.
+  manifestations:
+    - A stale read-model entry surviving the retraction event.
+    - A cached stream still answerable after video_clip_retracted_v1.
+defense:
+  detection:
+    - measure: "The catalog facts carry retraction as an explicit event (video_clip_retracted_v1), so the state change is observable on the mesh."
+      status: by_design
+      source: README.md (facts table)
+  countermeasures:
+    - measure: >-
+        End-to-end enforcement that every lookup and stream path honours the
+        retracted state is not yet demonstrated in this repo — the gap this
+        cell records.
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Rebuild the read model from the store; the store is the truth, and a rebuild must yield the retracted state."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+review_by: 2027-03-31
+notes: >-
+  This is the sharpest cell in the grid: the retraction promise is the
+  service's confidentiality contract, and its enforcement needs a test
+  that a retracted clip is unservable everywhere. Roadmap until that test
+  exists.

@@ -1,0 +1,27 @@
+id: admin.authenticity
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    A trust-relevant administrative change is made falsely: the node is
+    pointed at a wrong org or realm, or a wrong key is installed — and it
+    runs advertising an identity the org did not intend.
+  manifestations:
+    - Deploy-time drift of the realm tag or realm key.
+    - A service that advertises under an org nobody can attribute.
+defense:
+  detection:
+    - measure: "The org is a property of the service, fixed in config — drift is a repository change, not host state."
+      status: by_design
+      source: config/sys.config.src (org wiring)
+  countermeasures:
+    - measure: "Realm key pinning and crypto profile are mandatory config, refusing a half-configured node (mcl_om contract)."
+      status: by_design
+      source: config/sys.config.src (realm/realm_key/crypto profile blocks)
+    - measure: "Deploy access control is the operator's obligation."
+      status: org
+  recovery:
+    - measure: "Fix the config and redeploy; a node that never advertised a wrong identity needs no revocation."
+      status: assumed
+      source: config/sys.config.src (boot refusal comments)
+notes: "Assumed: the config discipline matches the sibling services; deployment review is the org's."

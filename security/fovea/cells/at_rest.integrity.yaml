@@ -1,0 +1,24 @@
+id: at_rest.integrity
+status: assessed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Stored material is altered or corrupted: clip bytes, event records, or
+    the identity key — and the change goes unnoticed.
+  manifestations:
+    - Bit rot or tampering on stored clip content served under a stale mcid.
+    - A corrupted event store entry rebuilding the read model wrong.
+defense:
+  detection:
+    - measure: "Content is stored by mcid (content-addressed, BLAKE3-family): a served blob is verifiable against the address it was looked up by."
+      status: by_design
+      source: README.md (lookup_content by mcid)
+  countermeasures:
+    - measure: "The store is the truth and the read model is rebuilt from it — divergence is corrected by rebuild, not accumulated."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+  recovery:
+    - measure: "Re-publish the clip; upsert by id replaces the catalog entry."
+      status: by_design
+      source: README.md ("upserts by id")
+notes: "Assessed: content addressing and store-as-truth are the integrity mechanisms, cited from the README."

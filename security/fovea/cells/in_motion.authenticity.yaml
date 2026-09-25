@@ -1,0 +1,25 @@
+id: in_motion.authenticity
+status: assessed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    The peer on the other end of a lookup or stream is not who it claims:
+    a lookup answered by something that is not this service, or a stream
+    served from a node the org does not operate.
+  manifestations:
+    - A forged mcl-tube/lookup_channel reply from a non-owner node.
+    - A consumer dialing a spoofed endpoint for watch_video_clip.
+defense:
+  detection:
+    - measure: "Procedures are served under the org mcl-tube; callers dial mcl-tube/<name> and the platform binds identity to the authenticated node."
+      status: by_design
+      source: README.md ("Served under the org mcl-tube, so callers dial mcl-tube/<name>")
+  countermeasures:
+    - measure: "Advertisements resolve against the realm's pinned signing key, as in every mcl service."
+      status: by_design
+      source: config/sys.config.src (realm key wiring)
+  recovery:
+    - measure: "Re-resolve through the mesh; a wrong endpoint fails verification and the caller re-dials."
+      status: by_design
+      source: README.md (mcl_om contract)
+notes: "Assessed: org-namespaced procedures plus pinned realm verification, cited from the README and config."

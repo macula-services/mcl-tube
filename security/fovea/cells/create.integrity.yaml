@@ -1,0 +1,27 @@
+id: create.integrity
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    The source tree is changed before build in a way that changes shipped
+    behaviour — a weakened scan gate, a dropped fact, a silent change to
+    what the catalog announces.
+  manifestations:
+    - An unreviewed merge weakening the publish scan.
+    - A fact topic renamed or dropped without the pinned tests catching it.
+defense:
+  detection:
+    - measure: "The four facts are pinned by tests (mcl_tube_service_tests, tube_catalog_topic_tests): a change is a new name, not an edit."
+      status: by_design
+      source: README.md ("Both lists are pinned by tests")
+  countermeasures:
+    - measure: "Review on merges is the human gate; the info test asserts version floors."
+      status: by_design
+      source: git log ("test: the info test asserts version floors")
+    - measure: "Branch protection and review policy are the org's obligation."
+      status: org
+  recovery:
+    - measure: "Revert the commit; the image carries its own revision label for attribution."
+      status: by_design
+      source: git log ("build: the image carries its own revision label")
+notes: "Assumed: tests pin the contract; enforcement of the review gate is the org's."
