@@ -1,14 +1,23 @@
 id: admin.availability
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    An administrative action takes the service down: a mistyped config, a
+    wrong volume, a bad deploy — and the outage looks like a healthy node.
+  manifestations:
+    - A half-configured realm running green and unreachable.
+    - A deploy without the store volume, rebuilding an empty catalog.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "mcl-tube/info health word is the liveness probe."
+      status: by_design
+      source: README.md ("answers mcl-tube/info ... the health word")
+  countermeasures:
+    - measure: "Config and volumes are named deploy objects; the split stops a config table drifting from reality."
+      status: by_design
+      source: deploy/docker-compose.yml
+  recovery:
+    - measure: "Re-pin the known-good image; the store rebuilds the read model."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")

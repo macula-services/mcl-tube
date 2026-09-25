@@ -22,6 +22,6 @@ defense:
       status: org
   recovery:
     - measure: "Restore the volumes; the store rebuilds the read model to the restored truth."
-      status: assumed
+      status: org
       source: README.md ("rebuilt from the store at boot")
 notes: "Assumed pre-deployment: the mechanics are documented; restore drills have not been run."

@@ -1,14 +1,23 @@
 id: create.authenticity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    The code the fleet runs was not written by who its history claims:
+    authorship is falsified, or a change enters under an identity the org
+    cannot hold to account.
+  manifestations:
+    - A commit authored under a compromised account.
+    - A merge whose author and reviewer are the same account.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Git history is the authorship record."
+      status: by_design
+      source: repository itself
+  countermeasures:
+    - measure: "Branch protection and account security are the org's obligation."
+      status: org
+  recovery:
+    - measure: "Revert is a named commit; the history survives the fix."
+      status: by_design
+      source: repository itself

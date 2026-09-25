@@ -1,14 +1,6 @@
 id: at_rest.accountability
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "Auditing who read or modified stored material on the host is host-level logging (org); the service's own record is the event store, assessed in operate.accountability."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

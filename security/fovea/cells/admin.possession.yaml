@@ -1,14 +1,6 @@
 id: admin.possession
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "An administrator carrying the volumes away is decommission.possession with a friendlier attacker; no distinct mechanism exists."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

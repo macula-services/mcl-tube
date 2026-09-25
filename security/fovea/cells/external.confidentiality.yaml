@@ -1,14 +1,23 @@
 id: external.confidentiality
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    An outside observer learns by watching: which channels exist, who
+    publishes, what consumers watch and when — the traffic-pattern half of
+    confidentiality, beyond payload reading.
+  manifestations:
+    - Correlation of catalog announcements to map the channel graph.
+    - Observation of stream traffic to profile consumer habits.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Observers on the wire are not detectable by the service; fleet monitoring is the operator's job."
+      status: org
+  countermeasures:
+    - measure: "The catalog is public by design; the confidentiality promise is retraction, assessed in operate.confidentiality."
+      status: by_design
+      source: README.md ("anyone on the mesh ... looks them up")
+  recovery:
+    - measure: "Retract removes content from the catalog."
+      status: by_design
+      source: README.md (video_clip_retracted_v1)

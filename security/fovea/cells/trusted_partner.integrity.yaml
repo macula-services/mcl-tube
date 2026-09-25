@@ -1,14 +1,6 @@
 id: trusted_partner.integrity
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "Vendor-component corruption is the supply-chain story assessed in create.integrity and acquire.authenticity, with the runtime pairing asserted in trusted_partner.authenticity. No third heading adds a mechanism."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

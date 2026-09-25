@@ -1,14 +1,6 @@
 id: in_use.possession
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "Possession of in-memory material is a memory-scrape event (in_use.confidentiality); custody of the underlying assets is decommission.possession."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

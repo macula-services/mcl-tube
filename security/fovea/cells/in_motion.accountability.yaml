@@ -1,14 +1,6 @@
 id: in_motion.accountability
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "Attribution of what crosses the links is the operate.accountability story; the data-state lens adds no mechanism."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

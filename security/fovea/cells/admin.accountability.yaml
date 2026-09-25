@@ -1,14 +1,22 @@
 id: admin.accountability
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A deploy or config action is later unattributable: nobody can say who
+    changed the store config, the pins, or the deploy target.
+  manifestations:
+    - Host-level env overrides invisible to history.
+    - A redeploy with no record of who triggered it.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Config changes are repository changes; the revision label ties the running image to a commit."
+      status: by_design
+      source: config/sys.config.src; git log ("the image carries its own revision label")
+  countermeasures:
+    - measure: "Deploy access control is the org's domain."
+      status: org
+  recovery:
+    - measure: "Pin the previous tag; the changelog names the change."
+      status: by_design
+      source: CHANGELOG.md

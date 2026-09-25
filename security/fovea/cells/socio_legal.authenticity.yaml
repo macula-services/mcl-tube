@@ -1,14 +1,23 @@
 id: socio_legal.authenticity
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A legal or political actor claims an authority the mesh does not grant:
+    a compelled provider authorization, a name dispute over the org, a
+    forged realm announcement.
+  manifestations:
+    - An authority demanding a delegation row for a third party.
+    - A wrong-key realm announcement attempting to re-bind trust.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Advertisements verify against the realm's pinned signing key; an announcement under a different authority does not resolve."
+      status: by_design
+      source: config/sys.config.src (realm key wiring)
+  countermeasures:
+    - measure: "Jurisdiction and dispute handling are the realm operator's legal domain."
+      status: org
+  recovery:
+    - measure: "Re-pin the correct key if the realm rotates legally; a wrong key resolves nothing."
+      status: by_design
+      source: config/sys.config.src (realm key wiring)

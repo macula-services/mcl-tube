@@ -1,14 +1,25 @@
 id: internal.accountability
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A deploy or config action by an insider leaves no usable trace: when
+    the catalog misbehaves, nobody can reconstruct who changed what.
+  manifestations:
+    - Host-level changes outside the repo that git never sees.
+    - A deploy whose image provenance is unknown.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "The image carries its own revision label — the running artifact names its repository state."
+      status: by_design
+      source: 'git log: build: the image carries its own revision label'
+    - measure: "Config and code are one repository; every change is a commit with an author."
+      status: by_design
+      source: config/sys.config.src
+  countermeasures:
+    - measure: "Access control on deploy privileges is the org's domain."
+      status: org
+  recovery:
+    - measure: "Re-pin a named, attributable image tag."
+      status: by_design
+      source: 'git log: build: the image carries its own revision label'

@@ -1,14 +1,6 @@
 id: deliver.confidentiality
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "The delivered image contains no secrets: the identity key is generated at runtime, the realm key is public, content lives in volumes. Delivery leaks nothing that is not public."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

@@ -1,14 +1,6 @@
 id: acquire.confidentiality
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "Nothing confidential is acquired: dependencies are public, the realm key is public material, the identity key is generated locally. No acquisition-time secret surface exists."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

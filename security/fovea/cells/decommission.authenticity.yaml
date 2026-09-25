@@ -1,14 +1,24 @@
 id: decommission.authenticity
-status: unassessed
-owner: unassigned
+status: roadmap
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A retired node keeps claiming its identity: the delegation row lives
+    on, the old key still verifies, and the mesh keeps resolving a
+    provider that no longer exists — or one in someone else's hands.
+  manifestations:
+    - A stale provider row for a node whose volumes were wiped but never revoked.
+    - A retired node's key reused by a finder and still admitted.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "The realm's provider desk is the only place the stale row is visible; nothing local flags retirement."
+      status: org
+  countermeasures:
+    - measure: "No decommission runbook wires volume deletion to delegation revocation — the gap this cell records."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Revoke the delegation row and retire the volumes."
+      status: roadmap
+      source: README.md (mcl_om contract, realm admission)
+review_by: 2027-03-31

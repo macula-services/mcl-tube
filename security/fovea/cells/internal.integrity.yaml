@@ -1,14 +1,26 @@
 id: internal.integrity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    An insider's change corrupts the service's behaviour: a weakened scan
+    gate, a dropped fact, a tampered lifecycle command — and the catalog
+    keeps announcing a state the owner never commanded.
+  manifestations:
+    - A merge that weakens the publish scan unnoticed.
+    - An operator command that mutates store entries outside the lifecycle.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "The four facts are pinned by tests; a change is a new name, not an edit."
+      status: by_design
+      source: README.md ("Both lists are pinned by tests")
+    - measure: "The lifecycle is event-sourced; every command lands in the store, so an insider's action is recorded."
+      status: by_design
+      source: README.md ("event sourced")
+  countermeasures:
+    - measure: "Review on merges is the human gate."
+      status: org
+  recovery:
+    - measure: "Rebuild the read model from the store; the store is the truth."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")

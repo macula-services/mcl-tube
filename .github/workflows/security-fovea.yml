@@ -17,11 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Report-only while the grid is incomplete: annotations appear, nothing
-      # blocks. Flip to a hard gate (drop continue-on-error) when fovea lint
-      # is clean — do not ship a red gate for an unfinished grid.
+      # Hard gate: the grid is complete and lint is clean. A red run blocks.
       - name: "fovea lint"
-        continue-on-error: true
         uses: macula-io/macula-fovea@main
         with:
           dir: security/fovea
@@ -29,7 +26,6 @@ jobs:
 
       - name: "fovea score"
         if: always()
-        continue-on-error: true
         uses: macula-io/macula-fovea@main
         with:
           dir: security/fovea

@@ -1,14 +1,6 @@
 id: physical_natural.authenticity
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "Nature does not impersonate; impersonation is an actor-domain threat. Physical events can destroy identity material (integrity/availability) but cannot claim one."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

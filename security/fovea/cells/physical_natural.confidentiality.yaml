@@ -1,14 +1,6 @@
 id: physical_natural.confidentiality
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "A natural event can destroy or corrupt but not read; the service's stored content is owner-published, and the one secret's confidentiality is at_rest.confidentiality. Nature does not read."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

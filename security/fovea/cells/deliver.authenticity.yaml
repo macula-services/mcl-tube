@@ -16,7 +16,7 @@ defense:
       source: 'git log: build: the image carries its own revision label'
   countermeasures:
     - measure: "Image channel discipline (pinned tags, no floating latest) is the deploy pattern of the sibling services."
-      status: assumed
+      status: org
       source: deploy/docker-compose.yml
     - measure: "Host-side verification of pulls is the operator's discipline."
       status: org

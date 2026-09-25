@@ -1,14 +1,6 @@
 id: internal.confidentiality
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "An insider reading stored content or the identity key is the at_rest.confidentiality story with friendlier access; host access control is the org's domain. No distinct service-local mechanism exists."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }
