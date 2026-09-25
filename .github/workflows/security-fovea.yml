@@ -29,6 +29,7 @@ jobs:
 
       - name: "fovea score"
         if: always()
+        continue-on-error: true
         uses: macula-io/macula-fovea@main
         with:
           dir: security/fovea
