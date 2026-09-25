@@ -22,7 +22,7 @@ defense:
       status: org
   recovery:
     - measure: "Retract-and-republish semantics bound the damage of a read: nothing read at rest grants write authority."
-      status: assumed
+      status: org
       source: README.md (retraction procedures)
 notes: >-
   Pre-deployment, assumed: volume layout and key path are documented; the

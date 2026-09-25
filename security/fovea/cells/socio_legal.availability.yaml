@@ -1,14 +1,23 @@
 id: socio_legal.availability
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A legal or political measure denies the service: a jurisdiction blocks
+    the IPv6 path, a takedown of the node's station, a compelled host
+    shutdown.
+  manifestations:
+    - A transit block leaving the node unreachable from outside.
+    - A compelled shutdown with no alternate site.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "mcl-tube/info plus the provider desk surface the outage."
+      status: by_design
+      source: README.md ("answers mcl-tube/info")
+  countermeasures:
+    - measure: "Mesh routing and multi-station resilience are the substrate's; placement strategy is the org's."
+      status: org
+      source: README.md (mcl_om contract)
+  recovery:
+    - measure: "Redeploy outside the blocking jurisdiction; the volumes travel."
+      status: org

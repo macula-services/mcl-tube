@@ -1,14 +1,22 @@
 id: deliver.accountability
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A shipped artifact cannot be traced to the repository state that
+    produced it: nobody can say which commit is running on which host.
+  manifestations:
+    - A host running an image whose provenance the operator cannot name.
+    - A deploy channel whose history does not match the changelog.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "The image carries its own revision label — the artifact names its repository state."
+      status: by_design
+      source: 'git log: build: the image carries its own revision label'
+  countermeasures:
+    - measure: "Host-to-tag inventory is the operator's obligation."
+      status: org
+  recovery:
+    - measure: "Pin a named, attributable tag."
+      status: by_design
+      source: 'git log: build: the image carries its own revision label'

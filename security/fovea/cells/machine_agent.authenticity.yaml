@@ -1,14 +1,24 @@
 id: machine_agent.authenticity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    Automated actors mint throwaway identities to multiply access or drown
+    attribution: scrapers enumerating the catalog under many caller ids.
+  manifestations:
+    - A scraper re-minting node ids to evade any per-caller bound.
+    - Bot-driven lookup traffic indistinguishable by identity churn.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Caller identity is the platform's authenticated node id, not self-asserted."
+      status: by_design
+      source: README.md ("Served under the org mcl-tube")
+  countermeasures:
+    - measure: "Per-caller bounds are not yet demonstrated — shared gap with machine_agent.availability."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Restart clears state; the store rebuilds."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+review_by: 2027-03-31

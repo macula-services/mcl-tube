@@ -1,14 +1,24 @@
 id: physical_natural.possession
-status: unassessed
-owner: unassigned
+status: roadmap
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    The node is physically seized while live — power pulled, box carried
+    away, volumes intact — and the taker holds a working identity plus the
+    stored content.
+  manifestations:
+    - A seized host whose volumes keep the identity valid and unrevoked.
+    - A live node advertising while in hostile custody.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "The realm's provider desk is the only place the moved row is visible; nothing local flags seizure."
+      status: org
+  countermeasures:
+    - measure: "Physical custody is the operator's domain; no remote zeroization exists — the gap this cell records."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Realm-side revocation of the delegation retires the seized identity."
+      status: roadmap
+      source: README.md (mcl_om contract, realm admission)
+review_by: 2027-03-31

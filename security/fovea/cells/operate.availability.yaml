@@ -1,14 +1,23 @@
 id: operate.availability
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    The service becomes unreachable: the node cannot reach its peers, the
+    catalog stops answering, and consumers get nothing.
+  manifestations:
+    - A node whose transport path to the mesh is down.
+    - A half-configured node running green and unreachable.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "mcl-tube/info reports health, uptime and the procedures advertised — the operator's reachability probe."
+      status: by_design
+      source: README.md ("answers mcl-tube/info")
+  countermeasures:
+    - measure: "Mesh resilience is delegated to the substrate; the service contributes its contract, not its own healing."
+      status: org
+      source: README.md (mcl_om contract)
+  recovery:
+    - measure: "Redeploy; the store rebuilds the read model."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")

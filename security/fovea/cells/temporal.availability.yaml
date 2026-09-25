@@ -1,14 +1,23 @@
 id: temporal.availability
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    Time-based expiry takes the node down: a delegation window closes, a
+    release ages out of peerability, and the service stops answering with
+    no warning anyone scheduled.
+  manifestations:
+    - A D25 delegation expiring while the node keeps advertising.
+    - A release so old it can no longer peer with the current fleet.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "mcl-tube/info reports health and versions — expiry surfaces before it kills the endpoint."
+      status: by_design
+      source: README.md ("answers mcl-tube/info")
+  countermeasures:
+    - measure: "Expiry monitoring and renewal scheduling are the operator's obligation."
+      status: org
+  recovery:
+    - measure: "Re-pin and redeploy restores the current wire."
+      status: by_design
+      source: rebar.config (deps floors)

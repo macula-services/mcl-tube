@@ -1,14 +1,25 @@
 id: trusted_partner.availability
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A partner the pipeline depends on is unavailable — hex or the image
+    registry down — and the service cannot be rebuilt or redeployed.
+  manifestations:
+    - A hex outage blocking a rebuild.
+    - A registry outage blocking the deploy host's pull.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "CI fails visibly at build/pull time."
+      status: by_design
+      source: rebar.config (deps)
+  countermeasures:
+    - measure: "A running node does not need the registries; only rebuild/redeploy is blocked."
+      status: org
+      source: deploy/docker-compose.yml
+    - measure: "Registry mirroring is the operator's resilience posture."
+      status: org
+  recovery:
+    - measure: "Pin the previous image tag; the host's already-pulled image keeps serving."
+      status: by_design
+      source: 'git log: build: the image carries its own revision label'

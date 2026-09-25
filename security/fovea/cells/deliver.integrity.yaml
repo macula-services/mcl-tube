@@ -1,14 +1,22 @@
 id: deliver.integrity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    The artifact is altered between build and the host — registry to
+    runtime — so the box runs something the pipeline did not produce.
+  manifestations:
+    - A substituted image under a floating tag.
+    - A tampered artifact accepted because the host pulls by tag.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "The image carries its own revision label; drift between the running artifact and repository state is checkable."
+      status: by_design
+      source: 'git log: build: the image carries its own revision label'
+  countermeasures:
+    - measure: "Pinned tags and host-side verification are the deploy discipline."
+      status: org
+  recovery:
+    - measure: "Pin the known-good tag and redeploy."
+      status: by_design
+      source: 'git log: build: the image carries its own revision label'

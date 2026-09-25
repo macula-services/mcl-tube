@@ -1,14 +1,25 @@
 id: internal.availability
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    An insider's error takes the service down: wrong config, wrong volume
+    mount, wrong image — and the outage masquerades as a healthy node.
+  manifestations:
+    - A deploy with no store volume, rebuilding an empty read model.
+    - A misconfigured realm key leaving the node green and unreachable.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "mcl-tube/info exposes health and uptime; the operator's probe into a struggling node."
+      status: by_design
+      source: README.md ("answers mcl-tube/info ... uptime, the health word")
+  countermeasures:
+    - measure: "Config and volumes are deploy-time objects (compose + config), reviewable as repository changes."
+      status: by_design
+      source: deploy/docker-compose.yml; config/sys.config.src
+    - measure: "Operational discipline on deploys is the org's obligation."
+      status: org
+  recovery:
+    - measure: "Re-pin the known-good image; the store rebuilds the read model."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")

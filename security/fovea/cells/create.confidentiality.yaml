@@ -1,14 +1,25 @@
 id: create.confidentiality
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A secret enters the source tree or build — the identity key, private
+    signing material, a credential — and ships to everyone with the repo.
+  manifestations:
+    - A committed identity.key or private material.
+    - A hardcoded credential instead of the env indirection.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "The identity key is generated at runtime into the mounted secrets volume; it never enters the repo or image."
+      status: by_design
+      source: config/sys.config.src (identity_key_path)
+  countermeasures:
+    - measure: "The realm key is public material and lives in deploy env as such."
+      status: by_design
+      source: config/sys.config.src (realm key comments)
+    - measure: "Secret-scanning is the org's hygiene obligation."
+      status: org
+  recovery:
+    - measure: "A leaked identity is retired by re-provisioning the volume; the realm key is public and needs nothing."
+      status: by_design
+      source: config/sys.config.src (identity_key_path)

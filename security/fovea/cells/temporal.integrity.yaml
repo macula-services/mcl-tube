@@ -1,14 +1,25 @@
 id: temporal.integrity
-status: unassessed
-owner: unassigned
+status: roadmap
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    Time corrupts the node's integrity posture: pins and floors rot
+    against a fleet that has moved on, and the node drifts into a state
+    nobody reviewed.
+  manifestations:
+    - A dependency floor silently stale against a moved-on mesh.
+    - A crypto profile superseded upstream while this node keeps the old floor.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Version floors are asserted by the info test — drift below the floor fails the build."
+      status: by_design
+      source: git log ("the info test asserts version floors")
+  countermeasures:
+    - measure: "No scheduled re-review cadence for pins and profiles exists — the rot-watch gap this cell records."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Re-pin, rebuild, redeploy via the revision label."
+      status: by_design
+      source: git log ("the image carries its own revision label")
+review_by: 2027-03-31

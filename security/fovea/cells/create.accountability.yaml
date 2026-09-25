@@ -1,14 +1,22 @@
 id: create.accountability
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A change to the source is unattributable afterwards: nobody can say
+    who introduced a line, when, or why it was accepted.
+  manifestations:
+    - Rewritten history hiding who changed a fact or gate.
+    - A change with no changelog entry.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Git history plus the Keep-a-Changelog discipline name every behavioural change."
+      status: by_design
+      source: CHANGELOG.md
+  countermeasures:
+    - measure: "Protected branches and required reviews are the org's obligation."
+      status: org
+  recovery:
+    - measure: "Revert is a named commit."
+      status: by_design
+      source: repository itself

@@ -22,6 +22,6 @@ defense:
       source: README.md (watch_video_clip over the mcl contract)
   recovery:
     - measure: "Re-request the clip; a failed verification drops the frame and the stream restarts."
-      status: assumed
+      status: org
       source: README.md (watch_video_clip)
 notes: "Assessed: wire integrity plus content addressing, cited from this repo's config and README."

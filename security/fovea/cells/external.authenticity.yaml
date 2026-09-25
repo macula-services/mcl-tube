@@ -1,14 +1,23 @@
 id: external.authenticity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    An outside party presents itself as this service or its owner: a
+    forged provider advertisement, or a caller acting as an owner it is not.
+  manifestations:
+    - A rogue advertisement answering mcl-tube/<name> lookups.
+    - A third party issuing lifecycle commands as an owner.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Procedures are served under the org mcl-tube; identity is the platform's authenticated node id, not a payload claim."
+      status: by_design
+      source: README.md ("Served under the org mcl-tube")
+  countermeasures:
+    - measure: "Advertisements resolve against the realm's pinned signing key."
+      status: by_design
+      source: config/sys.config.src (realm key wiring)
+  recovery:
+    - measure: "Re-resolve; a forged endpoint fails verification and the caller re-dials."
+      status: by_design
+      source: README.md (mcl_om contract)

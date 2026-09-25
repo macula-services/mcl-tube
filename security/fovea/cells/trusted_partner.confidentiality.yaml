@@ -1,14 +1,6 @@
 id: trusted_partner.confidentiality
-status: unassessed
-owner: unassigned
-threat:
-  definition: ""
-
-  manifestations: []
-defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+status: na
+owner: roeland@macula.io
+na_reason: "Vendors never hold the identity key (generated at runtime on the node) and the catalog is public by design; a vendor observes nothing an external observer cannot."
+threat: { definition: "", manifestations: [] }
+defense: { detection: [], countermeasures: [], recovery: [] }

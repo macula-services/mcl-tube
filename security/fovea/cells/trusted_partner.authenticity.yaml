@@ -1,14 +1,24 @@
 id: trusted_partner.authenticity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A trusted dependency behaves in the running node differently from what
+    its release claims: drift between what mcl_om, macula, or the OTP
+    runtime shipped and what actually runs.
+  manifestations:
+    - A resolved pairing below the declared floors.
+    - A test-only dependency (meck) present in the prod release.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "The info test asserts version floors, not an exact release — drift below the floor fails the build."
+      status: by_design
+      source: 'git log: test: the info test asserts version floors, not an exact release'
+  countermeasures:
+    - measure: "mcl_om 0.28 with macula 12.2 is the declared pairing; test deps are profile-scoped."
+      status: by_design
+      source: rebar.config (deps, profiles)
+  recovery:
+    - measure: "Re-pin, rebuild, redeploy via the revision label."
+      status: by_design
+      source: 'git log: build: the image carries its own revision label'

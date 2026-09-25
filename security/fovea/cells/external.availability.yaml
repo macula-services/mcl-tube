@@ -1,14 +1,25 @@
 id: external.availability
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    An outside party attacks availability through the service's own
+    surface: flooding lookups, stalling streams, exhausting the node so
+    honest consumers are denied.
+  manifestations:
+    - A flood of lookup calls consuming the scheduler.
+    - Many open streams exhausting concurrency.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Views are announced once per completed view — the fact stream is the abuse-visible counter."
+      status: by_design
+      source: README.md ("A view is announced exactly once, live")
+  countermeasures:
+    - measure: "Rate limits and stream-concurrency bounds are not yet demonstrated — shared gap with machine_agent.availability."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Restart clears stream state; the read model rebuilds."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+review_by: 2027-03-31

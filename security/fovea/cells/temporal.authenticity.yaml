@@ -1,14 +1,24 @@
 id: temporal.authenticity
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    Identity validity decays with time: a key or delegation ages past its
+    policy, and the node keeps proving an identity that should no longer
+    be believed.
+  manifestations:
+    - A delegation expired but still honoured in the chain.
+    - An identity key retained beyond its rotation window.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "The provider desk binds the delegation to the node id; expiry surfaces as the degraded state."
+      status: by_design
+      source: README.md (mcl_om contract)
+  countermeasures:
+    - measure: "Rotation and renewal policy is the operator's obligation."
+      status: org
+  recovery:
+    - measure: "Re-admission: a fresh key and a fresh delegation re-anchor the node."
+      status: roadmap
+      source: README.md (mcl_om contract, realm admission)
+review_by: 2027-03-31

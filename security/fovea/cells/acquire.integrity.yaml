@@ -1,14 +1,23 @@
 id: acquire.integrity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A fetched artifact is altered between publication and build: modified
+    content that still resolves under the declared reference.
+  manifestations:
+    - A tampered dependency tarball served by the mirror.
+    - A mutated base image under the same reference.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Dependency floors are declared and asserted by the info test; a drifted artifact fails the build."
+      status: by_design
+      source: rebar.config; git log ("the info test asserts version floors")
+  countermeasures:
+    - measure: "rebar.lock pins the graph; test deps are profile-scoped out of prod."
+      status: by_design
+      source: rebar.lock; rebar.config (profiles)
+  recovery:
+    - measure: "Re-pin a known-good version and rebuild."
+      status: by_design
+      source: rebar.config

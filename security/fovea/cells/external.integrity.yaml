@@ -1,14 +1,27 @@
 id: external.integrity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    An outside party alters what the service serves: a tampered stream, a
+    modified lookup reply, or an injected announcement the catalog did not
+    produce.
+  manifestations:
+    - On-path tampering with a watch_video_clip stream.
+    - A fabricated catalog fact from outside the lifecycle.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Frames are signed end to end (pq_hybrid profile); tampering fails verification."
+      status: by_design
+      source: config/sys.config.src (crypto profile block)
+    - measure: "Content is addressed by mcid; served bytes verify against the address asked for."
+      status: by_design
+      source: README.md (lookup_content by mcid)
+  countermeasures:
+    - measure: "Catalog facts descend from the event-sourced lifecycle; nothing else announces."
+      status: by_design
+      source: README.md ("event sourced")
+  recovery:
+    - measure: "Re-request the clip; failed verification drops the frame."
+      status: by_design
+      source: README.md (watch_video_clip)

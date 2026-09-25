@@ -1,14 +1,24 @@
 id: physical_natural.integrity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A physical or natural event corrupts the node's material — disk fault
+    on the store volume, power cut mid-write — and the node runs with
+    corrupted state.
+  manifestations:
+    - Bit rot on stored clips served under stale mcids.
+    - A power cut leaving the store inconsistent at boot.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Content is content-addressed (mcid): corrupted bytes fail verification against the address asked for."
+      status: by_design
+      source: README.md (lookup_content by mcid)
+  countermeasures:
+    - measure: "The store is the truth and the read model is rebuilt from it; divergence is corrected by rebuild."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+  recovery:
+    - measure: "Re-publish the clip; upsert by id replaces the entry."
+      status: by_design
+      source: README.md ("upserts by id")

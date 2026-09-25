@@ -1,14 +1,24 @@
 id: admin.integrity
-status: unassessed
-owner: unassigned
+status: assessed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    An administrative change corrupts what the service is configured to
+    be: a half-written config, an unresolved variable, a store pointing at
+    the wrong adapter — and the node runs a state that misrepresents it.
+  manifestations:
+    - An unexpanded env variable leaving a malformed term.
+    - A store adapter block missing while the service exports store_id/0.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Config variables must resolve or the node will not start; the evoq adapter block is mandatory because the service exports store_id/0."
+      status: by_design
+      source: config/sys.config.src (event_store_adapter block)
+  countermeasures:
+    - measure: "Config is a repository artifact; changes are reviewable diffs."
+      status: by_design
+      source: config/sys.config.src
+  recovery:
+    - measure: "Revert the config commit and redeploy."
+      status: by_design
+      source: config/sys.config.src

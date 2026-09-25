@@ -1,14 +1,24 @@
 id: physical_natural.availability
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A physical or natural event takes the node down — power loss, host
+    failure, site event — and the service stays down until a human
+    intervenes.
+  manifestations:
+    - A host reboot that does not come back.
+    - A site outage taking the node and its station path together.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "mcl-tube/info health word is the liveness probe."
+      status: by_design
+      source: README.md ("answers mcl-tube/info ... the health word")
+  countermeasures:
+    - measure: "Container restart policy and host redundancy are the deploy/host domain."
+      status: org
+      source: deploy/docker-compose.yml
+  recovery:
+    - measure: "Redeploy on a new host; the store volume travels with the state."
+      status: org
+      source: deploy/docker-compose.yml (volumes)

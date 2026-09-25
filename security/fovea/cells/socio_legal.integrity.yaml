@@ -1,14 +1,23 @@
 id: socio_legal.integrity
-status: unassessed
-owner: unassigned
+status: assumed
+owner: roeland@macula.io
 threat:
-  definition: ""
-
-  manifestations: []
+  definition: >-
+    A legal or political actor compels a change to how the node runs — an
+    ordered config change, a compelled content takedown, a lawful
+    intercept on the uplink — altering behaviour the org did not choose.
+  manifestations:
+    - A compelled deploy that changes what the catalog announces.
+    - An ordered retract issued against the owner's will.
 defense:
-  detection: []
-  countermeasures: []
-  recovery: []
-review_by: null
-na_reason: null
-notes: ""
+  detection:
+    - measure: "Config changes are repository changes: a compelled edit is a commit with an author, visible as a diff."
+      status: by_design
+      source: config/sys.config.src
+  countermeasures:
+    - measure: "Legal review and refusal rights are the org's domain."
+      status: org
+  recovery:
+    - measure: "Revert the commit; the event store records the compelled change as history."
+      status: by_design
+      source: README.md ("event sourced")
