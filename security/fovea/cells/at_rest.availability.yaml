@@ -1,0 +1,27 @@
+id: at_rest.availability
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    The stored material is not there when needed: the store volume is
+    missing or empty, and the service either cannot boot its read model or
+    serves an empty catalog.
+  manifestations:
+    - A recreate with no store volume, rebuilding an empty read model.
+    - Loss of the identity key volume, refusing the node or minting a stranger.
+defense:
+  detection:
+    - measure: "The read model rebuild is the self-check: a store that yields nothing yields an empty catalog, visible to the owner."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+  countermeasures:
+    - measure: "The deploy volumes are named and documented in compose; the identity key lives in the secrets volume as in every mcl service."
+      status: by_design
+      source: deploy/docker-compose.yml (volumes); config/sys.config.src (identity_key_path)
+    - measure: "Volume backup and restore discipline is the operator's obligation."
+      status: org
+  recovery:
+    - measure: "Restore the volumes; the store rebuilds the read model to the restored truth."
+      status: assumed
+      source: README.md ("rebuilt from the store at boot")
+notes: "Assumed pre-deployment: the mechanics are documented; restore drills have not been run."

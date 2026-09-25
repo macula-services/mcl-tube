@@ -1,0 +1,28 @@
+id: operate.accountability
+status: assessed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    A lifecycle action is later unattributable: nobody can say who
+    published or retracted a clip, when, and under what state the catalog
+    was before and after.
+  manifestations:
+    - A retract that leaves no trace of who issued it.
+    - A publish whose provenance is lost once the fact ages out.
+defense:
+  detection:
+    - measure: "The lifecycle is event-sourced: every state change is an event in the store, so the history is the attribution record."
+      status: by_design
+      source: README.md ("event sourced")
+    - measure: "Views are announced exactly once, live, because consumers count by fact — the catalog is the audit surface."
+      status: by_design
+      source: README.md ("A view is announced exactly once, live")
+  countermeasures:
+    - measure: "The four catalog facts are the public audit record of channel and clip state."
+      status: by_design
+      source: README.md (facts table)
+  recovery:
+    - measure: "The store reconstructs the sequence; announcements are upserts, so replays do not fabricate history."
+      status: by_design
+      source: README.md ("safe to receive twice")
+notes: "Assessed: event sourcing plus exactly-once view facts gives the service a real accountability record, cited from the README."

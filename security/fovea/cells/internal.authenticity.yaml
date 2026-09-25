@@ -1,0 +1,26 @@
+id: internal.authenticity
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    A person with inside access acts as an owner they are not: an operator
+    or developer drives the lifecycle, retracts a channel, or serves
+    content under a false identity.
+  manifestations:
+    - An operator issuing a retract on a channel they do not own.
+    - A developer change that silently weakens the publish scan gate.
+defense:
+  detection:
+    - measure: "Every lifecycle command lands in the event store, so an insider's action is recorded regardless of their access level."
+      status: by_design
+      source: README.md ("event sourced")
+  countermeasures:
+    - measure: "Separation of owner write authority from operator duties is not yet demonstrated — the gap this cell records."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Re-publish or re-retract by the true owner corrects the catalog; upsert by id makes correction idempotent."
+      status: by_design
+      source: README.md ("upserts by id")
+review_by: 2027-03-31
+notes: "Assumed: the store records insiders too; enforcement of who may act as owner is the open item, shared with operate.authenticity."

@@ -1,0 +1,32 @@
+id: in_use.integrity
+status: assessed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    A clip is altered between upload and publication — the bytes served are
+    not the bytes the owner published, or malicious content passes the
+    scan gate.
+  manifestations:
+    - Tampered clip content accepted because nothing verified it before publish.
+    - An altered thumbnail or logo served under the original mcid.
+defense:
+  detection:
+    - measure: >-
+        Every clip is scanned before it can be published — the publish path
+        has an explicit pre-publication gate.
+      status: by_design
+      source: README.md ("each is scanned before it can be published")
+  countermeasures:
+    - measure: >-
+        Content is addressed and stored by mcid (content-addressed), so an
+        altered blob does not match the address it is looked up by.
+      status: by_design
+      source: README.md (lookup_content by mcid; "ids and mcids stay bytes")
+  recovery:
+    - measure: "Re-publish the clip; announcements upsert by id, so the corrected content replaces the catalog entry."
+      status: by_design
+      source: README.md ("upserts by id")
+notes: >-
+  Assessed: the scan gate plus content addressing is the integrity story,
+  both cited from the README. The scan's own thoroughness is a roadmap
+  question, not assessed.

@@ -1,0 +1,26 @@
+id: machine_agent.availability
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Automated mass traffic exhausts the service: scrapers hammer the
+    catalog lookups, or bots stream clips endlessly, starving real
+    consumers.
+  manifestations:
+    - Scrapers enumerating channels and clips through the four procedures.
+    - Bots holding watch streams open, exhausting stream concurrency.
+defense:
+  detection:
+    - measure: "Views are announced exactly once per completed view — the fact stream doubles as the abuse-visible counter."
+      status: by_design
+      source: README.md ("A view is announced exactly once, live")
+  countermeasures:
+    - measure: "Rate limiting or stream-concurrency bounds are not yet demonstrated in this repo — the gap this cell records."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Restart clears stream state; the read model rebuilds from the store."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+review_by: 2027-03-31
+notes: "Assumed: the published-catalog design makes abuse visible; the bound that stops it is the roadmap item."

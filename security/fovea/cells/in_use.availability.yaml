@@ -1,0 +1,25 @@
+id: in_use.availability
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Processing capacity is exhausted while serving: the publish scan, the
+    read-model rebuild, or many concurrent streams starve the node.
+  manifestations:
+    - A scan-heavy publish window delaying lookups.
+    - A rebuild at boot blocking the service under a large catalog.
+defense:
+  detection:
+    - measure: "mcl-tube/info exposes uptime and health — the operator's window into a struggling node."
+      status: by_design
+      source: README.md ("answers mcl-tube/info ... uptime, the health word")
+  countermeasures:
+    - measure: "Load bounds (scan cost, stream concurrency, rebuild behaviour) are not yet demonstrated in this repo — the gap this cell records."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Restart; the read model rebuilds from the store and service resumes."
+      status: by_design
+      source: README.md ("rebuilt from the store at boot")
+review_by: 2027-03-31
+notes: "Assumed: health visibility exists; capacity bounds are unproven pre-deployment."

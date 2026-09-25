@@ -1,0 +1,25 @@
+id: operate.authenticity
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Someone other than the channel owner publishes, retracts, or archives
+    as the owner: a forged write on the owner's procedures.
+  manifestations:
+    - A third party driving the lifecycle commands through the owner UI or wire.
+    - A stolen or guessed owner session issuing a retract.
+defense:
+  detection:
+    - measure: "Publish/retract/archive are owner actions; their attribution travels in the event stream the store records."
+      status: by_design
+      source: README.md ("An owner creates a channel ... publishes, retracts and archives")
+  countermeasures:
+    - measure: "Owner authentication on the write path (web UI session, mesh identity) is the surface to verify — not yet demonstrated in this repo."
+      status: roadmap
+      source: absence — the gap being recorded
+  recovery:
+    - measure: "Re-publish corrects a forged publish; a forged retract is corrected by re-publishing (upsert by id)."
+      status: by_design
+      source: README.md ("upserts by id")
+review_by: 2027-03-31
+notes: "Assumed: the owner role is documented; the authentication that protects it is the gap. Roadmap until the write path's auth is demonstrated."

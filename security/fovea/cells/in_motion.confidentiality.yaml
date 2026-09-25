@@ -1,0 +1,29 @@
+id: in_motion.confidentiality
+status: assumed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Data crossing the mesh is read in transit: lookups revealing catalog
+    state, streamed clip bytes, or the owner's publish traffic.
+  manifestations:
+    - Passive observation of watch_video_clip streams on a public mesh.
+    - Lookup traffic revealing what a consumer is watching.
+defense:
+  detection:
+    - measure: "On-wire observers are not detectable by the service; fleet monitoring is the operator's job."
+      status: org
+  countermeasures:
+    - measure: >-
+        Transport confidentiality is delegated to the macula wire (QUIC,
+        pq_hybrid profile mandatory for this node to peer), as in every
+        mcl service.
+      status: by_design
+      source: config/sys.config.src (crypto profile block)
+    - measure: "Published clips are public by design; the confidentiality promise is about retracted content, not published streams."
+      status: by_design
+      source: README.md ("anyone ... streams a published clip")
+  recovery:
+    - measure: "Retract makes content disappear from the catalog; in-transit reads of public clips need no recovery."
+      status: assumed
+      source: README.md (video_clip_retracted_v1)
+notes: "Assumed pre-deployment; wire-level claim rests on the shared substrate, cited from this repo's config."

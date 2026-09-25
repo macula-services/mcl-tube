@@ -1,0 +1,28 @@
+id: temporal.confidentiality
+status: assessed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Time as the adversary: traffic or stored content harvested today is
+    decrypted or de-anonymized later, when the classical profile it was
+    protected under is broken.
+  manifestations:
+    - A node that drifts onto a weaker crypto profile as releases age.
+    - Archived clip traffic decryptable by a future adversary.
+defense:
+  detection:
+    - measure: "The pq_hybrid crypto profile is mandatory config — without it the node does not peer."
+      status: by_design
+      source: config/sys.config.src (crypto profile block)
+    - measure: "Version floors are asserted by the info test, so a drifting vintage fails the build."
+      status: by_design
+      source: 'git log: test: the info test asserts version floors, not an exact release'
+  countermeasures:
+    - measure: "The profile is a fleet constant, not a per-node choice (macula 12 model)."
+      status: by_design
+      source: config/sys.config.src (profile comments)
+  recovery:
+    - measure: "Re-pin and redeploy; profile drift is a boot-time failure, corrected by the pinned artifact."
+      status: by_design
+      source: rebar.config (deps floors)
+notes: "Assessed: the harvest-now/decrypt-later answer is the enforced profile floor, cited from this repo's config and tests."

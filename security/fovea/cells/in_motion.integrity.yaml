@@ -1,0 +1,27 @@
+id: in_motion.integrity
+status: assessed
+owner: roeland@macula.io
+threat:
+  definition: >-
+    Data crossing the mesh is altered in flight: a streamed clip arrives
+    different from what was published, or a lookup reply is modified.
+  manifestations:
+    - Tampered bytes in a watch_video_clip stream accepted by the consumer.
+    - A modified lookup reply showing false catalog state.
+defense:
+  detection:
+    - measure: "The wire is signed and encrypted end to end (pq_hybrid profile, mandatory for this node to peer) — alteration fails verification."
+      status: by_design
+      source: config/sys.config.src (crypto profile block)
+    - measure: "Content is addressed by mcid: the consumer can verify what it streamed against the address it asked for."
+      status: by_design
+      source: README.md (lookup_content by mcid)
+  countermeasures:
+    - measure: "Streams travel the same verified transport as lookups; there is no separate, weaker path."
+      status: by_design
+      source: README.md (watch_video_clip over the mcl contract)
+  recovery:
+    - measure: "Re-request the clip; a failed verification drops the frame and the stream restarts."
+      status: assumed
+      source: README.md (watch_video_clip)
+notes: "Assessed: wire integrity plus content addressing, cited from this repo's config and README."

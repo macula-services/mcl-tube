@@ -1,0 +1,25 @@
+id: decommission.possession
+status: roadmap
+owner: roeland@macula.io
+threat:
+  definition: >-
+    A decommissioned node takes its identity and content with it: the
+    identity key or the clip/store volumes end up in someone else's hands,
+    who can then act as the owner or serve the content.
+  manifestations:
+    - A retired host whose volumes still hold the identity key and clips.
+    - A resold or reprovisioned host recovering the store volume.
+defense:
+  detection:
+    - measure: "Nothing in this repo flags retirement; the realm's provider desk is the only place a stale node id is visible."
+      status: org
+  countermeasures:
+    - measure: "Volume deletion as retirement exists as the deploy pattern; a written decommission runbook does not — the gap this cell records."
+      status: roadmap
+      source: deploy/docker-compose.yml (volumes); absence of runbook
+  recovery:
+    - measure: "Revoke the realm-side delegation for the retired node id; retire the volumes."
+      status: roadmap
+      source: README.md (mcl_om contract, realm admission)
+review_by: 2027-03-31
+notes: "Roadmap: same missing runbook as the mcl-echo dogfood found — identity plus, here, the content volumes."
