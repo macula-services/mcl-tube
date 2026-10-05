@@ -3,7 +3,7 @@
 %% the owner didn't supply their own (theirs always wins). Called
 %% synchronously from `maybe_upload_video_clip:handle/1' -- part of the
 %% `upload_video_clip' command's own Chain of Responsibility, not a
-%% separate async step. See plans/EVENT_STORM_HECATE_TUBE.md sec 16.4.
+%% separate async step.
 %%
 %% Duration/metadata failure is fatal (the whole upload is rejected --
 %% an unreadable file has nothing worth accepting). Thumbnail

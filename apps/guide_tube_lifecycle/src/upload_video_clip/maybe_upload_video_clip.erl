@@ -4,8 +4,7 @@
 %% The scan step lives here, not in the HTTP handler -- it's part of
 %% this command's own Chain of Responsibility (upload -> scan ->
 %% verdict), a business rule of `upload_video_clip' itself, not a
-%% transport-layer concern. See video_clip_scan.erl and
-%% plans/EVENT_STORM_HECATE_TUBE.md sec 16.4.
+%% transport-layer concern. See video_clip_scan.erl.
 -module(maybe_upload_video_clip).
 
 -export([handle/1, handle_from_map/1, dispatch/1]).

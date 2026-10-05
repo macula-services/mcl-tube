@@ -30,8 +30,6 @@ Four apps, one per department:
 | `query_tube` | QRY | the lookups and the watch stream |
 | `mcl_tube` | service | the owner web UI and the mcl_om contract |
 
-The design is in `plans/` (the event storm and plan it was built from).
-
 ## The contract
 
 ### Procedures

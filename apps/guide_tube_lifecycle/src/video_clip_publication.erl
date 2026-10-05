@@ -10,7 +10,7 @@
 %% (permanent removal from every local query, "delete" being taboo)
 %% and the mesh has no use for the distinction between "temporarily
 %% unpublished" and "gone for good", both mean the same thing to a
-%% catalog consumer. See plans/EVENT_STORM_HECATE_TUBE.md sec 16.2.
+%% catalog consumer.
 -module(video_clip_publication).
 
 -export([publish_to_mesh/1, withdraw_from_mesh/1, fact/2]).

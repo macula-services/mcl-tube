@@ -3,8 +3,7 @@
 %% video_clip_accepted_v1.erl / video_clip_rejected_v1.erl). For v1
 %% they're 1:1 (any successful scan is accepted), but keeping them
 %% separate now avoids a schema break once scan scope grows a real
-%% pass/fail policy beyond "did the file parse". See
-%% plans/EVENT_STORM_HECATE_TUBE.md sec 16.4.
+%% pass/fail policy beyond "did the file parse".
 -module(video_clip_scanned_v1).
 
 -behaviour(evoq_event).
