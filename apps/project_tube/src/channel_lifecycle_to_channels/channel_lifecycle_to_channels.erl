@@ -3,7 +3,7 @@
 %%
 %% The evoq_read_model handle is a checkpoint passthrough only -- actual
 %% data lives in project_tube_store's ETS table, not in the read model
-%% itself, matching hecate-mpong-bot's game_lifecycle_to_mpong_games.erl.
+%% itself.
 -module(channel_lifecycle_to_channels).
 
 -behaviour(evoq_projection).

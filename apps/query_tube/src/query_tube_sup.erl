@@ -1,6 +1,6 @@
 %% @doc Supervises the QRY department. Owns no HTTP listener itself --
 %% mcl_tube_sup starts the one listener and mounts routes/0 here, so
-%% every desk's routes actually get served (hecate-mpong-bot scaffolded
+%% every desk's routes actually get served (an earlier service scaffolded
 %% this same aggregation and never wired it in; don't repeat that gap).
 %%
 %% Owns no mesh-advertising worker either: all four of this service's
@@ -10,7 +10,7 @@
 %% mcl_om:boot/1 (mcl_om >= 0.18.0, which added a streamer-backed
 %% capability kind for tube.watch_video_clip). This supervisor used to
 %% own a bespoke tube_mesh_providers worker duplicating that job by hand
-%% -- see hecate-corpus/skills/antipatterns/structure.md, Demon 59.
+%% -- see mcl-corpus/skills/antipatterns/structure.md, Demon 59.
 -module(query_tube_sup).
 
 -behaviour(supervisor).

@@ -1,6 +1,6 @@
 %% @doc The `channel' aggregate: routes commands to a desk handler after
-%% checking the business rule for that command against current status,
-%% mirroring hecate-mpong-bot's bit-flag-guarded aggregate shape.
+%% checking the business rule for that command against current status
+%% (bit-flag guarded).
 -module(channel_aggregate).
 
 -behaviour(evoq_aggregate).

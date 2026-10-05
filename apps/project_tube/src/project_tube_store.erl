@@ -1,5 +1,5 @@
-%% @doc The read-model store facade every QRY desk reads through directly,
-%% mirroring hecate-mpong-bot's project_mpong_games_store.erl. Owns one ETS
+%% @doc The read-model store facade every QRY desk reads through directly.
+%% Owns one ETS
 %% table per read model; projections write here, QRY desks read here --
 %% neither ever touches ETS directly.
 -module(project_tube_store).

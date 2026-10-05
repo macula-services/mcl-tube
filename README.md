@@ -8,8 +8,7 @@ on the mesh can find it and watch it, with no platform in between.
 ## Status
 
 Built and tested locally, **not yet deployed**. Runs on macula 12 through
-`mcl_om`. It replaces `hecate-services/hecate-tube` and inherits nothing from
-it: no store, no identity, no topic, no procedure name.
+`mcl_om`.
 
 ## What it does
 

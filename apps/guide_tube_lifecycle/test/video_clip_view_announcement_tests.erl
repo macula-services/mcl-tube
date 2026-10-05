@@ -1,7 +1,7 @@
 %%% @doc A view is announced once, live, when it is recorded.
 %%%
 %%% The portal adds one to a clip's view count per video_clip_viewed_v1 fact.
-%%% hecate-tube published the fact from an evoq event handler, and evoq replays
+%%% The previous tube service published the fact from an evoq event handler, and evoq replays
 %%% the whole store to every handler on each boot, so every restart announced
 %%% every historical view again and inflated every count.
 -module(video_clip_view_announcement_tests).

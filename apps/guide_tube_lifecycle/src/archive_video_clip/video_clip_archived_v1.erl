@@ -1,6 +1,6 @@
 %% @doc Event: video_clip_archived_v1. Terminal -- permanent removal from
 %% every query, event history preserved (event sourcing never truly
-%% deletes). Hecate's standard word for this state; not `deleted' (taboo).
+%% deletes). The corpus's standard word for this state; not `deleted' (taboo).
 -module(video_clip_archived_v1).
 
 -behaviour(evoq_event).

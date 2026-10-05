@@ -1,6 +1,6 @@
 %% @doc Command: reconfigure_channel_v1 -- covers the owner's "configure
 %% the channel" action in full (name/description/tags/logo). CRUD-taboo
-%% naming: this is `update_config' spelled the Hecate way, one desk for
+%% naming: this is `update_config' spelled the corpus way, one desk for
 %% every field rather than one desk per field.
 -module(reconfigure_channel_v1).
 

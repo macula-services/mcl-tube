@@ -1,6 +1,5 @@
 %% @doc Pure unit tests for the channel and video_clip aggregate/handler/
-%% state cycles -- no live evoq dispatch, no store. Mirrors
-%% hecate-mpong-bot's test/*_tests.erl shape.
+%% state cycles -- no live evoq dispatch, no store.
 -module(channel_aggregate_tests).
 
 -include_lib("eunit/include/eunit.hrl").
