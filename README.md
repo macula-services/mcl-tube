@@ -7,8 +7,10 @@ on the mesh can find it and watch it, with no platform in between.
 
 ## Status
 
-Built and tested locally, **not yet deployed**. Runs on macula 12 through
-`mcl_om`.
+Built and tested locally, **not yet deployed**. Runs on macula 13 through
+`mcl_om` 0.37, and opens its own reckon-db store (`mcl_tube_store`). Its
+advertisements name an ML-KEM key, so a caller can seal its lookups and the
+watch stream end to end.
 
 ## What it does
 

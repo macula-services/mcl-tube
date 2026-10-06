@@ -80,29 +80,35 @@
     %% application start whatever the value: a node that set one would
     %% believe it had chosen a difficulty that nothing reads.
     {macula, [
-        {crypto_profile, pq_hybrid}
+        {crypto_profile, pq_hybrid},
+        %% TUBE NAMES ITS KEM KEY (mcl-tube#14, macula-fleet#7): its
+        %% advertisements carry an ML-KEM key, so callers seal lookups and the
+        %% watch stream end to end and a station relays only ciphertext. A
+        %% property of the service, so a literal here, not a per-box variable.
+        %% Every capability stays `preferred' (the default): a caller that does
+        %% not seal is still answered.
+        {kem_advertise, enabled}
     ]},
     %% ==========================================================================
     %% EVOQ'S ADAPTER, WITHOUT WHICH THIS NODE DOES NOT BOOT
     %% ==========================================================================
     %%
-    %% ⚠ MANDATORY BECAUSE THIS SERVICE EXPORTS `store_id/0'. `mcl_om:boot/1'
-    %% then starts the store AND a per-store evoq subscription, and that
-    %% subscription reads the global log through evoq, which crashes on
+    %% ⚠ MANDATORY BECAUSE THIS SERVICE OWNS A STORE. mcl_tube_app starts it AND
+    %% a per-store evoq subscription (mcl_tube_store), and that subscription
+    %% reads the global log through evoq, which crashes on
     %% `{not_configured, event_store_adapter}' if this block is absent. evoq
     %% starts as a release-boot application before any service's `start/2' runs,
-    %% so mcl_om cannot inject it at runtime.
+    %% so nothing can inject it at runtime.
     %%
-    %% `mcl_om_store' documents this in its own module header, calling it
-    %% MANDATORY, and a sibling service still put two of three fleet nodes into a
-    %% boot-crash loop because the callbacks were added without reading it. That
+    %% A sibling service put two of three fleet nodes into a boot-crash loop for
+    %% want of this block. That
     %% is why this block is generated rather than left to be discovered.
     {evoq, [
         {event_store_adapter,    reckon_evoq_adapter},
         {subscription_adapter,   reckon_evoq_adapter},
         {snapshot_store_adapter, reckon_evoq_adapter},
         %% A fallback evoq resolves before it knows whether anything dispatches a
-        %% command. It must name the SAME store as `store_id/0', and a generated
+        %% command. It must name the SAME store as event_store/0's id, and a
         %% test compares the two.
         {store_id,               mcl_tube_store}
     ]},

@@ -177,8 +177,8 @@ supervisor_children_test() ->
 %% ⚠ A SIBLING SERVICE'S FLEET CRASH-LOOPED ON TWO OF THREE NODES FOR WANT OF THE
 %% `evoq' BLOCK.
 %%
-%% Exporting `store_id/0' makes `mcl_om:boot/1' start the store AND a per-store
-%% evoq subscription. That subscription reads through evoq, which raises
+%% mcl_tube_app opens the store `event_store/0' describes AND a per-store evoq
+%% subscription. That subscription reads through evoq, which raises
 %% `{not_configured, event_store_adapter}' unless sys.config names the adapter,
 %% and evoq starts as a release-boot application before any service's `start/2'
 %% runs, so nothing can inject it later.
@@ -189,7 +189,7 @@ supervisor_children_test() ->
 %% what neither side's own tests can do.
 the_evoq_adapter_is_configured_wherever_a_store_is_opened_test() ->
     {ok, Text} = file:read_file(alongside("config/sys.config.src")),
-    ?assert(erlang:function_exported(?SERVICE, store_id, 0)),
+    ?assert(erlang:function_exported(?SERVICE, event_store, 0)),
     lists:foreach(
       fun(Needed) ->
               ?assertNotEqual(nomatch, binary:match(Text, Needed),
@@ -199,15 +199,27 @@ the_evoq_adapter_is_configured_wherever_a_store_is_opened_test() ->
        <<"reckon_evoq_adapter">>]).
 
 %% ⚠ AND THE STORE ID IS IN TWO PLACES, WHICH IS ONE MORE THAN IT SHOULD BE.
-%% `store_id/0' is what mcl_om opens; the `{store_id, ...}' in the evoq block
+%% `event_store/0''s id is what mcl_tube_app opens; the `{store_id, ...}' in the evoq block
 %% is what evoq falls back to when it resolves a dispatch before knowing there is
 %% none. Nothing makes them agree, and disagreeing opens one store and addresses
 %% another. Same boundary guard, other side.
 the_store_id_agrees_between_erlang_and_config_test() ->
     {ok, Text} = file:read_file(alongside("config/sys.config.src")),
-    Declared = atom_to_binary(?SERVICE:store_id(), utf8),
+    Declared = atom_to_binary(maps:get(id, ?SERVICE:event_store()), utf8),
     ?assertNotEqual(nomatch, binary:match(Text, Declared),
                     {store_id_not_in_sys_config, Declared}).
+
+%% mcl_om 0.35+ warns about, and opens nothing for, a service that still exports
+%% the old contract's pair: this service opens its own store instead.
+the_old_store_contract_is_gone_test() ->
+    ?assertEqual([], mcl_om:leftover_store_callbacks(?SERVICE)).
+
+%% The store a node already holds, <data_dir>/mcl_tube_store/ as mcl_om 0.34
+%% opened it, is the one mcl_tube_app opens.
+the_store_is_where_the_node_already_keeps_it_test() ->
+    ?assertMatch(#{id := mcl_tube_store, indexes := [], mode := single,
+                   integrity := disabled}, ?SERVICE:event_store()),
+    ?assertEqual(?SERVICE:data_dir(), maps:get(dir, ?SERVICE:event_store())).
 
 %% The data directory must be somewhere, and a laptop default is fine. What is
 %% not fine is shipping that default to a node, which is why the generated

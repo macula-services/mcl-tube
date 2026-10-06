@@ -1,19 +1,21 @@
 %% @doc OTP application entry.
 %%
-%% mcl_om:boot/1 wires the mesh, the realm identity and health, then starts
-%% this service. STORELESS as generated: no store_id/0 or data_dir/0 callback on
-%% the service module, so no reckon-db is started.
+%% Opens this service's own reckon-db store and its evoq subscription
+%% (mcl_tube_store, from mcl_tube_service:event_store/0), THEN lets
+%% mcl_om:boot/1 wire the mesh, the realm identity, capabilities and health and
+%% start the service. mcl_om opens no store (0.35, mcl-om#10).
 %%
-%% To make this a CMD/PRJ service that owns an event store, export store_id/0 and
-%% data_dir/0 from mcl_tube_service. mcl_om:boot/1 picks them up and starts
-%% the store plus its evoq subscription BEFORE start/1 fires, so you never call
-%% reckon_db_sup:start_store/1 yourself.
+%% The three departments start before this app does (they are listed in the
+%% .app.src applications tuple), so by the time the store subscription starts
+%% its catch-up replay here, every projection is already registered.
 -module(mcl_tube_app).
 
 -behaviour(application).
 
 -export([start/2, stop/1]).
 
-start(_Type, _Args) -> mcl_om:boot(mcl_tube_service).
+start(_Type, _Args) ->
+    ok = mcl_tube_store:open(mcl_tube_service:event_store()),
+    mcl_om:boot(mcl_tube_service).
 
 stop(_State) -> ok.

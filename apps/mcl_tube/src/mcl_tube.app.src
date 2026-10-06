@@ -10,8 +10,10 @@
         cowboy,
         %% Mesh SDK, realm identity, capabilities, health.
         mcl_om,
-        %% The departments, started before this app so mcl_om:boot/1 finds
-        %% them up when it opens the store.
+        %% This service's own event store (mcl_tube_store opens it).
+        reckon_db,
+        %% The departments, started before this app so their projections are
+        %% registered when mcl_tube_app opens the store.
         guide_tube_lifecycle,
         project_tube,
         query_tube

@@ -3,7 +3,21 @@
 ## 0.1.0 (unreleased)
 
 Ported from `hecate-services/hecate-tube` (main 41f693d plus the unmerged
-`fix/wire-text-and-arg-keys`, 06c58a8) onto `mcl_om` and macula 12.
+`fix/wire-text-and-arg-keys`, 06c58a8) onto `mcl_om` and macula 12, then
+moved to macula 13 (mcl-tube#14).
+
+- **On macula 13.6 and `mcl_om` 0.37, with its own store.** `mcl_om` opens no
+  store from 0.35 (mcl-om#10), and tube floated onto it unbuilt: every
+  event-sourced test failed and no image built. `mcl_tube_app` now opens the
+  reckon-db store `mcl_tube_service:event_store/0` describes, and its evoq
+  subscription, before `mcl_om:boot/1`, at the same `<data_dir>/mcl_tube_store`
+  mcl_om 0.34 used, so a node's existing events are the ones it opens. tube
+  declares `reckon_db`, `evoq` and `reckon_evoq` itself and no longer exports
+  `store_id/0`.
+- **Its advertisements name an ML-KEM key** (`{kem_advertise, enabled}`), so a
+  caller can seal lookups and the watch stream end to end and a station relays
+  only ciphertext (macula-fleet#7). Every procedure stays `preferred`: a caller
+  that does not seal is still answered.
 
 - **`lookup_content` answers real callers, and only with content.** It matched
   `#{mcid := _}` raw, but macula 12's decoder leaves the key as sent and

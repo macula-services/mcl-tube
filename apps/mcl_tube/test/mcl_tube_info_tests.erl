@@ -5,8 +5,7 @@
 %% added the way mcl_om:boot/2 adds it, and the org in config/sys.config.src,
 %% then sent through macula's own frame codec, the path a reply takes. What
 %% arrives must be text, never bytes, and name this service, its procedures and
-%% an mcl_om of at least 0.28 with a macula of at least 12.2 (12.2 under an
-%% older mcl_om lets a failed publish announcement kill the publishing process).
+%% the mcl_om and macula it runs, at least 0.37 and 13.6 (mcl-tube#14).
 -module(mcl_tube_info_tests).
 
 -include_lib("eunit/include/eunit.hrl").
@@ -26,14 +25,13 @@ info_round_trip_test_() ->
           ?_assertEqual([{text, C} || C <- [<<(?ORG)/binary, "/info">> | Own]],
                         maps:get(capabilities, Reply)),
           ?_assertEqual([], [V || V <- lists:flatten(maps:values(Reply)), is_binary(V)]),
-          ?_assert(at_least(maps:get(mcl_om_version, Reply), [0, 31])),
-          ?_assert(at_least(maps:get(macula_version, Reply), [12, 7]))]
+          ?_assert(at_least(maps:get(mcl_om_version, Reply), [0, 37])),
+          ?_assert(at_least(maps:get(macula_version, Reply), [13, 6]))]
      end}.
 
-%% A floor, not an exact release: the constraints (~> 0.31, ~> 12.7) take any
-%% later minor. mcl_om 0.31 with macula 12.7 is the pair whose pool renews an
-%% advertised chain before its 30-minute delegation lapses (macula#38, D32).
-%% Same major, minor at least the floor's.
+%% A floor, not an exact release: the constraints (~> 0.37, ~> 13.6) take any
+%% later minor. mcl_om 0.37 opens no store, so this service opens its own;
+%% macula 13.6 seals calls and streams. Same major, minor at least the floor's.
 at_least({text, Vsn}, [Major, Minor]) ->
     [Ma, Mi | _] = [binary_to_integer(P) || P <- binary:split(Vsn, <<".">>, [global])],
     Ma =:= Major andalso Mi >= Minor.

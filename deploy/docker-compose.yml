@@ -79,8 +79,8 @@ services:
       # which box. MCL_BOX comes from the host that deploys it.
       - MCL_SERVICE_NAME=mcl-tube
       - MCL_BOX=${MCL_BOX:-}
-      # Where the store lands, matching the volume above. `store_id/0' is
-      # appended by mcl_om, so the store itself is at /data/mcl_tube_store.
+      # Where the store lands, matching the volume above. mcl_tube_app appends
+      # the store id, so the store itself is at /data/mcl_tube_store.
       - MCL_DATA_DIR=/data
 
 # The identity volume, NAMED HERE rather than left to the project name, so a
