@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2026-10-06
 
 - **Content ids are SHA-384 (macula-io/macula#46).** Logos and thumbnails are
   named by macula's raw-block id, `<<2, 16#55, SHA-384(Bytes)>>`, not the
