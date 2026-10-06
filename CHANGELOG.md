@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0 - 2026-10-06
 
 Ported from `hecate-services/hecate-tube` (main 41f693d plus the unmerged
 `fix/wire-text-and-arg-keys`, 06c58a8) onto `mcl_om` and macula 12, then
