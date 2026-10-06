@@ -1,5 +1,5 @@
-%% @doc Projection: channel_initiated_v1 / channel_reconfigured_v1 ->
-%% tube_channels table.
+%% @doc Projection: channel_initiated_v1 / channel_reconfigured_v1 /
+%% channel_logo_rehashed_v1 -> tube_channels table.
 %%
 %% The evoq_read_model handle is a checkpoint passthrough only -- actual
 %% data lives in project_tube_store's ETS table, not in the read model
@@ -10,7 +10,8 @@
 
 -export([interested_in/0, init/1, project/4]).
 
-interested_in() -> [<<"channel_initiated_v1">>, <<"channel_reconfigured_v1">>].
+interested_in() -> [<<"channel_initiated_v1">>, <<"channel_reconfigured_v1">>,
+                    <<"channel_logo_rehashed_v1">>].
 
 init(_Config) ->
     {ok, RM} = evoq_read_model:new(evoq_read_model_ets,
@@ -48,7 +49,19 @@ project(#{event_type := <<"channel_reconfigured_v1">>, data := Data}, _Metadata,
         logo_mcid   => field(logo_mcid, Data)
     },
     ok = project_tube_store:put_channel(ChannelId, Row),
+    {ok, State, RM};
+%% Only the logo's MCID changes; the rest of the row stays as it is.
+project(#{event_type := <<"channel_logo_rehashed_v1">>, data := Data}, _Metadata, State, RM) ->
+    ok = merge_channel(field(channel_id, Data), #{logo_mcid => field(logo_mcid, Data)}),
     {ok, State, RM}.
+
+merge_channel(ChannelId, Fields) ->
+    merged_channel(project_tube_store:get_channel(ChannelId), ChannelId, Fields).
+
+merged_channel({ok, Row}, ChannelId, Fields) ->
+    project_tube_store:put_channel(ChannelId, maps:merge(Row, Fields));
+merged_channel({error, not_found}, _ChannelId, _Fields) ->
+    ok.
 
 existing_owner(ChannelId) ->
     owner_from(project_tube_store:get_channel(ChannelId)).

@@ -168,7 +168,8 @@ identity_spec_asks_for_nothing_test() ->
 %% One child: the owner UI's listener.
 supervisor_children_test() ->
     {ok, {_Flags, Children}} = mcl_tube_sup:init([]),
-    ?assertEqual([{ranch_embedded_sup, mcl_tube_http}], [Id || #{id := Id} <- Children]).
+    ?assertEqual([{ranch_embedded_sup, mcl_tube_http}, rehash_legacy_content],
+                 [Id || #{id := Id} <- Children]).
 
 %%==============================================================================
 %% The config the store cannot boot without

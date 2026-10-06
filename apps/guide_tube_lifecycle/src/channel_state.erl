@@ -8,7 +8,7 @@
 -include("tube_channel_status.hrl").
 
 -export([new/1, apply_event/2, to_map/1]).
--export([channel_id/1, name/1, owner/1, status/1]).
+-export([channel_id/1, name/1, owner/1, logo_mcid/1, status/1]).
 
 -record(channel_state, {
     channel_id  :: binary(),
@@ -51,6 +51,8 @@ do_apply(<<"channel_reconfigured_v1">>, State, Event) ->
         tags        = field(tags, Event),
         logo_mcid   = field(logo_mcid, Event)
     };
+do_apply(<<"channel_logo_rehashed_v1">>, State, Event) ->
+    State#channel_state{logo_mcid = field(logo_mcid, Event)};
 do_apply(_Other, State, _Event) ->
     State.
 
@@ -69,6 +71,7 @@ to_map(#channel_state{} = S) ->
 channel_id(#channel_state{channel_id = V}) -> V.
 name(#channel_state{name = V}) -> V.
 owner(#channel_state{owner = V}) -> V.
+logo_mcid(#channel_state{logo_mcid = V}) -> V.
 status(#channel_state{status = V}) -> V.
 
 %% Tolerates atom or binary keys -- events replayed from storage arrive

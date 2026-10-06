@@ -2,8 +2,8 @@
 
 -include_lib("eunit/include/eunit.hrl").
 
-%% A 50-byte MCID as tube mints it: lowercase hex.
--define(MCID, binary:encode_hex(binary:copy(<<16#ab>>, 50), lowercase)).
+%% The MCID tube mints for some bytes: SHA-384 raw block id, lowercase hex.
+-define(MCID(Bytes), binary:encode_hex(<<2, 16#55, (crypto:hash(sha384, Bytes))/binary>>, lowercase)).
 
 setup() ->
     Dir = filename:join("/tmp", "advertise_content_lookup_tests_" ++
@@ -20,9 +20,9 @@ content_found_returns_bytes_test_() ->
     {setup, fun setup/0, fun teardown/1,
      fun(_Dir) ->
         fun() ->
-            ok = tube_content_store:persist(?MCID, <<"jpeg bytes">>),
+            ok = tube_content_store:persist(?MCID(<<"jpeg bytes">>), <<"jpeg bytes">>),
             Result = advertise_content_lookup:handle_request(
-                       #{mcid => ?MCID}, undefined),
+                       #{mcid => ?MCID(<<"jpeg bytes">>)}, undefined),
             ?assertEqual({reply, #{bytes => <<"jpeg bytes">>}, undefined}, Result)
         end
      end}.
@@ -36,7 +36,7 @@ content_missing_returns_not_found_test_() ->
      fun(_Dir) ->
         fun() ->
             Result = advertise_content_lookup:handle_request(
-                       #{mcid => binary:encode_hex(binary:copy(<<16#cd>>, 50), lowercase)}, undefined),
+                       #{mcid => ?MCID(<<"never stored">>)}, undefined),
             ?assertEqual({error, not_found, undefined}, Result)
         end
      end}.
@@ -47,10 +47,10 @@ binary_keyed_args_are_looked_up_test_() ->
     {setup, fun setup/0, fun teardown/1,
      fun(_Dir) ->
         fun() ->
-            ok = tube_content_store:persist(?MCID, <<"jpeg bytes">>),
+            ok = tube_content_store:persist(?MCID(<<"jpeg bytes">>), <<"jpeg bytes">>),
             ?assertEqual({reply, #{bytes => <<"jpeg bytes">>}, undefined},
                          advertise_content_lookup:handle_request(
-                           #{<<"mcid">> => {text, ?MCID}}, undefined))
+                           #{<<"mcid">> => {text, ?MCID(<<"jpeg bytes">>)}}, undefined))
         end
      end}.
 
@@ -62,8 +62,8 @@ through_the_codec_a_text_mcid_finds_the_content_test_() ->
     {setup, fun setup/0, fun teardown/1,
      fun(_Dir) ->
         fun() ->
-            ok = tube_content_store:persist(?MCID, <<"logo bytes">>),
-            Delivered = through_the_codec(#{mcid => {text, ?MCID}}),
+            ok = tube_content_store:persist(?MCID(<<"logo bytes">>), <<"logo bytes">>),
+            Delivered = through_the_codec(#{mcid => {text, ?MCID(<<"logo bytes">>)}}),
             ?assertEqual({reply, #{bytes => <<"logo bytes">>}, undefined},
                          advertise_content_lookup:handle_request(Delivered, undefined))
         end
@@ -74,8 +74,8 @@ an_upper_case_mcid_is_the_same_content_test_() ->
     {setup, fun setup/0, fun teardown/1,
      fun(_Dir) ->
         fun() ->
-            ok = tube_content_store:persist(?MCID, <<"jpeg bytes">>),
-            Upper = string:uppercase(?MCID),
+            ok = tube_content_store:persist(?MCID(<<"jpeg bytes">>), <<"jpeg bytes">>),
+            Upper = string:uppercase(?MCID(<<"jpeg bytes">>)),
             ?assertEqual({reply, #{bytes => <<"jpeg bytes">>}, undefined},
                          advertise_content_lookup:handle_request(
                            through_the_codec(#{mcid => {text, Upper}}), undefined))
@@ -105,11 +105,25 @@ a_path_mcid_cannot_reach_outside_the_content_directory_test_() ->
      fun(Dir) ->
         %% The content directory exists, as it does on any node that has
         %% stored a thumbnail, so `thumbnails/../secret.bin' resolves.
-        ok = tube_content_store:persist(?MCID, <<"jpeg bytes">>),
+        ok = tube_content_store:persist(?MCID(<<"jpeg bytes">>), <<"jpeg bytes">>),
         Outside = filename:join(Dir, "secret.bin"),
         ok = file:write_file(Outside, <<"must not be served">>),
         ?_assertEqual({error, bad_request, undefined},
                       advertise_content_lookup:handle_request(#{mcid => <<"../secret">>}, undefined))
+     end}.
+
+%% A legacy BLAKE3 MCID, <<1, 16#55, Hash:32>>, is not an MCID tube serves,
+%% even when a file under its name is still on disk (macula-io/macula#46).
+a_blake3_mcid_is_a_bad_request_test_() ->
+    {setup, fun setup/0, fun teardown/1,
+     fun(_Dir) ->
+        Blake3 = binary:encode_hex(<<1, 16#55, (binary:copy(<<16#ab>>, 32))/binary>>, lowercase),
+        Legacy = filename:join(tube_content_store:dir(), <<Blake3/binary, ".bin">>),
+        ok = filelib:ensure_dir(Legacy),
+        ok = file:write_file(Legacy, <<"legacy bytes">>),
+        ?_assertEqual({error, bad_request, undefined},
+                      advertise_content_lookup:handle_request(
+                        through_the_codec(#{mcid => {text, Blake3}}), undefined))
      end}.
 
 missing_mcid_is_a_bad_request_test() ->

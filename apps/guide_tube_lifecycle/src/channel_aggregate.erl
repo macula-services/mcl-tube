@@ -15,6 +15,10 @@ init(ChannelId) -> {ok, channel_state:new(ChannelId)}.
 
 apply(State, Event) -> channel_state:apply_event(State, Event).
 
+%% A rehash is checked against the logo itself, not the status: only the
+%% legacy MCID the channel still names is replaced.
+execute(State, #{command_type := rehash_channel_logo} = Payload) ->
+    maybe_rehash_channel_logo:handle_from_map(channel_state:logo_mcid(State), Payload);
 execute(State, #{command_type := CommandType} = Payload) ->
     do_execute(CommandType, channel_state:status(State), Payload).
 

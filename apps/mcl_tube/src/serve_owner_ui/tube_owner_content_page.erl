@@ -1,10 +1,12 @@
-%% @doc Owner UI: serves a mesh Content MCID back over plain HTTP, so a
-%% channel logo can sit behind a normal <img src="..."> instead of the
-%% owner's browser needing to speak macula itself. `Mcid' arrives
-%% hex-encoded in the path (the SDK's raw content-address digest isn't
-%% URL-safe as-is -- same reason macula-realm's ProjectTubeCatalog hex-
-%% encodes it for storage). Content is content-addressed and therefore
-%% immutable under a given MCID, so the response is cached aggressively.
+%% @doc Owner UI: serves a logo or thumbnail by its MCID over plain HTTP, so
+%% it can sit behind a normal <img src="..."> instead of the owner's browser
+%% needing to speak macula itself. `Mcid' arrives hex-encoded in the path
+%% (the SDK's raw content-address digest isn't URL-safe as-is -- same reason
+%% macula-realm's ProjectTubeCatalog hex-encodes it for storage). The bytes
+%% are this box's own, so they are read from tube_content_store, which
+%% serves them only under the SHA-384 MCID they hash to; no mesh round trip.
+%% Content is content-addressed and therefore immutable under a given MCID,
+%% so the response is cached aggressively.
 %% Route: GET /owner/content/:mcid_hex
 -module(tube_owner_content_page).
 
@@ -19,18 +21,7 @@ init(Req0, State) ->
     end.
 
 handle_get(Req0, State) ->
-    McidHex = cowboy_req:binding(mcid_hex, Req0),
-    with_mcid(decode_hex(McidHex), Req0, State).
-
-decode_hex(Hex) ->
-    try {ok, binary:decode_hex(Hex)}
-    catch _:_ -> {error, invalid_mcid}
-    end.
-
-with_mcid({ok, Mcid}, Req0, State) ->
-    reply_content(tube_content_get:get(Mcid), Req0, State);
-with_mcid({error, _}, Req0, State) ->
-    reply_not_found(Req0, State).
+    reply_content(tube_content_store:read(cowboy_req:binding(mcid_hex, Req0)), Req0, State).
 
 reply_content({ok, Bytes}, Req0, State) ->
     Headers = #{

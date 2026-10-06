@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- **Content ids are SHA-384 (macula-io/macula#46).** Logos and thumbnails are
+  named by macula's raw-block id, `<<2, 16#55, SHA-384(Bytes)>>`, not the
+  legacy BLAKE3 `<<1, 16#55, Hash:32>>`. The content store holds and serves
+  bytes only under the id they hash to, refuses a legacy id (`bad_request` on
+  `lookup_content`), and refuses more than one 256 KiB block; extracted
+  thumbnails are scaled to at most 640 px wide so they fit. A one-shot boot
+  migration (`rehash_legacy_content`) re-hashes every stored legacy logo and
+  thumbnail once, records `channel_logo_rehashed_v1` /
+  `video_clip_thumbnail_rehashed_v1`, and removes the legacy files; it goes in
+  the next release. The owner UI reads its own images from the local store,
+  not the mesh, and `tube_content_get` is gone.
+
 ## 0.1.0 - 2026-10-06
 
 Ported from `hecate-services/hecate-tube` (main 41f693d plus the unmerged

@@ -17,6 +17,11 @@ init(ClipId) -> {ok, video_clip_state:new(ClipId)}.
 
 apply(State, Event) -> video_clip_state:apply_event(State, Event).
 
+%% A rehash is checked against the thumbnail itself, not the status: only
+%% the legacy MCID the clip still names is replaced.
+execute(State, #{command_type := rehash_video_clip_thumbnail} = Payload) ->
+    maybe_rehash_video_clip_thumbnail:handle_from_map(
+      video_clip_state:thumbnail_mcid(State), Payload);
 execute(State, #{command_type := CommandType} = Payload) ->
     do_execute(CommandType, video_clip_state:status(State), Payload).
 

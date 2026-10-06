@@ -17,7 +17,7 @@
 -include("tube_video_clip_status.hrl").
 
 -export([new/1, apply_event/2, to_map/1]).
--export([clip_id/1, channel_id/1, status/1, local_ref/1]).
+-export([clip_id/1, channel_id/1, thumbnail_mcid/1, status/1, local_ref/1]).
 
 -record(video_clip_state, {
     clip_id          :: binary(),
@@ -95,6 +95,8 @@ do_apply(<<"video_clip_archived_v1">>, State, _Event) ->
     State#video_clip_state{
         status = State#video_clip_state.status bor ?VIDEO_CLIP_ARCHIVED
     };
+do_apply(<<"video_clip_thumbnail_rehashed_v1">>, State, Event) ->
+    State#video_clip_state{thumbnail_mcid = field(thumbnail_mcid, Event)};
 do_apply(_Other, State, _Event) ->
     State.
 
@@ -122,6 +124,7 @@ to_map(#video_clip_state{} = S) ->
 
 clip_id(#video_clip_state{clip_id = V}) -> V.
 channel_id(#video_clip_state{channel_id = V}) -> V.
+thumbnail_mcid(#video_clip_state{thumbnail_mcid = V}) -> V.
 status(#video_clip_state{status = V}) -> V.
 local_ref(#video_clip_state{local_ref = V}) -> V.
 

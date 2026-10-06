@@ -1,5 +1,7 @@
-%% @doc Supervises the service's own process: the HTTP listener serving the
-%% owner's web UI and the QRY read API on one port.
+%% @doc Supervises the service's own processes: the HTTP listener serving the
+%% owner's web UI and the QRY read API on one port, and the one-shot boot
+%% migration to SHA-384 content ids (rehash_legacy_content, temporary: it
+%% runs once and ends, and a failure is retried by the next boot, not here).
 %%
 %% The listener has no authentication of its own, and the container runs on
 %% host networking, so it binds LOOPBACK unless `http_ip' says otherwise: an
@@ -15,7 +17,13 @@ start_link() -> supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->
     {ok, {#{strategy => one_for_one, intensity => 5, period => 10},
-          [http_listener()]}}.
+          [http_listener(), rehash_legacy_content()]}}.
+
+rehash_legacy_content() ->
+    #{id => rehash_legacy_content,
+      start => {rehash_legacy_content, start_link, []},
+      restart => temporary,
+      type => worker}.
 
 http_listener() ->
     Routes = tube_owner_ui_routes:routes() ++ query_tube_sup:routes(),

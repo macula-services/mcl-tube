@@ -21,7 +21,8 @@ interested_in() ->
     [<<"video_clip_uploaded_v1">>, <<"video_clip_scanned_v1">>,
      <<"video_clip_accepted_v1">>, <<"video_clip_rejected_v1">>,
      <<"video_clip_published_v1">>, <<"video_clip_retracted_v1">>,
-     <<"video_clip_archived_v1">>, <<"video_clip_viewed_v1">>].
+     <<"video_clip_archived_v1">>, <<"video_clip_viewed_v1">>,
+     <<"video_clip_thumbnail_rehashed_v1">>].
 
 init(_Config) ->
     {ok, RM} = evoq_read_model:new(evoq_read_model_ets,
@@ -88,6 +89,9 @@ project(#{event_type := <<"video_clip_archived_v1">>, data := Data}, _Metadata, 
     {ok, State, RM};
 project(#{event_type := <<"video_clip_viewed_v1">>, data := Data}, _Metadata, State, RM) ->
     ok = project_tube_store:increment_clip_view_count(field(clip_id, Data)),
+    {ok, State, RM};
+project(#{event_type := <<"video_clip_thumbnail_rehashed_v1">>, data := Data}, _Metadata, State, RM) ->
+    ok = merge_clip(field(clip_id, Data), #{thumbnail_mcid => field(thumbnail_mcid, Data)}),
     {ok, State, RM}.
 
 set_status(ClipId, Status) ->

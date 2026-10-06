@@ -29,6 +29,10 @@
 -define(PROBE_TIMEOUT_MS, 15_000).
 -define(THUMBNAIL_TIMEOUT_MS, 15_000).
 -define(THUMBNAIL_SEEK, "00:00:01").
+%% At most 640 px wide, so a frame stays well inside one 256 KiB content block
+%% (tube_content_put names a raw block only). The quotes are ffmpeg's own
+%% filter quoting; no shell is involved.
+-define(THUMBNAIL_SCALE, "scale='min(640,iw)':-2").
 
 -spec probe(binary(), binary(), binary() | undefined) ->
     {ok, #{duration_ms := non_neg_integer(),
@@ -130,7 +134,7 @@ with_put_result({error, _Reason}) -> undefined.
 extract_frame(ClipId, LocalRef) ->
     OutPath = temp_thumbnail_path(ClipId),
     Args = ["-y", "-ss", ?THUMBNAIL_SEEK, "-i", binary_to_list(LocalRef),
-            "-frames:v", "1", binary_to_list(OutPath)],
+            "-frames:v", "1", "-vf", ?THUMBNAIL_SCALE, binary_to_list(OutPath)],
     with_extract_result(run(?FFMPEG, Args, ?THUMBNAIL_TIMEOUT_MS), OutPath).
 
 with_extract_result({ok, _Stdout}, OutPath) ->
