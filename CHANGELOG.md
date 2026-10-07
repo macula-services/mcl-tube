@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 - 2026-10-07
 
 Sealed Macula TV (mcl-tube#17): a viewer's video never crosses the mesh in the
 clear, and a retracted clip cannot be looked up or streamed by any path.

@@ -32,7 +32,7 @@
 
 info() ->
     #{name => <<"mcl-tube">>,
-      version => <<"0.2.0">>,
+      version => <<"0.3.0">>,
       description => <<"Video channels over the mesh: owners publish clips, anyone looks them up and streams them">>}.
 
 %% The realm name the catalog topics carry must be the realm the pool is in,
