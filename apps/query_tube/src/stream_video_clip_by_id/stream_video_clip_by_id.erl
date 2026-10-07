@@ -11,6 +11,8 @@
 -behaviour(macula_streamer).
 
 -export([init/1, handle_open/2]).
+%% The sender loop, exported for its test.
+-export([send_chunks/4]).
 
 -define(CHUNK_BYTES, 65536).
 
@@ -53,8 +55,21 @@ open_result({error, _Reason}, _ClipId, _ChannelId, State) ->
 spawn_sender(StreamerPid, Fd, ClipId, ChannelId) ->
     spawn(fun() -> send_chunks(StreamerPid, Fd, ClipId, ChannelId) end).
 
+%% ⚠ A RETRACTED CLIP STOPS STREAMING (#9, #17). The open checked the clip
+%% once, and a long clip streams for minutes after that, so its state is read
+%% again before every chunk. Once it is no longer published (retracted or
+%% archived) the streamer is stopped with a non-normal reason: macula_streamer
+%% then sends the viewer a STREAM_ERROR, not the clean end of a truncated file,
+%% and no view is recorded.
+-spec send_chunks(pid(), file:io_device(), binary(), binary() | undefined) -> ok.
 send_chunks(StreamerPid, Fd, ClipId, ChannelId) ->
-    deliver(file:read(Fd, ?CHUNK_BYTES), StreamerPid, Fd, ClipId, ChannelId).
+    next_chunk(project_tube_store:get_clip(ClipId), StreamerPid, Fd, ClipId, ChannelId).
+
+next_chunk({ok, #{status := <<"published">>}}, StreamerPid, Fd, ClipId, ChannelId) ->
+    deliver(file:read(Fd, ?CHUNK_BYTES), StreamerPid, Fd, ClipId, ChannelId);
+next_chunk(_NotPublished, StreamerPid, Fd, _ClipId, _ChannelId) ->
+    _ = file:close(Fd),
+    gen_server:stop(StreamerPid, {shutdown, video_clip_not_published}, 5_000).
 
 deliver({ok, Chunk}, StreamerPid, Fd, ClipId, ChannelId) ->
     ok = macula_streamer:send(StreamerPid, Chunk),

@@ -9,7 +9,11 @@
 %% per tick keeps a tick's cost bounded by the page size (`clip_heartbeat_page',
 %% default 25) however many clips there are. The cursor walks the sorted list
 %% of published clip ids and wraps, so every published clip is re-announced
-%% once per cycle of ceil(clips / page) ticks. A plain gen_server, not an evoq behaviour: this reacts to
+%% once per cycle of ceil(clips / page) ticks, and the page grows with the
+%% catalog so a cycle never exceeds 5 ticks: macula-portal expires a clip
+%% listing nobody re-announced, so a lost retraction cannot list it forever.
+%%
+%% A plain gen_server, not an evoq behaviour: this reacts to
 %% a timer, not a domain event, so evoq_event_handler doesn't fit (its
 %% callback module has no hook for arbitrary messages) and Demon #39 (no
 %% raw gen_servers for event reaction) doesn't apply -- there is no event
@@ -19,11 +23,15 @@
 -behaviour(gen_server).
 
 -export([start_link/0]).
--export([next_page/3, published_clip_ids/0]).
+-export([next_page/3, page_size/2, published_clip_ids/0]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2]).
 
 -define(HEARTBEAT_MS, 60_000).
 -define(DEFAULT_CLIP_PAGE, 25).
+%% A cycle re-announces every published clip within this many ticks, whatever
+%% the page setting: a catalogue expires a listing nobody re-announced, and
+%% counts on this bound (#17).
+-define(MAX_CYCLE_TICKS, 5).
 
 start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
@@ -39,7 +47,8 @@ handle_cast(_Msg, State) -> {noreply, State}.
 handle_info(heartbeat, Cursor) ->
     lists:foreach(fun(ChannelId) -> channel_announcement:announce(ChannelId, <<"heartbeat">>) end,
                  project_tube_store:list_channel_ids()),
-    {Page, Next} = next_page(published_clip_ids(), Cursor, clip_page()),
+    Ids = published_clip_ids(),
+    {Page, Next} = next_page(Ids, Cursor, page_size(length(Ids), clip_page())),
     lists:foreach(fun(ClipId) -> video_clip_publication:publish_to_mesh(#{clip_id => ClipId}) end,
                   Page),
     schedule(),
@@ -65,6 +74,12 @@ next_page(Ids, Cursor, Size) ->
 
 wrapped(Next, Total) when Next >= Total -> 0;
 wrapped(Next, _Total)                   -> Next.
+
+%% @doc The page a tick announces: the configured size, grown so that `Count'
+%% clips take at most ?MAX_CYCLE_TICKS ticks.
+-spec page_size(non_neg_integer(), pos_integer()) -> pos_integer().
+page_size(Count, Configured) ->
+    max(Configured, (Count + ?MAX_CYCLE_TICKS - 1) div ?MAX_CYCLE_TICKS).
 
 %% @doc Every published clip's id, sorted, so pages are stable between ticks.
 -spec published_clip_ids() -> [binary()].

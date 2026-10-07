@@ -77,3 +77,23 @@ a_tick_announces_channels_and_one_page_of_clips_test() ->
 
 ensure_started({ok, _Pid}) -> ok;
 ensure_started({error, {already_started, _Pid}}) -> ok.
+
+%%------------------------------------------------------------------------------
+%% Every published clip is re-announced within 5 ticks (#17)
+%%------------------------------------------------------------------------------
+
+%% A catalogue expires a listing nobody re-announced (macula-portal), so a
+%% lost `video_clip_retracted_v1' cannot list a clip forever. That only works
+%% if the re-announce cycle is bounded: the page grows with the catalog so a
+%% cycle never takes more than 5 ticks (5 minutes), whatever the page setting.
+the_page_grows_so_a_cycle_takes_at_most_five_ticks_test() ->
+    ?assertEqual(25, channel_heartbeat:page_size(6, 25)),
+    ?assertEqual(25, channel_heartbeat:page_size(125, 25)),
+    ?assertEqual(26, channel_heartbeat:page_size(126, 25)),
+    ?assertEqual(200, channel_heartbeat:page_size(1000, 25)),
+    ?assertEqual(1, channel_heartbeat:page_size(0, 1)).
+
+a_thousand_clips_are_all_announced_in_five_ticks_test() ->
+    Ids = lists:seq(1, 1000),
+    Announced = cycle(Ids, 0, channel_heartbeat:page_size(length(Ids), 25), 5, []),
+    ?assertEqual(Ids, lists:usort(Announced)).

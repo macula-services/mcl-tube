@@ -8,7 +8,7 @@
 
 -export([start_link/0]).
 -export([get_channel/1, put_channel/2, list_channel_ids/0, list_channels/0]).
--export([get_clip/1, put_clip/2, list_clips_by_channel/1,
+-export([get_clip/1, put_clip/2, list_clips/0, list_clips_by_channel/1,
          increment_clip_view_count/1]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2]).
 
@@ -51,6 +51,11 @@ get_clip(ClipId) ->
 -spec put_clip(binary(), map()) -> ok.
 put_clip(ClipId, Row) ->
     gen_server:call(?MODULE, {put_clip, ClipId, Row}).
+
+%% @doc Every clip, published or not; callers filter on `status'.
+-spec list_clips() -> [map()].
+list_clips() ->
+    ets:foldl(fun({_ClipId, Row}, Acc) -> [Row | Acc] end, [], ?CLIPS).
 
 %% @doc Every clip belonging to `ChannelId', published or not -- callers
 %% that only want published ones (the mesh-facing surface) filter on
