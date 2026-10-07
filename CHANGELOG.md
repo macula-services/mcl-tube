@@ -22,10 +22,12 @@ clear, and a retracted clip cannot be looked up or streamed by any path.
   `confidential => required`: a clear call or open is refused with
   `sealed_required` from the first second after boot, where `preferred` answered
   one for about 10 minutes after each start. Every macula SDK seals by default.
-- **On macula 14.1 and `mcl_om` 0.38** (`~> 14.1`, `~> 0.38`). tube sets no
+- **On macula 14.2 and `mcl_om` 0.38** (`~> 14.2`, `~> 0.38`, at least 14.2.1). tube sets no
   `node_identity_path`, so macula 14's per-account identity directory
   (macula-io/macula#76) changes nothing here; 14.1 puts every advertisement a
-  caller seals to in the DHT (macula-io/macula#33).
+  caller seals to in the DHT (macula-io/macula#33), and 14.2.1 forwards a
+  stream's `confidential`, without which the watch stream stayed `preferred`
+  (macula-io/macula#85).
 
 ## 0.2.0 - 2026-10-06
 
