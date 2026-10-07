@@ -1,6 +1,6 @@
 {application, mcl_tube, [
     {description, "Video channels over the mesh: owners publish clips, anyone looks them up and streams them"},
-    {vsn, "0.3.0"},
+    {vsn, "0.4.0"},
     {registered, [mcl_tube_sup]},
     {mod, {mcl_tube_app, []}},
     {applications, [
