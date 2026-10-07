@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **On macula 14.2 and mcl_om 0.39, `/health` on a Unix socket (#19).** `~> 14.2` (at least 14.2.1) and `~> 0.39`, the current SDK base, so an SDK fix reaches this service with the rest. mcl_om's `health_socket`, `/run/mcl/health.sock` inside the container: no TCP health listener runs, the image's HEALTHCHECK uses `curl --unix-socket`, and nothing configures, exposes or passes a health port; `scripts/health.sh` asks the running container. The sealing posture is unchanged.
+
 ## 0.3.0 - 2026-10-07
 
 Sealed Macula TV (mcl-tube#17): a viewer's video never crosses the mesh in the

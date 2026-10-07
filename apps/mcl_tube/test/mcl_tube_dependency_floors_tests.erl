@@ -1,6 +1,7 @@
 %% @doc The libraries this service runs resolve at or above its floors. The
 %% rebar.config constraints are the pin (no lock is committed), so this reads
-%% the versions actually built. mcl_om 0.38 opens no store, so this service
+%% the versions actually built. mcl_om 0.39 serves /health on a Unix socket
+%% (#19) and, like 0.38, opens no store, so this service
 %% opens its own, and builds on macula 14; macula 14.2.1 seals calls and
 %% streams end to end, puts every advertisement a caller seals to in the DHT
 %% (macula#33) and keeps a stream's `required' (macula#85); evoq 1.26.1 measures telemetry on the monotonic clock;
@@ -10,8 +11,8 @@
 -module(mcl_tube_dependency_floors_tests).
 -include_lib("eunit/include/eunit.hrl").
 
-mcl_om_is_at_least_0_38_test() ->
-    ?assert(at_least(vsn(mcl_om), [0, 38, 0])).
+mcl_om_is_at_least_0_39_test() ->
+    ?assert(at_least(vsn(mcl_om), [0, 39, 0])).
 
 macula_is_at_least_14_2_1_test() ->
     ?assert(at_least(vsn(macula), [14, 2, 1])).

@@ -65,7 +65,6 @@ ENV RELX_REPLACE_OS_VARS=true
 ENV MCL_NODE_NAME=mcl_tube
 ENV MCL_NODE_HOST=127.0.0.1
 ENV MCL_COOKIE=mcl_tube
-ENV MCL_HEALTH_PORT=8490
 
 # The owner web UI and read API. LOOPBACK by default: the UI has no
 # authentication of its own and the container runs on host networking, so an
@@ -78,8 +77,9 @@ ENV MCL_TUBE_HTTP_IP=127.0.0.1
 # container.
 VOLUME ["/etc/mcl/secrets"]
 
-EXPOSE 8490
+# /health is a Unix socket (health_socket in sys.config.src): no port is opened
+# just to be health-checked.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD curl -fsS "http://127.0.0.1:${MCL_HEALTH_PORT}/health" || exit 1
+    CMD curl -fsS --unix-socket /run/mcl/health.sock http://localhost/health || exit 1
 
 CMD ["/app/bin/mcl_tube", "foreground"]

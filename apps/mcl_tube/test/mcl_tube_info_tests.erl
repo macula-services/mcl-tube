@@ -5,7 +5,7 @@
 %% added the way mcl_om:boot/2 adds it, and the org in config/sys.config.src,
 %% then sent through macula's own frame codec, the path a reply takes. What
 %% arrives must be text, never bytes, and name this service, its procedures and
-%% the mcl_om and macula it runs, at least 0.38 and 14.2 (mcl-tube#17).
+%% the mcl_om and macula it runs, at least 0.39 and 14.2 (mcl-tube#17, #19).
 -module(mcl_tube_info_tests).
 
 -include_lib("eunit/include/eunit.hrl").
@@ -25,11 +25,11 @@ info_round_trip_test_() ->
           ?_assertEqual([{text, C} || C <- [<<(?ORG)/binary, "/info">> | Own]],
                         maps:get(capabilities, Reply)),
           ?_assertEqual([], [V || V <- lists:flatten(maps:values(Reply)), is_binary(V)]),
-          ?_assert(at_least(maps:get(mcl_om_version, Reply), [0, 38])),
+          ?_assert(at_least(maps:get(mcl_om_version, Reply), [0, 39])),
           ?_assert(at_least(maps:get(macula_version, Reply), [14, 2]))]
      end}.
 
-%% A floor, not an exact release: the constraints (~> 0.38, ~> 14.2) take any
+%% A floor, not an exact release: the constraints (~> 0.39, ~> 14.2) take any
 %% later minor. mcl_om 0.38 opens no store, so this service opens its own;
 %% macula 14.2 seals calls and streams. Same major, minor at least the floor's.
 at_least({text, Vsn}, [Major, Minor]) ->
