@@ -85,8 +85,8 @@
         %% advertisements carry an ML-KEM key, so callers seal lookups and the
         %% watch stream end to end and a station relays only ciphertext. A
         %% property of the service, so a literal here, not a per-box variable.
-        %% Every capability stays `preferred' (the default): a caller that does
-        %% not seal is still answered.
+        %% Every capability is `required' (mcl_tube_service:capabilities/0,
+        %% #17), which mcl_om refuses at boot unless this is `enabled'.
         {kem_advertise, enabled}
     ]},
     %% ==========================================================================

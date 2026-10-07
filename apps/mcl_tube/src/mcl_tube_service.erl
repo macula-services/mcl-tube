@@ -51,14 +51,20 @@ health() -> ok.
 %% The four procedures, registered by mcl_om as `mcl-tube/<name>' (the org
 %% comes from config). The watch is a stream, served by macula_streamer; the
 %% others are request and reply.
+%%
+%% ⚠ EVERY ONE REQUIRES A SEALED CALLER (#17). Its advertisement names this
+%% node's ML-KEM key (`kem_advertise' in sys.config.src) and a clear call or
+%% open is refused with `sealed_required', from the first second after boot:
+%% a viewer's lookups and video never cross the mesh in the clear. Every SDK
+%% seals by default, so a refused caller is one that asked for the clear.
 capabilities() ->
-    [#{name => <<"lookup_channel">>, version => 1,
+    [#{name => <<"lookup_channel">>, version => 1, confidential => required,
        handler => {advertise_channel_lookup, []}},
-     #{name => <<"lookup_video_clip">>, version => 1,
+     #{name => <<"lookup_video_clip">>, version => 1, confidential => required,
        handler => {advertise_video_clip_lookup, []}},
-     #{name => <<"lookup_content">>, version => 1,
+     #{name => <<"lookup_content">>, version => 1, confidential => required,
        handler => {advertise_content_lookup, []}},
-     #{name => <<"watch_video_clip">>, version => 1,
+     #{name => <<"watch_video_clip">>, version => 1, confidential => required,
        handler => {stream_video_clip_by_id, []}, kind => streamer}].
 
 %% THE AUTHORITY THIS SERVICE ASKS THE REALM FOR, and deliberately nothing more.

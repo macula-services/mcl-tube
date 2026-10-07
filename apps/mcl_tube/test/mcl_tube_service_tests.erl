@@ -83,6 +83,25 @@ only_the_watch_is_a_stream_test() ->
 
 %% The org the procedures are registered under is deploy config, so the
 %% shipped config must name the org the contract promises.
+%% SEALED MACULA TV (#17): every procedure refuses a caller that does not
+%% seal, from the first second after boot. `preferred' already refuses a
+%% clear call once the key has been advertised for ~10 minutes (macula >=
+%% 13.0); `required' closes that window after every restart. A viewer's
+%% lookups and video never cross the mesh in the clear.
+every_procedure_requires_sealing_test() ->
+    ?assertEqual([{N, required} || #{name := N} <- ?SERVICE:capabilities()],
+                 [{N, maps:get(confidential, C, preferred)} || #{name := N} = C <- ?SERVICE:capabilities()]).
+
+%% `required' with no KEM key named would refuse every call: mcl_om refuses
+%% that combination at boot, and the shipped config names the key.
+the_shipped_config_names_the_kem_key_test() ->
+    {ok, Text} = file:read_file(alongside("config/sys.config.src")),
+    ?assertNotEqual(nomatch, binary:match(Text, <<"{kem_advertise, enabled}">>)).
+
+%% And mcl_om, as resolved, accepts `required' with that switch.
+the_resolved_mcl_om_accepts_required_test() ->
+    ?assertEqual(ok, mcl_om_capabilities:confidentiality_verdict(?SERVICE:capabilities(), enabled)).
+
 the_shipped_config_names_the_org_test() ->
     {ok, Text} = file:read_file(alongside("config/sys.config.src")),
     ?assertNotEqual(nomatch, binary:match(Text, <<"{org,               <<\"mcl-tube\">>}">>)).

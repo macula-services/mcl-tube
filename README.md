@@ -9,8 +9,10 @@ on the mesh can find it and watch it, with no platform in between.
 
 Built and tested locally, **not yet deployed**. Runs on macula 13 through
 `mcl_om` 0.37, and opens its own reckon-db store (`mcl_tube_store`). Its
-advertisements name an ML-KEM key, so a caller can seal its lookups and the
-watch stream end to end.
+advertisements name an ML-KEM key and **every procedure requires a sealed
+caller**: lookups and the watch stream are sealed end to end, and a caller that
+does not seal is refused with `sealed_required`. Every macula SDK seals by
+default.
 
 ## What it does
 
@@ -41,8 +43,15 @@ Served under the org `mcl-tube`, so callers dial `mcl-tube/<name>`:
 |---|---|---|
 | `mcl-tube/lookup_channel` | request/reply | a channel's current details |
 | `mcl-tube/lookup_video_clip` | request/reply | a clip's details |
-| `mcl-tube/lookup_content` | request/reply | a stored piece of content by mcid |
+| `mcl-tube/lookup_content` | request/reply | a published clip's thumbnail or a channel's logo, by mcid |
 | `mcl-tube/watch_video_clip` | stream | a published clip's bytes |
+
+A retracted or archived clip is unservable on every path: its lookup and its
+thumbnail answer `not_found`, a new stream is refused, and a stream already
+open ends with a stream error at the next chunk. Its listing is withdrawn with
+`video_clip_retracted_v1`, and every published clip is re-announced at least
+every 5 minutes, so a catalogue can expire a listing nobody re-announced
+instead of trusting one withdraw fact to arrive.
 
 ### Facts
 
