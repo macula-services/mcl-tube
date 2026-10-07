@@ -22,15 +22,20 @@ publish_to_mesh(Data) -> send(video_clip_published, Data).
 withdraw_from_mesh(Data) -> send(video_clip_retracted, Data).
 
 send(Fact, Data) ->
-    send_to(tube_catalog_topic:topic(Fact), Data).
+    ClipId = field(clip_id, Data),
+    send_from_row(Fact, tube_catalog_topic:topic(Fact), project_tube_store:get_clip(ClipId), ClipId).
 
-send_to(Topic, Data) ->
-    send_from_row(Topic, project_tube_store:get_clip(field(clip_id, Data)),
-                  field(clip_id, Data)).
-
-send_from_row(Topic, {ok, Row}, ClipId) ->
+%% ⚠ A CLIP IS ANNOUNCED PUBLISHED ONLY WHILE ITS ROW SAYS SO (#17). The
+%% heartbeat lists published clips and then announces them one by one; a clip
+%% retracted in between would otherwise be re-listed from its now-unpublished
+%% row after its withdraw went out.
+send_from_row(video_clip_published, Topic, {ok, #{status := <<"published">>} = Row}, ClipId) ->
     publish(Topic, fact(Row, ClipId));
-send_from_row(_Topic, {error, not_found}, _ClipId) ->
+send_from_row(video_clip_published, _Topic, {ok, _NotPublished}, _ClipId) ->
+    ok;
+send_from_row(video_clip_retracted, Topic, {ok, Row}, ClipId) ->
+    publish(Topic, fact(Row, ClipId));
+send_from_row(_Fact, _Topic, {error, not_found}, _ClipId) ->
     ok.
 
 %% @doc The `video_clip_published_v1' and `video_clip_retracted_v1' fact

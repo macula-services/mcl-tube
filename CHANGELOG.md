@@ -15,7 +15,9 @@ clear, and a retracted clip cannot be looked up or streamed by any path.
 - **Every published clip is re-announced within 5 minutes.** The heartbeat page
   grows with the catalog so a cycle never exceeds 5 ticks, so a catalogue can
   expire a listing nobody re-announced (macula-portal does) instead of trusting
-  one `video_clip_retracted_v1` to arrive.
+  one `video_clip_retracted_v1` to arrive. A clip is announced published only
+  while its row says so, so a heartbeat that listed a clip just before its
+  retraction cannot re-list it after the withdraw went out.
 - **Every procedure requires a sealed caller.** All four capabilities are
   `confidential => required`: a clear call or open is refused with
   `sealed_required` from the first second after boot, where `preferred` answered
