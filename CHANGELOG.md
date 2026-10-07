@@ -1,5 +1,30 @@
 # Changelog
 
+## Unreleased
+
+Sealed Macula TV (mcl-tube#17): a viewer's video never crosses the mesh in the
+clear, and a retracted clip cannot be looked up or streamed by any path.
+
+- **A retracted clip is unservable (#9).** `lookup_content` answers only for
+  content something public names now, a published clip's thumbnail or a
+  channel's logo; a retracted, archived or never-published clip's thumbnail is
+  `not_found`, though its bytes stay on the owner's disk. A `watch_video_clip`
+  stream already open reads its clip's state before every chunk and ends with a
+  stream error (`video_clip_not_published`) once the clip is retracted or
+  archived; no view is recorded.
+- **Every published clip is re-announced within 5 minutes.** The heartbeat page
+  grows with the catalog so a cycle never exceeds 5 ticks, so a catalogue can
+  expire a listing nobody re-announced (macula-portal does) instead of trusting
+  one `video_clip_retracted_v1` to arrive.
+- **Every procedure requires a sealed caller.** All four capabilities are
+  `confidential => required`: a clear call or open is refused with
+  `sealed_required` from the first second after boot, where `preferred` answered
+  one for about 10 minutes after each start. Every macula SDK seals by default.
+- **On macula 14.1 and `mcl_om` 0.38** (`~> 14.1`, `~> 0.38`). tube sets no
+  `node_identity_path`, so macula 14's per-account identity directory
+  (macula-io/macula#76) changes nothing here; 14.1 puts every advertisement a
+  caller seals to in the DHT (macula-io/macula#33).
+
 ## 0.2.0 - 2026-10-06
 
 - **Content ids are SHA-384 (macula-io/macula#46).** Logos and thumbnails are
