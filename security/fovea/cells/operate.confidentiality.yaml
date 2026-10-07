@@ -1,5 +1,5 @@
 id: operate.confidentiality
-status: roadmap
+status: assessed
 owner: roeland@macula.io
 threat:
   definition: >-
@@ -15,18 +15,39 @@ defense:
       source: README.md (facts table)
   countermeasures:
     - measure: >-
-        End-to-end enforcement that every lookup and stream path honours the
-        retracted state is not yet demonstrated in this repo — the gap this
-        cell records.
-      status: roadmap
-      source: absence — the gap being recorded
+        Every mesh path answers only for a clip that is published now:
+        lookup_video_clip and lookup_channel list published clips only;
+        lookup_content serves a thumbnail only while a published clip (or a
+        channel, as its logo) names its MCID, so knowing the MCID of a
+        retracted clip is not enough; watch_video_clip refuses the open and
+        re-reads the clip's state before every chunk, so a stream already
+        open ends with a stream error once the clip is retracted or archived.
+      status: by_design
+      source: >-
+        apps/query_tube/src/advertise_content_lookup/advertise_content_lookup.erl
+        (public_mcids/0); apps/query_tube/src/stream_video_clip_by_id/stream_video_clip_by_id.erl
+        (open_from/3, next_chunk/5); test: apps/query_tube/test/advertise_content_lookup_tests.erl,
+        apps/query_tube/test/stream_video_clip_by_id_tests.erl
+    - measure: >-
+        A heartbeat cannot re-list a clip retracted mid-tick: a published fact
+        is sent only from a row that is still published when it is sent, and
+        every published clip is re-announced within five ticks, so a catalog
+        that expires listings can drop one whose withdraw was lost.
+      status: by_design
+      source: >-
+        apps/guide_tube_lifecycle/src/video_clip_publication.erl (send_from_row/4);
+        test: apps/guide_tube_lifecycle/test/video_clip_publication_tests.erl,
+        apps/guide_tube_lifecycle/test/clip_heartbeat_tests.erl
   recovery:
     - measure: "Rebuild the read model from the store; the store is the truth, and a rebuild must yield the retracted state."
       status: by_design
       source: README.md ("rebuilt from the store at boot")
 review_by: 2027-03-31
 notes: >-
-  This is the sharpest cell in the grid: the retraction promise is the
-  service's confidentiality contract, and its enforcement needs a test
-  that a retracted clip is unservable everywhere. Roadmap until that test
-  exists.
+  Moved off roadmap by mcl-tube#9 / #17 (v0.3.0). The tests were written
+  first and seen red. The owner's local JSON API still shows every clip
+  regardless of state, by intent: it is the owner's own view on the owner's
+  box. At rest, the clip and thumbnail files stay on the owner's disk after
+  retraction or archive (decided in #17). The catalogue consumer outside this
+  repo (macula.io) expires a listing 15 minutes after its last announce and
+  caches thumbnails for 5 minutes, never immutable.
