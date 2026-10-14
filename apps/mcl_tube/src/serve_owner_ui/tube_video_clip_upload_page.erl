@@ -14,7 +14,11 @@
 -module(tube_video_clip_upload_page).
 
 -export([init/2, routes/0]).
--export([accepted_message/1, format_duration/1, format_size/1]). %% for tests
+-export([accepted_message/1, await_clip/2, card_message/2,
+         format_duration/1, format_size/1]). %% for tests
+
+-define(CARD_WAIT_MS, 5_000).
+-define(CARD_POLL_MS, 50).
 
 routes() -> [{"/owner/clips/upload", ?MODULE, []}].
 
@@ -71,16 +75,22 @@ put_thumbnail(undefined) -> {ok, undefined};
 put_thumbnail(<<>>) -> {ok, undefined};
 put_thumbnail(Bytes) -> tube_content_put:put(Bytes).
 
-reply_with_result({ok, _ClipId, _Version, Events}, Req1, State) ->
-    reply_for_verdict(rejection_reason(Events), Events, Req1, State);
+reply_with_result({ok, ClipId, _Version, Events}, Req1, State) ->
+    reply_for_verdict(rejection_reason(Events), ClipId, Events, Req1, State);
 reply_with_result({error, Reason}, Req1, State) ->
     tube_owner_http:redirect(<<"/owner/clips/upload">>,
         tube_owner_http:error_message(<<"Could not upload the clip: ">>, Reason), Req1, State).
 
-reply_for_verdict(undefined, Events, Req1, State) ->
-    tube_owner_http:redirect(<<"/">>, accepted_message(scanned_measurements(Events)),
-                             Req1, State);
-reply_for_verdict(Reason, _Events, Req1, State) ->
+%% The dashboard renders the clip card from the read model, which the
+%% projection fills asynchronously (evoq routes events by cast), so the
+%% success flash waits until the card's row exists. A row still missing
+%% at the deadline gets a message that says so rather than a success
+%% claim over a dashboard without the card.
+reply_for_verdict(undefined, ClipId, Events, Req1, State) ->
+    Message = card_message(await_clip(ClipId, ?CARD_WAIT_MS),
+                           scanned_measurements(Events)),
+    tube_owner_http:redirect(<<"/">>, Message, Req1, State);
+reply_for_verdict(Reason, _ClipId, _Events, Req1, State) ->
     %% Not tube_owner_http:error_message/2 -- Reason is already a
     %% clean, human-formatted binary (video_clip_rejected_v1's own
     %% reason_to_binary/1), and error_message/2's `~p' formatting
@@ -110,6 +120,32 @@ measurements_from([#{duration_ms := DurationMs, file_size_bytes := FileSizeBytes
     {DurationMs, FileSizeBytes};
 measurements_from([]) ->
     undefined.
+
+card_message(ok, Measurements) -> accepted_message(Measurements);
+card_message(timeout, _Measurements) -> still_processing_message().
+
+still_processing_message() ->
+    <<"Clip stored. It is still being processed and its card will appear "
+      "here shortly; reload the page if it does not.">>.
+
+%% @doc Waits up to `TimeoutMs' for the clip's read-model row.
+-spec await_clip(binary(), non_neg_integer()) -> ok | timeout.
+await_clip(ClipId, TimeoutMs) ->
+    await_clip_until(ClipId, erlang:monotonic_time(millisecond) + TimeoutMs).
+
+await_clip_until(ClipId, Deadline) ->
+    clip_row(project_tube_store:get_clip(ClipId), ClipId, Deadline).
+
+clip_row({ok, _Row}, _ClipId, _Deadline) ->
+    ok;
+clip_row({error, not_found}, ClipId, Deadline) ->
+    retry_before(erlang:monotonic_time(millisecond) < Deadline, ClipId, Deadline).
+
+retry_before(true, ClipId, Deadline) ->
+    timer:sleep(?CARD_POLL_MS),
+    await_clip_until(ClipId, Deadline);
+retry_before(false, _ClipId, _Deadline) ->
+    timeout.
 
 accepted_message(undefined) ->
     <<"Clip uploaded, private until you publish it.">>;

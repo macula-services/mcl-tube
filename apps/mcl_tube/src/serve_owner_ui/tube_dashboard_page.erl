@@ -5,6 +5,7 @@
 -module(tube_dashboard_page).
 
 -export([init/2, routes/0]).
+-export([newest_first/1]). %% for tests
 
 routes() -> [{"/", ?MODULE, []}].
 
@@ -53,10 +54,16 @@ tag_spans(Tags) ->
 
 clip_section(undefined) -> <<>>;
 clip_section(ChannelId) ->
-    case project_tube_store:list_clips_by_channel(ChannelId) of
+    case newest_first(project_tube_store:list_clips_by_channel(ChannelId)) of
         [] -> <<"<p class=\"empty\">No clips yet.</p>">>;
         Clips -> [<<"<div class=\"clip-grid\">">>, [clip_card(C) || C <- Clips], <<"</div>">>]
     end.
+
+%% @doc Clip ids end in a UUIDv7 (reckon_gater_stream_id), so they sort
+%% by upload time: the clip just uploaded heads the grid.
+-spec newest_first([map()]) -> [map()].
+newest_first(Clips) ->
+    lists:sort(fun(A, B) -> maps:get(clip_id, A) >= maps:get(clip_id, B) end, Clips).
 
 clip_card(Clip) ->
     ClipId = maps:get(clip_id, Clip, <<>>),

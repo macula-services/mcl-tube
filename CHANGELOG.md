@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.3 - 2026-10-14
+
+- **An upload's success message means its card is on the dashboard (#20).** The read model fills asynchronously, so the dashboard could render before the new clip's row existed: the toast said "Clip uploaded" over a dashboard with no card. The upload page now waits up to 5 s for the row. If it is still missing, the message says the clip is stored and still being processed, never that it was uploaded.
+- **The dashboard lists clips newest first (#20).** Clip ids end in a UUIDv7, so the clip just uploaded heads the grid instead of landing anywhere in it.
+- **One version everywhere:** every app, the release and `info/0` report 0.4.3. In 0.4.2 only `guide_tube_lifecycle` and `info/0` moved, so the release directory still read 0.4.1 and `info_version_matches_the_application_test` failed.
+
+## 0.4.2 - 2026-10-11
+
 - **Rebuilt on macula 14.8.2** (refused dials back off further each time, macula#95).
 
 ## 0.4.1 - 2026-10-10
