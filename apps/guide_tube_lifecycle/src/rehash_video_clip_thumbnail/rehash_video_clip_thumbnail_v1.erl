@@ -1,7 +1,8 @@
 %% @doc Command: rehash_video_clip_thumbnail_v1 -- the clip's thumbnail, named until now
 %% by a legacy BLAKE3 MCID, is named by the SHA-384 MCID of the same bytes
 %% from here on (macula-io/macula#46). Issued once, by mcl-tube's boot
-%% migration (rehash_legacy_content), never by an owner.
+%% migration, which ran and was deleted in 0.4.4 (#16) -- never by an owner.
+%% The desk and its event stay: they are history the aggregate replays.
 -module(rehash_video_clip_thumbnail_v1).
 
 -behaviour(evoq_command).

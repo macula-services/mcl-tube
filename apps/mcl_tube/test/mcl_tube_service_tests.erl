@@ -184,10 +184,11 @@ identity_spec_asks_for_nothing_test() ->
     ?assertEqual([], Actions),
     ?assertEqual([], Resources).
 
-%% One child: the owner UI's listener.
+%% One child: the owner UI's listener. The one-shot SHA-384 content-id
+%% migration was the second until 0.4.4, when it and its module went (#16).
 supervisor_children_test() ->
     {ok, {_Flags, Children}} = mcl_tube_sup:init([]),
-    ?assertEqual([{ranch_embedded_sup, mcl_tube_http}, rehash_legacy_content],
+    ?assertEqual([{ranch_embedded_sup, mcl_tube_http}],
                  [Id || #{id := Id} <- Children]).
 
 %%==============================================================================
