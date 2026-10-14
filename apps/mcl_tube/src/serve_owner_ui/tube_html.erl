@@ -121,5 +121,10 @@ button.danger:hover { background: var(--danger-hover); }
   padding: .75rem 1rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
 .empty { color: var(--muted); }
 .muted { color: var(--muted); font-size: .85rem; }
+details.archived { margin-top: 2rem; border-top: 1px solid var(--border); padding-top: .75rem; }
+details.archived summary { cursor: pointer; color: var(--muted); font-size: .9rem; }
+details.archived ul { list-style: none; padding: 0; margin: .5rem 0 0; }
+details.archived li { display: flex; align-items: center; gap: .5rem; padding: .2rem 0;
+  color: var(--muted); font-size: .85rem; }
 form.owner-form { display: flex; flex-direction: column; }
 ">>.

@@ -3,6 +3,7 @@
 ## 0.4.4 - 2026-10-14
 
 - **The read API answers 200 for a channel with a logo, and for a clip with a thumbnail (#15).** A read-model row keeps an MCID as the raw bytes the mesh uses, and OTP's `json:encode/1` refuses the ones that are not valid UTF-8, so `GET /api/tube/channels` answered 500 for any channel whose logo had been scanned, and the clip routes failed the same way as soon as a thumbnail had one. Every id now leaves the JSON boundary in the lowercase-hex form `/owner/content/:mcid_hex` takes. The row itself is untouched: the mesh-facing lookups still compare bytes.
+- **The dashboard grid holds only the clips the owner can act on (#21).** Archiving a clip is a lifecycle state, not a delete, so the read model kept the row and the grid rendered every row of the channel: a discarded clip sat among the live ones as a card with a name, a view count and no buttons. The grid now renders the clips the owner can act on, and anything discarded is listed below it, collapsed, as `Archived (N)` -- name only, escaped, no buttons.
 - **The one-shot content-id migration is gone (#16).** `rehash_legacy_content` re-hashed every logo and thumbnail still named by a legacy BLAKE3 MCID at boot; it ran (rehashed=7 removed=7 failed=0 leftover=0) and no legacy content is left, so the module and its two test modules are deleted and the supervisor now starts the HTTP listener alone. The `rehash_*` desks and their events stay: they are history the aggregates replay.
 
 ## 0.4.3 - 2026-10-14
