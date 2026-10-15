@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.5 - 2026-10-15
+
+- **Rebuilt on mcl_om 0.42** (mcl-om#26): advertisement renewals move to a 70 s interval under a 280 s TTL (from 30 s / 120 s), so a station sends far fewer renewal frames; the health windows derive from the interval. Carries macula 14.11.0 (mcl_om 0.42's floor).
+
 ## 0.4.4 - 2026-10-14
 
 - **The read API answers 200 for a channel with a logo, and for a clip with a thumbnail (#15).** A read-model row keeps an MCID as the raw bytes the mesh uses, and OTP's `json:encode/1` refuses the ones that are not valid UTF-8, so `GET /api/tube/channels` answered 500 for any channel whose logo had been scanned, and the clip routes failed the same way as soon as a thumbnail had one. Every id now leaves the JSON boundary in the lowercase-hex form `/owner/content/:mcid_hex` takes. The row itself is untouched: the mesh-facing lookups still compare bytes.
