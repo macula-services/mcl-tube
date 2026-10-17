@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0 - 2026-10-17
+
+- **Wire 1.0: on macula 15.6 / mcl_om 1.0.** A 15 node neither reads nor handshakes with a 14 node, so this build speaks wire 1.0 only and is held off every live box until the flag day (macula-fleet#27). The publisher and streamer the lifecycle uses keep their signatures; their registrations now return once a station acknowledges them (macula#12).
+
 ## 0.4.5 - 2026-10-15
 
 - **Rebuilt on mcl_om 0.42** (mcl-om#26): advertisement renewals move to a 70 s interval under a 280 s TTL (from 30 s / 120 s), so a station sends far fewer renewal frames; the health windows derive from the interval. Carries macula 14.11.0 (mcl_om 0.42's floor).

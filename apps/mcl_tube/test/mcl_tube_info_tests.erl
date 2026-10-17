@@ -25,13 +25,14 @@ info_round_trip_test_() ->
           ?_assertEqual([{text, C} || C <- [<<(?ORG)/binary, "/info">> | Own]],
                         maps:get(capabilities, Reply)),
           ?_assertEqual([], [V || V <- lists:flatten(maps:values(Reply)), is_binary(V)]),
-          ?_assert(at_least(maps:get(mcl_om_version, Reply), [0, 39])),
-          ?_assert(at_least(maps:get(macula_version, Reply), [14, 2]))]
+          ?_assert(at_least(maps:get(mcl_om_version, Reply), [1, 0])),
+          ?_assert(at_least(maps:get(macula_version, Reply), [15, 6]))]
      end}.
 
-%% A floor, not an exact release: the constraints (~> 0.39, ~> 14.2) take any
-%% later minor. mcl_om 0.38 opens no store, so this service opens its own;
-%% macula 14.2 seals calls and streams. Same major, minor at least the floor's.
+%% A floor, not an exact release: the constraints (~> 1.0, ~> 15.6) take any
+%% later minor. mcl_om 1.0 is the macula-15 line (wire 1.0), and the major
+%% moved with the wire from 0.39; macula 15.6 is wire 1.0 itself, from 14.2.
+%% Same major, minor at least the floor's.
 at_least({text, Vsn}, [Major, Minor]) ->
     [Ma, Mi | _] = [binary_to_integer(P) || P <- binary:split(Vsn, <<".">>, [global])],
     Ma =:= Major andalso Mi >= Minor.

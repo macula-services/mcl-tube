@@ -1,8 +1,8 @@
 %% @doc The libraries this service runs resolve at or above its floors. The
 %% rebar.config constraints are the pin (no lock is committed), so this reads
-%% the versions actually built. mcl_om 0.39 serves /health on a Unix socket
-%% (#19) and, like 0.38, opens no store, so this service
-%% opens its own, and builds on macula 14; macula 14.2.1 seals calls and
+%% the versions actually built. mcl_om 1.0 is the macula-15 line (wire 1.0,
+%% the major moved with the wire) and, like 0.38, opens no store, so this
+%% service opens its own; macula 15.6 is wire 1.0 itself, which seals calls and
 %% streams end to end, puts every advertisement a caller seals to in the DHT
 %% (macula#33) and keeps a stream's `required' (macula#85); evoq 1.26.1 measures telemetry on the monotonic clock;
 %% reckon_evoq 2.7.2 reads snapshots
@@ -11,11 +11,11 @@
 -module(mcl_tube_dependency_floors_tests).
 -include_lib("eunit/include/eunit.hrl").
 
-mcl_om_is_at_least_0_39_test() ->
-    ?assert(at_least(vsn(mcl_om), [0, 39, 0])).
+mcl_om_is_at_least_1_0_test() ->
+    ?assert(at_least(vsn(mcl_om), [1, 0, 0])).
 
-macula_is_at_least_14_2_1_test() ->
-    ?assert(at_least(vsn(macula), [14, 2, 1])).
+macula_is_at_least_15_6_test() ->
+    ?assert(at_least(vsn(macula), [15, 6, 0])).
 
 evoq_is_at_least_1_26_1_test() ->
     ?assert(at_least(vsn(evoq), [1, 26, 1])).
