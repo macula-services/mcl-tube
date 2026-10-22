@@ -8,7 +8,7 @@
 %% mcl-tube/lookup_content, mcl-tube/watch_video_clip) are declared in
 %% mcl_tube_service:capabilities/0 and advertised generically by
 %% mcl_om:boot/1 (mcl_om >= 0.18.0, which added a streamer-backed
-%% capability kind for tube.watch_video_clip). This supervisor used to
+%% capability kind for mcl-tube/watch_video_clip). This supervisor used to
 %% own a bespoke tube_mesh_providers worker duplicating that job by hand
 %% -- see mcl-corpus/skills/antipatterns/structure.md, Demon 59.
 -module(query_tube_sup).
