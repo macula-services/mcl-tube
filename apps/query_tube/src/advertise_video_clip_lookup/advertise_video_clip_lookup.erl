@@ -1,4 +1,4 @@
-%% @doc RPC provider: tube.lookup_video_clip. Returns clip metadata
+%% @doc RPC provider: mcl-tube/lookup_video_clip. Returns clip metadata
 %% including its current view count -- only for PUBLISHED clips. Never
 %% confirms the existence of an unpublished or archived clip over RPC,
 %% same privacy discipline as the streaming provider.

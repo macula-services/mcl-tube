@@ -150,8 +150,8 @@ def context():
           ["Endorses the node's identity key and", "issues the D25 provider grant for",
            "each org-namespaced procedure"])
     d.box("b-mac", 420, 460, 320, 136, "Macula stations, mesh DHT", "[Macula infrastructure]",
-          ["The pinned seeds in", "MACULA_STATION_SEEDS carry every",
-           "call and fact (QUIC); the DHT holds", "the four advertisements."])
+          ["The pinned seeds carry every", "call and fact (QUIC); the DHT",
+           "holds its own advertisements", "and mcl_om's info and get_limits"])
     d.box("b-ext", 790, 460, 320, 136, "A catalogue, the portal's", "[External system]",
           ["Subscribes to the four catalog facts", "and lists channels and clips without",
            "asking; a listing nobody re-announced", "is expired."])
@@ -167,13 +167,13 @@ def context():
     d.edge("M460 382V420H190V460")
     d.text("t-rel", 316, 412, "boot claim, scope mcl-tube", anchor="middle")
     d.edge("M580 382V460")
-    d.text("t-rel", 588, 404, "advertises the four")
-    d.text("t-rel", 588, 420, "procedures, and publishes")
-    d.text("t-rel", 588, 436, "the four facts")
+    d.text("t-rel", 588, 404, "advertises its own")
+    d.text("t-rel", 588, 420, "procedures; publishes")
+    d.text("t-rel", 588, 436, "the catalog facts")
     d.edge("M740 320H860V460")
     d.text("t-rel", 748, 314, "publishes the four catalog facts")
     d.text("t-desc", 40, 632, "The service calls nothing outside the mesh: a stream reads a clip off its own disk and the two lookups")
-    d.text("t-desc", 40, 650, "read its own read model. Every procedure refuses a caller that does not seal, so a station relays ciphertext only.")
+    d.text("t-desc", 40, 650, "read its own read model. Its own procedures refuse a caller that does not seal, so a station relays ciphertext only.")
     d.legend(716, boundary=False)
     d.write()
 
@@ -189,7 +189,7 @@ def components():
     d.box("b-sys", 32, 222, 540, 136, "mcl_tube_service", "[mcl_om_service behaviour]",
           ["The six callbacks mcl_om resolves by name: info, start, stop, health,",
            "capabilities, identity_spec, plus event_store/0 and data_dir/0. Its",
-           "capabilities/0 declares its four procedures, each confidential => required and",
+           "capabilities/0 declares its own procedures, each confidential => required and",
            "sealed with this node's ML-KEM key; identity_spec/0 asks for scope mcl-tube."], code=True)
     d.box("b-cmp", 32, 390, 540, 120, "mcl_tube_sup", "[supervisor, one_for_one]",
           ["One child: a cowboy listener through ranch:child_spec mcl_tube_http, on",
@@ -217,7 +217,7 @@ def components():
            "them: channel_lifecycle_to_channels and video_clip_lifecycle_to_video_clips.",
            "The model is in memory and rebuilt from the store on every boot."], code=True)
     d.box("b-cmp", 588, 422, 540, 152, "query_tube", "[QRY app]",
-          ["Four providers, one per advertised procedure: advertise_channel_lookup,",
+          ["A provider per advertised procedure: advertise_channel_lookup,",
            "advertise_video_clip_lookup, advertise_content_lookup and",
            "stream_video_clip_by_id, which pushes 64 KiB chunks off local disk and",
            "stops with a stream error the moment a clip is retracted. Only published",
@@ -242,10 +242,10 @@ def components():
     d.edge("M1128 128H1140V740H900V758"); d.text("t-rel", 908, 747, "publishes through")
 
     d.box("b-mac", 32, 962, 352, 136, "mcl_om", "[library, ~> 1.0]",
-          ["boot/1: loads the node identity key,",
-           "joins the realm, dials the pinned",
-           "stations over QUIC, advertises the four",
-           "capabilities, serves /health on a socket."], code=True)
+          ["boot/1: loads the node identity key, joins",
+           "the realm, dials the pinned stations over",
+           "QUIC, advertises its own procedures and",
+           "info and get_limits, serves /health."], code=True)
     d.box("b-mac", 404, 962, 352, 136, "macula", "[library, ~> 15.6, wire 1.0]",
           ["QUIC transport and the RPC dispatch to",
            "a provider that answers by name; the",
@@ -261,7 +261,7 @@ def components():
            "MCL_REALM_NAME and MCL_REALM_KEY, MACULA_STATION_SEEDS and MACULA_STATION_NODE_IDS. The node's",
            "identity key is /etc/mcl/secrets/identity.key, in the mcl-tube-secrets volume that must outlive it."], code=True)
     d.edge("M108 830V950H950V962"); d.text("t-rel", 120, 944, "events in and out, through reckon_evoq")
-    d.text("t-desc", 40, 1282, "config/sys.config.src fixes the org, mcl-tube, which prefixes the four procedure names, and the realm name the catalog topics carry.")
+    d.text("t-desc", 40, 1282, "config/sys.config.src fixes the org, mcl-tube, which prefixes its procedure names, and the realm name the catalog topics carry.")
     d.text("t-desc", 40, 1300, "The service refuses to start unless sha256 of that name is MCL_REALM, and mcl_om refuses a pool with an unpinned seed or no realm key.")
     d.legend(1340)
     d.write()

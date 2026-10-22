@@ -84,10 +84,10 @@
 <rect class="b-mac" x="420" y="460" width="320" height="136" rx="10"/>
 <text class="t-name" x="436" y="488">Macula stations, mesh DHT</text>
 <text class="t-type" x="436" y="506">[Macula infrastructure]</text>
-<text class="t-desc" x="436" y="530">The pinned seeds in</text>
-<text class="t-desc" x="436" y="546">MACULA_STATION_SEEDS carry every</text>
-<text class="t-desc" x="436" y="562">call and fact (QUIC); the DHT holds</text>
-<text class="t-desc" x="436" y="578">the four advertisements.</text>
+<text class="t-desc" x="436" y="530">The pinned seeds carry every</text>
+<text class="t-desc" x="436" y="546">call and fact (QUIC); the DHT</text>
+<text class="t-desc" x="436" y="562">holds its own advertisements</text>
+<text class="t-desc" x="436" y="578">and mcl_om's info and get_limits</text>
 <rect class="b-ext" x="790" y="460" width="320" height="136" rx="10"/>
 <text class="t-name" x="806" y="488">A catalogue, the portal's</text>
 <text class="t-type" x="806" y="506">[External system]</text>
@@ -106,13 +106,13 @@
 <path class="edge" d="M460 382V420H190V460" marker-end="url(#a)"/>
 <text class="t-rel" x="316" y="412" text-anchor="middle">boot claim, scope mcl-tube</text>
 <path class="edge" d="M580 382V460" marker-end="url(#a)"/>
-<text class="t-rel" x="588" y="404">advertises the four</text>
-<text class="t-rel" x="588" y="420">procedures, and publishes</text>
-<text class="t-rel" x="588" y="436">the four facts</text>
+<text class="t-rel" x="588" y="404">advertises its own</text>
+<text class="t-rel" x="588" y="420">procedures; publishes</text>
+<text class="t-rel" x="588" y="436">the catalog facts</text>
 <path class="edge" d="M740 320H860V460" marker-end="url(#a)"/>
 <text class="t-rel" x="748" y="314">publishes the four catalog facts</text>
 <text class="t-desc" x="40" y="632">The service calls nothing outside the mesh: a stream reads a clip off its own disk and the two lookups</text>
-<text class="t-desc" x="40" y="650">read its own read model. Every procedure refuses a caller that does not seal, so a station relays ciphertext only.</text>
+<text class="t-desc" x="40" y="650">read its own read model. Its own procedures refuse a caller that does not seal, so a station relays ciphertext only.</text>
 <rect class="b-sys" x="24" y="716" width="22" height="14" rx="3"/>
 <text class="t-leg" x="54" y="728">In scope</text>
 <rect class="b-per" x="110.8" y="716" width="22" height="14" rx="3"/>

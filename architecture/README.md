@@ -5,8 +5,8 @@ without reading it.*
 
 **Status: four apps, one release, one store.** The service opens its own
 reckon-db store, event-sources the channel and clip lifecycles, projects them
-into an in-memory read model, and answers four sealed procedures plus the owner
-web UI on 8491. It calls nothing outside the mesh.
+into an in-memory read model, and answers its own sealed procedures plus the
+owner web UI on 8491. It calls nothing outside the mesh.
 
 ## Level 1: system context
 
@@ -14,12 +14,12 @@ web UI on 8491. It calls nothing outside the mesh.
 
 | Element | Kind | Role |
 | --- | --- | --- |
-| mcl-tube | In scope | Serves `mcl-tube/lookup_channel`, `lookup_video_clip`, `lookup_content` and the `watch_video_clip` stream, all `confidential => required`, plus the owner web UI on 8491. One OTP release in one container, an `mcl_om` mesh service on its own box |
+| mcl-tube | In scope | Serves `mcl-tube/lookup_channel`, `lookup_video_clip`, `lookup_content` and the `watch_video_clip` stream, all `confidential => required`; `mcl_om` adds `mcl-tube/info` and `mcl-tube/get_limits` to every service, both open, and `capabilities/0` is the list. Also serves the owner web UI on 8491. One OTP release in one container, an `mcl_om` mesh service on its own box |
 | Owner | Person | Creates a channel and uploads, publishes, retracts and archives clips through the local web UI, which has no authentication of its own and binds loopback |
 | Viewer | Person | Any mesh caller: an app that looks a channel, a clip or its content up, and streams a published clip. Every SDK seals by default, so a caller that does not seal is refused with `sealed_required` |
 | Service operator | Person | Runs the box, sets `MCL_REALM`, `MCL_REALM_KEY` and the station seeds, and has the realm grant this node a D25 provider authorization for the org `mcl-tube` |
 | macula-realm | Macula infrastructure | Endorses the node's identity key and issues the provider grant for each org-namespaced procedure |
-| Macula stations, mesh DHT | Macula infrastructure | The pinned seeds in `MACULA_STATION_SEEDS` carry every call and fact over QUIC; the DHT holds the four advertisements, each naming this node's ML-KEM key |
+| Macula stations, mesh DHT | Macula infrastructure | The pinned seeds in `MACULA_STATION_SEEDS` carry every call and fact over QUIC; the DHT holds the advertisements, its own and `mcl_om`'s `info` and `get_limits`, each naming this node's ML-KEM key |
 | A catalogue, the portal's | External system | Subscribes to the four catalog facts under `io.macula/mcl-tube/tube/catalog/`, lists a channel or clip without asking, and expires a listing nobody re-announced |
 
 The service calls nothing outside the mesh: a stream reads a clip off its own
@@ -42,14 +42,14 @@ holds is what this node published or advertised, not a call it makes out.
 | `query_tube` | QRY app | The four providers: `advertise_channel_lookup`, `advertise_video_clip_lookup`, `advertise_content_lookup` and `stream_video_clip_by_id`. `tube_json_view` renders the page desks' JSON |
 | `tube_content_store` | local content cache | Clip thumbnails and channel logos by hex MCID, which is the SHA-384 of the bytes. `tube_content_put` refuses bytes that do not hash to their id |
 | `on_video_clip_published_publish_clip` | `evoq_event_handler` | One of four mesh handlers under `guide_tube_lifecycle_sup`, all publishing through `tube_mesh_publisher`: the retract and archive withdraw a clip, `channel_announced_v1_to_mesh` publishes a channel, and `channel_heartbeat` re-announces every 60 s |
-| `mcl_om` | library, `~> 1.0` | `boot/1`: loads the node identity key, joins the realm, dials the pinned stations over QUIC, advertises the four capabilities and serves `/health` on a Unix socket |
+| `mcl_om` | library, `~> 1.0` | `boot/1`: loads the node identity key, joins the realm, dials the pinned stations over QUIC, advertises this service's own procedures and the `info` and `get_limits` it adds, and serves `/health` on a Unix socket |
 | macula | library, `~> 15.6`, wire 1.0 | QUIC transport and the RPC dispatch to a provider that answers by name; the streamer, the publisher, and the signed records the mesh DHT holds |
 | `evoq` / `reckon_evoq` / `reckon_db` | libraries, `~> 1.26` / `~> 2.7` / `~> 5.4` | Event sourcing for the two aggregates and the two projections, over this service's own store |
 | `MCL_DATA_DIR` | environment, a host volume | The store, the clips and the content cache; `deploy/docker-compose.yml` mounts `/bulk0/mcl-tube` there and the identity key in the `mcl-tube-secrets` volume |
 
 **Where the station list comes from.** It is not in `config/sys.config.src`: `mcl_om` reads `MACULA_STATION_SEEDS` and `MACULA_STATION_NODE_IDS` from the environment at boot, paired index for index, so this repository pins no station and the list may be any length.
 
-`config/sys.config.src` fixes the org, `mcl-tube`, which prefixes the four
+`config/sys.config.src` fixes the org, `mcl-tube`, which prefixes its
 procedure names, and the realm name the catalog topics carry. The service
 refuses to start unless `sha256(MCL_REALM_NAME)` is `MCL_REALM`, and `mcl_om`
 refuses a pool with an unpinned seed or no realm key, because either one leaves

@@ -1,4 +1,4 @@
-%% @doc RPC provider: tube.lookup_channel. Returns the current channel
+%% @doc RPC provider: mcl-tube/lookup_channel. Returns the current channel
 %% snapshot plus a summary of its published clips -- the on-demand
 %% refresh path for when a consumer's cached channel_announced_v1 fact
 %% is suspected stale. Never confirms the existence of a channel id that

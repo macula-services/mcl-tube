@@ -58,7 +58,7 @@
 <text class="t-type" x="48" y="268">[mcl_om_service behaviour]</text>
 <text class="t-desc" x="48" y="292">The six callbacks mcl_om resolves by name: info, start, stop, health,</text>
 <text class="t-desc" x="48" y="308">capabilities, identity_spec, plus event_store/0 and data_dir/0. Its</text>
-<text class="t-desc" x="48" y="324">capabilities/0 declares its four procedures, each confidential =&gt; required and</text>
+<text class="t-desc" x="48" y="324">capabilities/0 declares its own procedures, each confidential =&gt; required and</text>
 <text class="t-desc" x="48" y="340">sealed with this node's ML-KEM key; identity_spec/0 asks for scope mcl-tube.</text>
 <rect class="b-cmp" x="32" y="390" width="540" height="120" rx="10"/>
 <text class="t-code" x="48" y="418">mcl_tube_sup</text>
@@ -97,7 +97,7 @@
 <rect class="b-cmp" x="588" y="422" width="540" height="152" rx="10"/>
 <text class="t-code" x="604" y="450">query_tube</text>
 <text class="t-type" x="604" y="468">[QRY app]</text>
-<text class="t-desc" x="604" y="492">Four providers, one per advertised procedure: advertise_channel_lookup,</text>
+<text class="t-desc" x="604" y="492">A provider per advertised procedure: advertise_channel_lookup,</text>
 <text class="t-desc" x="604" y="508">advertise_video_clip_lookup, advertise_content_lookup and</text>
 <text class="t-desc" x="604" y="524">stream_video_clip_by_id, which pushes 64 KiB chunks off local disk and</text>
 <text class="t-desc" x="604" y="540">stops with a stream error the moment a clip is retracted. Only published</text>
@@ -133,10 +133,10 @@
 <rect class="b-mac" x="32" y="962" width="352" height="136" rx="10"/>
 <text class="t-code" x="48" y="990">mcl_om</text>
 <text class="t-type" x="48" y="1008">[library, ~&gt; 1.0]</text>
-<text class="t-desc" x="48" y="1032">boot/1: loads the node identity key,</text>
-<text class="t-desc" x="48" y="1048">joins the realm, dials the pinned</text>
-<text class="t-desc" x="48" y="1064">stations over QUIC, advertises the four</text>
-<text class="t-desc" x="48" y="1080">capabilities, serves /health on a socket.</text>
+<text class="t-desc" x="48" y="1032">boot/1: loads the node identity key, joins</text>
+<text class="t-desc" x="48" y="1048">the realm, dials the pinned stations over</text>
+<text class="t-desc" x="48" y="1064">QUIC, advertises its own procedures and</text>
+<text class="t-desc" x="48" y="1080">info and get_limits, serves /health.</text>
 <rect class="b-mac" x="404" y="962" width="352" height="136" rx="10"/>
 <text class="t-code" x="420" y="990">macula</text>
 <text class="t-type" x="420" y="1008">[library, ~&gt; 15.6, wire 1.0]</text>
@@ -159,7 +159,7 @@
 <text class="t-desc" x="56" y="1224">identity key is /etc/mcl/secrets/identity.key, in the mcl-tube-secrets volume that must outlive it.</text>
 <path class="edge" d="M108 830V950H950V962" marker-end="url(#a)"/>
 <text class="t-rel" x="120" y="944">events in and out, through reckon_evoq</text>
-<text class="t-desc" x="40" y="1282">config/sys.config.src fixes the org, mcl-tube, which prefixes the four procedure names, and the realm name the catalog topics carry.</text>
+<text class="t-desc" x="40" y="1282">config/sys.config.src fixes the org, mcl-tube, which prefixes its procedure names, and the realm name the catalog topics carry.</text>
 <text class="t-desc" x="40" y="1300">The service refuses to start unless sha256 of that name is MCL_REALM, and mcl_om refuses a pool with an unpinned seed or no realm key.</text>
 <rect class="b-sys" x="24" y="1340" width="22" height="14" rx="3"/>
 <text class="t-leg" x="54" y="1352">In scope</text>
