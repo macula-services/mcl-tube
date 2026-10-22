@@ -4,8 +4,8 @@
 %% this same aggregation and never wired it in; don't repeat that gap).
 %%
 %% Owns no mesh-advertising worker either: all four of this service's
-%% capabilities (tube.lookup_channel, tube.lookup_video_clip,
-%% tube.lookup_content, tube.watch_video_clip) are declared in
+%% capabilities (mcl-tube/lookup_channel, mcl-tube/lookup_video_clip,
+%% mcl-tube/lookup_content, mcl-tube/watch_video_clip) are declared in
 %% mcl_tube_service:capabilities/0 and advertised generically by
 %% mcl_om:boot/1 (mcl_om >= 0.18.0, which added a streamer-backed
 %% capability kind for tube.watch_video_clip). This supervisor used to
