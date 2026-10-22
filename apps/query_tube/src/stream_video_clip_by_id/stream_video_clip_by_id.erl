@@ -1,4 +1,4 @@
-%% @doc Streaming provider: tube.watch_video_clip. Streams a published
+%% @doc Streaming provider: mcl-tube/watch_video_clip. Streams a published
 %% clip's bytes off local disk, chunk by chunk -- the mesh Content
 %% primitive is never the video-bytes path (spec sec 3, "streamed, not
 %% downloaded"). Refuses an unpublished/nonexistent clip via
