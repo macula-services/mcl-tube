@@ -29,7 +29,7 @@
         %% HEALTHCHECK reaches it with curl --unix-socket.
         {health_socket,     "/run/mcl/health.sock"},
         {capability_topic,  <<"_mesh.cap.">>},
-        %% The org the four procedures are served under: `mcl-tube/<name>'.
+        %% The org this service's own procedures are served under: `mcl-tube/<name>'.
         %% One org per service, named after the repo. The realm must have
         %% granted THIS node a provider authorization for it (D25), or nothing
         %% is advertised and /health says so.
