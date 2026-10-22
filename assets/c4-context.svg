@@ -70,7 +70,7 @@
 <rect class="b-sys" x="420" y="230" width="320" height="152" rx="10"/>
 <text class="t-name" x="436" y="258">mcl-tube</text>
 <text class="t-type" x="436" y="276">[mcl_om mesh service, own box]</text>
-<text class="t-desc" x="436" y="300">Serves four sealed procedures under</text>
+<text class="t-desc" x="436" y="300">Serves its own sealed procedures under</text>
 <text class="t-desc" x="436" y="316">mcl-tube/ and the owner web UI on</text>
 <text class="t-desc" x="436" y="332">8491. Owns a reckon-db store and an</text>
 <text class="t-desc" x="436" y="348">event-sourced catalog, and announces</text>

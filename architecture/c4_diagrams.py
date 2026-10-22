@@ -143,7 +143,7 @@ def context():
            "has the realm grant this node a D25", "provider authorization per procedure"],
           person=True)
     d.box("b-sys", 420, 230, 320, 152, "mcl-tube", "[mcl_om mesh service, own box]",
-          ["Serves four sealed procedures under", "mcl-tube/ and the owner web UI on",
+          ["Serves its own sealed procedures under", "mcl-tube/ and the owner web UI on",
            "8491. Owns a reckon-db store and an", "event-sourced catalog, and announces",
            "it on four facts."])
     d.box("b-mac", 40, 460, 300, 120, "macula-realm", "[Macula infrastructure]",
@@ -189,7 +189,7 @@ def components():
     d.box("b-sys", 32, 222, 540, 136, "mcl_tube_service", "[mcl_om_service behaviour]",
           ["The six callbacks mcl_om resolves by name: info, start, stop, health,",
            "capabilities, identity_spec, plus event_store/0 and data_dir/0. Its",
-           "capabilities/0 declares four procedures, each confidential => required and",
+           "capabilities/0 declares its four procedures, each confidential => required and",
            "sealed with this node's ML-KEM key; identity_spec/0 asks for scope mcl-tube."], code=True)
     d.box("b-cmp", 32, 390, 540, 120, "mcl_tube_sup", "[supervisor, one_for_one]",
           ["One child: a cowboy listener through ranch:child_spec mcl_tube_http, on",
