@@ -47,6 +47,8 @@ holds is what this node published or advertised, not a call it makes out.
 | `evoq` / `reckon_evoq` / `reckon_db` | libraries, `~> 1.26` / `~> 2.7` / `~> 5.4` | Event sourcing for the two aggregates and the two projections, over this service's own store |
 | `MCL_DATA_DIR` | environment, a host volume | The store, the clips and the content cache; `deploy/docker-compose.yml` mounts `/bulk0/mcl-tube` there and the identity key in the `mcl-tube-secrets` volume |
 
+**Where the station list comes from.** It is not in `config/sys.config.src`: `mcl_om` reads `MACULA_STATION_SEEDS` and `MACULA_STATION_NODE_IDS` from the environment at boot, paired index for index, so this repository pins no station and the list may be any length.
+
 `config/sys.config.src` fixes the org, `mcl-tube`, which prefixes the four
 procedure names, and the realm name the catalog topics carry. The service
 refuses to start unless `sha256(MCL_REALM_NAME)` is `MCL_REALM`, and `mcl_om`
@@ -69,5 +71,5 @@ classes plus a `prefers-color-scheme` dark block, never CSS custom properties,
 which `rsvg-convert` renders black.
 
 The check that keeps them here is the `c4-model` job in
-`.github/workflows/build-push.yml`. It is red until both files exist and are
+`.github/workflows/c4-model.yml`. It is red until both files exist and are
 shown, and it stays red if either one goes missing.
