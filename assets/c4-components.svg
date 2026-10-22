@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 1390" role="img" aria-label="mcl-tube components">
+<title>mcl-tube components</title>
+<style>
+.t-name { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 700; }
+.t-desc { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 12.5px; }
+.t-rel { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 11.5px; paint-order: stroke; stroke-width: 4px; stroke-linejoin: round; }
+.t-code { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 13px; font-weight: 600; }
+.t-type { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px; }
+.t-bound { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 12px; font-weight: 600; }
+.t-leg { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 12px; }
+.edge { fill: none; stroke-width: 1.25; }
+.edge-later { fill: none; stroke-width: 1.25; stroke-dasharray: 5 4; }
+.bg { fill: #FFFFFF; }
+.b-sys { fill: #F5E9CC; stroke: #A56F0A; stroke-width: 2; }
+.b-per { fill: #E3EBF2; stroke: #3B5B7A; stroke-width: 1.25; }
+.b-mac { fill: #E6E4EE; stroke: #5E5A78; stroke-width: 1.25; }
+.b-ext { fill: #ECEFED; stroke: #8A9791; stroke-width: 1.25; }
+.b-cmp { fill: #FFFFFF; stroke: #8A9791; stroke-width: 1.25; }
+.b-later { fill: none; stroke: #8A9791; stroke-width: 1.25; stroke-dasharray: 5 4; }
+.bound { fill: none; stroke: #B3BDB8; stroke-width: 1; }
+.head { fill: #3B5B7A; }
+.t-name, .t-code { fill: #16201D; }
+.t-type, .t-bound, .t-leg { fill: #66736E; }
+.t-desc { fill: #34413C; }
+.t-rel { fill: #66736E; stroke: #FFFFFF; }
+.edge, .edge-later { stroke: #8A9791; }
+.arrowhead { fill: #8A9791; }
+@media (prefers-color-scheme: dark) {
+.bg { fill: #171F1C; }
+.b-sys { fill: #3A2E13; stroke: #E3AA3C; }
+.b-per { fill: #1D2A36; stroke: #8EB4D8; }
+.b-mac { fill: #26243A; stroke: #A9A4C8; }
+.b-ext { fill: #1C2421; stroke: #7D8B85; }
+.b-cmp { fill: #171F1C; stroke: #7D8B85; }
+.b-later { stroke: #7D8B85; }
+.bound { stroke: #4A5752; }
+.head { fill: #8EB4D8; }
+.t-name, .t-code { fill: #E6ECE9; }
+.t-type, .t-bound, .t-leg { fill: #93A09A; }
+.t-desc { fill: #C3CDC8; }
+.t-rel { fill: #93A09A; stroke: #171F1C; }
+.edge, .edge-later { stroke: #7D8B85; }
+.arrowhead { fill: #7D8B85; }
+}
+</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrowhead" d="M0 0L10 5L0 10z"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1160" height="1390"/>
+<rect class="bound" x="16" y="40" width="1128" height="890" rx="12"/>
+<text class="t-bound" x="32" y="62">mcl-tube [Container: one OTP release, four apps]</text>
+<rect class="b-cmp" x="32" y="70" width="540" height="120" rx="10"/>
+<text class="t-code" x="48" y="98">mcl_tube_app</text>
+<text class="t-type" x="48" y="116">[OTP application]</text>
+<text class="t-desc" x="48" y="140">Opens this service's own reckon-db store from mcl_tube_service:event_store/0,</text>
+<text class="t-desc" x="48" y="156">then calls mcl_om:boot/1. The three departments start before it, so every</text>
+<text class="t-desc" x="48" y="172">projection is registered before the store replays.</text>
+<rect class="b-sys" x="32" y="222" width="540" height="136" rx="10"/>
+<text class="t-code" x="48" y="250">mcl_tube_service</text>
+<text class="t-type" x="48" y="268">[mcl_om_service behaviour]</text>
+<text class="t-desc" x="48" y="292">The six callbacks mcl_om resolves by name: info, start, stop, health,</text>
+<text class="t-desc" x="48" y="308">capabilities, identity_spec, plus event_store/0 and data_dir/0. Its</text>
+<text class="t-desc" x="48" y="324">capabilities/0 declares four procedures, each confidential =&gt; required and</text>
+<text class="t-desc" x="48" y="340">sealed with this node's ML-KEM key; identity_spec/0 asks for scope mcl-tube.</text>
+<rect class="b-cmp" x="32" y="390" width="540" height="120" rx="10"/>
+<text class="t-code" x="48" y="418">mcl_tube_sup</text>
+<text class="t-type" x="48" y="436">[supervisor, one_for_one]</text>
+<text class="t-desc" x="48" y="460">One child: a cowboy listener through ranch:child_spec mcl_tube_http, on</text>
+<text class="t-desc" x="48" y="476">MCL_TUBE_HTTP_IP and MCL_TUBE_HTTP_PORT (127.0.0.1:8491 by default).</text>
+<text class="t-desc" x="48" y="492">It has no authentication of its own, so it binds loopback unless told.</text>
+<rect class="b-cmp" x="32" y="542" width="540" height="136" rx="10"/>
+<text class="t-code" x="48" y="570">tube_owner_ui_routes</text>
+<text class="t-type" x="48" y="588">[cowboy handlers]</text>
+<text class="t-desc" x="48" y="612">The owner's pages: tube_dashboard_page, tube_channel_configure_page,</text>
+<text class="t-desc" x="48" y="628">tube_video_clip_upload_page, tube_video_clip_actions and</text>
+<text class="t-desc" x="48" y="644">tube_owner_content_page, with tube_multipart parsing uploads and</text>
+<text class="t-desc" x="48" y="660">tube_owner_http answering HTML. Every write dispatches an evoq command.</text>
+<rect class="b-cmp" x="32" y="710" width="540" height="120" rx="10"/>
+<text class="t-code" x="48" y="738">mcl_tube_store</text>
+<text class="t-type" x="48" y="756">[reckon-db store, single node]</text>
+<text class="t-desc" x="48" y="780">Opened by mcl_tube_app before mcl_om boots: id mcl_tube_store, at MCL_DATA_DIR,</text>
+<text class="t-desc" x="48" y="796">no indexes, one node, integrity disabled. The evoq block in sys.config.src</text>
+<text class="t-desc" x="48" y="812">names the same id and a test compares the two.</text>
+<rect class="b-cmp" x="588" y="70" width="540" height="152" rx="10"/>
+<text class="t-code" x="604" y="98">guide_tube_lifecycle</text>
+<text class="t-type" x="604" y="116">[CMD app, event sourced]</text>
+<text class="t-desc" x="604" y="140">channel_aggregate and video_clip_aggregate sit over the store, one desk</text>
+<text class="t-desc" x="604" y="156">per business step: initiate_channel, reconfigure_channel, upload_video_clip,</text>
+<text class="t-desc" x="604" y="172">publish_video_clip, retract_video_clip, archive_video_clip,</text>
+<text class="t-desc" x="604" y="188">record_video_clip_view, rehash_channel_logo and rehash_video_clip_thumbnail.</text>
+<text class="t-desc" x="604" y="204">Its events are the only source of the read model and the catalog facts.</text>
+<rect class="b-cmp" x="588" y="254" width="540" height="136" rx="10"/>
+<text class="t-code" x="604" y="282">project_tube</text>
+<text class="t-type" x="604" y="300">[PRJ app]</text>
+<text class="t-desc" x="604" y="324">project_tube_store owns two ETS tables, tube_channels and tube_video_clips,</text>
+<text class="t-desc" x="604" y="340">and every QRY desk reads through it. Two evoq_projection workers fill</text>
+<text class="t-desc" x="604" y="356">them: channel_lifecycle_to_channels and video_clip_lifecycle_to_video_clips.</text>
+<text class="t-desc" x="604" y="372">The model is in memory and rebuilt from the store on every boot.</text>
+<rect class="b-cmp" x="588" y="422" width="540" height="152" rx="10"/>
+<text class="t-code" x="604" y="450">query_tube</text>
+<text class="t-type" x="604" y="468">[QRY app]</text>
+<text class="t-desc" x="604" y="492">Four providers, one per advertised procedure: advertise_channel_lookup,</text>
+<text class="t-desc" x="604" y="508">advertise_video_clip_lookup, advertise_content_lookup and</text>
+<text class="t-desc" x="604" y="524">stream_video_clip_by_id, which pushes 64 KiB chunks off local disk and</text>
+<text class="t-desc" x="604" y="540">stops with a stream error the moment a clip is retracted. Only published</text>
+<text class="t-desc" x="604" y="556">clips are served; tube_json_view renders the page desks' JSON.</text>
+<rect class="b-cmp" x="588" y="606" width="540" height="120" rx="10"/>
+<text class="t-code" x="604" y="634">tube_content_store</text>
+<text class="t-type" x="604" y="652">[local content cache]</text>
+<text class="t-desc" x="604" y="676">Clip thumbnails and channel logos, keyed by the hex MCID, which is the</text>
+<text class="t-desc" x="604" y="692">SHA-384 of the bytes: tube_content_put refuses bytes that do not hash to</text>
+<text class="t-desc" x="604" y="708">it, and a file that no longer does is never served.</text>
+<rect class="b-cmp" x="588" y="758" width="540" height="152" rx="10"/>
+<text class="t-code" x="604" y="786">on_video_clip_published_publish_clip</text>
+<text class="t-type" x="604" y="804">[evoq_event_handler]</text>
+<text class="t-desc" x="604" y="828">One of four mesh handlers under guide_tube_lifecycle_sup; all four publish</text>
+<text class="t-desc" x="604" y="844">through tube_mesh_publisher. Its siblings withdraw a clip on retract and</text>
+<text class="t-desc" x="604" y="860">on archive, channel_announced_v1_to_mesh publishes a channel on every</text>
+<text class="t-desc" x="604" y="876">change, and channel_heartbeat re-announces every channel and one page of</text>
+<text class="t-desc" x="604" y="892">published clips every 60 s, so a catalogue can expire what it stops seeing.</text>
+<path class="edge" d="M200 190V222" marker-end="url(#a)"/>
+<text class="t-rel" x="208" y="214">boots with</text>
+<path class="edge" d="M200 358V390" marker-end="url(#a)"/>
+<text class="t-rel" x="208" y="382">start/1 starts</text>
+<path class="edge" d="M200 510V542" marker-end="url(#a)"/>
+<text class="t-rel" x="208" y="534">mounts</text>
+<path class="edge" d="M740 222V254" marker-end="url(#a)"/>
+<text class="t-rel" x="748" y="246">its events are projected</text>
+<path class="edge" d="M740 390V422" marker-end="url(#a)"/>
+<text class="t-rel" x="748" y="414">every desk reads through project_tube_store</text>
+<path class="edge" d="M740 574V606" marker-end="url(#a)"/>
+<text class="t-rel" x="748" y="598">serves logos and thumbnails from</text>
+<path class="edge" d="M1128 128H1140V740H900V758" marker-end="url(#a)"/>
+<text class="t-rel" x="908" y="747">publishes through</text>
+<rect class="b-mac" x="32" y="962" width="352" height="136" rx="10"/>
+<text class="t-code" x="48" y="990">mcl_om</text>
+<text class="t-type" x="48" y="1008">[library, ~&gt; 1.0]</text>
+<text class="t-desc" x="48" y="1032">boot/1: loads the node identity key,</text>
+<text class="t-desc" x="48" y="1048">joins the realm, dials the pinned</text>
+<text class="t-desc" x="48" y="1064">stations over QUIC, advertises the four</text>
+<text class="t-desc" x="48" y="1080">capabilities, serves /health on a socket.</text>
+<rect class="b-mac" x="404" y="962" width="352" height="136" rx="10"/>
+<text class="t-code" x="420" y="990">macula</text>
+<text class="t-type" x="420" y="1008">[library, ~&gt; 15.6, wire 1.0]</text>
+<text class="t-desc" x="420" y="1032">QUIC transport and the RPC dispatch to</text>
+<text class="t-desc" x="420" y="1048">a provider that answers by name; the</text>
+<text class="t-desc" x="420" y="1064">streamer, the publisher, and the signed</text>
+<text class="t-desc" x="420" y="1080">records the mesh DHT holds.</text>
+<rect class="b-cmp" x="776" y="962" width="352" height="136" rx="10"/>
+<text class="t-code" x="792" y="990">evoq / reckon_evoq / reckon_db</text>
+<text class="t-type" x="792" y="1008">[libraries, ~&gt; 1.26 / ~&gt; 2.7 / ~&gt; 5.4]</text>
+<text class="t-desc" x="792" y="1032">Event sourcing for the two aggregates and</text>
+<text class="t-desc" x="792" y="1048">the two projections, over this service's</text>
+<text class="t-desc" x="792" y="1064">own store: commands in, events out, and</text>
+<text class="t-desc" x="792" y="1080">the per-store subscription that replays.</text>
+<rect class="b-ext" x="40" y="1122" width="1080" height="120" rx="10"/>
+<text class="t-code" x="56" y="1150">MCL_DATA_DIR</text>
+<text class="t-type" x="56" y="1168">[environment, read by the service; a host volume in the compose file]</text>
+<text class="t-desc" x="56" y="1192">MCL_DATA_DIR (store, clips, content cache), MCL_TUBE_HTTP_IP and MCL_TUBE_HTTP_PORT, MCL_REALM,</text>
+<text class="t-desc" x="56" y="1208">MCL_REALM_NAME and MCL_REALM_KEY, MACULA_STATION_SEEDS and MACULA_STATION_NODE_IDS. The node's</text>
+<text class="t-desc" x="56" y="1224">identity key is /etc/mcl/secrets/identity.key, in the mcl-tube-secrets volume that must outlive it.</text>
+<path class="edge" d="M108 830V950H950V962" marker-end="url(#a)"/>
+<text class="t-rel" x="120" y="944">events in and out, through reckon_evoq</text>
+<text class="t-desc" x="40" y="1282">config/sys.config.src fixes the org, mcl-tube, which prefixes the four procedure names, and the realm name the catalog topics carry.</text>
+<text class="t-desc" x="40" y="1300">The service refuses to start unless sha256 of that name is MCL_REALM, and mcl_om refuses a pool with an unpinned seed or no realm key.</text>
+<rect class="b-sys" x="24" y="1340" width="22" height="14" rx="3"/>
+<text class="t-leg" x="54" y="1352">In scope</text>
+<rect class="b-per" x="110.8" y="1340" width="22" height="14" rx="3"/>
+<text class="t-leg" x="140.8" y="1352">Person</text>
+<rect class="b-mac" x="184.39999999999998" y="1340" width="22" height="14" rx="3"/>
+<text class="t-leg" x="214.39999999999998" y="1352">Macula infrastructure</text>
+<rect class="b-ext" x="357.0" y="1340" width="22" height="14" rx="3"/>
+<text class="t-leg" x="387.0" y="1352">External system</text>
+<rect class="b-cmp" x="490.0" y="1340" width="22" height="14" rx="3"/>
+<text class="t-leg" x="520.0" y="1352">Container or component</text>
+<rect class="bound" x="669.2" y="1340" width="22" height="14" rx="3"/>
+<text class="t-leg" x="699.2" y="1352">Boundary</text>
+</svg>
