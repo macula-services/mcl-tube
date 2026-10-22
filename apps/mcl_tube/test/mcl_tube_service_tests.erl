@@ -83,7 +83,7 @@ only_the_watch_is_a_stream_test() ->
 
 %% The org the procedures are registered under is deploy config, so the
 %% shipped config must name the org the contract promises.
-%% SEALED MACULA TV (#17): every procedure refuses a caller that does not
+%% SEALED MACULA TV (#17): its own four procedures refuse a caller that does not
 %% seal, from the first second after boot. `preferred' already refuses a
 %% clear call once the key has been advertised for ~10 minutes (macula >=
 %% 13.0); `required' closes that window after every restart. A viewer's

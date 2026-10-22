@@ -174,7 +174,7 @@ def context():
     d.edge("M740 320H860V460")
     d.text("t-rel", 748, 314, "publishes the four catalog facts")
     d.text("t-desc", 40, 632, "The service calls nothing outside the mesh: a stream reads a clip off its own disk and the two lookups")
-    d.text("t-desc", 40, 650, "read its own read model. Every procedure refuses a caller that does not seal, so a station relays ciphertext only.")
+    d.text("t-desc", 40, 650, "read its own read model. Four procedures of its own refuse a caller that does not seal, so a station relays ciphertext.")
     d.legend(716, boundary=False)
     d.write()
 
@@ -188,10 +188,10 @@ def components():
            "then calls mcl_om:boot/1. The three departments start before it, so every",
            "projection is registered before the store replays."], code=True)
     d.box("b-sys", 32, 222, 540, 136, "mcl_tube_service", "[mcl_om_service behaviour]",
-          ["The six callbacks mcl_om resolves by name: info, start, stop, health,",
-           "capabilities, identity_spec, plus event_store/0 and data_dir/0. Its",
-           "capabilities/0 declares its four procedures, each confidential => required and",
-           "sealed with this node's ML-KEM key; identity_spec/0 asks for scope mcl-tube."], code=True)
+          ["The mcl_om_service callbacks: start, stop, health, capabilities,",
+           "identity_spec, plus event_store/0 and data_dir/0. capabilities/0",
+           "declares four procedures of its own, each confidential => required and",
+           "sealed with this node's ML-KEM key; mcl_om adds info and get_limits."], code=True)
     d.box("b-cmp", 32, 390, 540, 120, "mcl_tube_sup", "[supervisor, one_for_one]",
           ["One child: a cowboy listener through ranch:child_spec mcl_tube_http, on",
            "MCL_TUBE_HTTP_IP and MCL_TUBE_HTTP_PORT (127.0.0.1:8491 by default).",
@@ -218,7 +218,7 @@ def components():
            "them: channel_lifecycle_to_channels and video_clip_lifecycle_to_video_clips.",
            "The model is in memory and rebuilt from the store on every boot."], code=True)
     d.box("b-cmp", 588, 422, 540, 152, "query_tube", "[QRY app]",
-          ["Four providers, one per advertised procedure: advertise_channel_lookup,",
+          ["One provider per procedure of its own: advertise_channel_lookup,",
            "advertise_video_clip_lookup, advertise_content_lookup and",
            "stream_video_clip_by_id, which pushes 64 KiB chunks off local disk and",
            "stops with a stream error the moment a clip is retracted. Only published",
@@ -262,7 +262,7 @@ def components():
            "MCL_REALM_NAME and MCL_REALM_KEY, MACULA_STATION_SEEDS and MACULA_STATION_NODE_IDS. The node's",
            "identity key is /etc/mcl/secrets/identity.key, in the mcl-tube-secrets volume that must outlive it."], code=True)
     d.edge("M108 830V950H950V962"); d.text("t-rel", 120, 944, "events in and out, through reckon_evoq")
-    d.text("t-desc", 40, 1282, "config/sys.config.src fixes the org, mcl-tube, which prefixes every procedure name, and the realm name the catalog topics carry.")
+    d.text("t-desc", 40, 1282, "config/sys.config.src fixes the org, mcl-tube, which prefixes a procedure's name, and the realm name the catalog topics carry.")
     d.text("t-desc", 40, 1300, "The service refuses to start unless sha256 of that name is MCL_REALM, and mcl_om refuses a pool with an unpinned seed or no realm key.")
     d.legend(1340)
     d.write()

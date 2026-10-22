@@ -3,8 +3,8 @@
 %% every desk's routes actually get served (an earlier service scaffolded
 %% this same aggregation and never wired it in; don't repeat that gap).
 %%
-%% Owns no mesh-advertising worker either: all four of this service's
-%% capabilities (mcl-tube/lookup_channel, mcl-tube/lookup_video_clip,
+%% Owns no mesh-advertising worker either: four capabilities of its own
+%% (mcl-tube/lookup_channel, mcl-tube/lookup_video_clip,
 %% mcl-tube/lookup_content, mcl-tube/watch_video_clip) are declared in
 %% mcl_tube_service:capabilities/0 and advertised generically by
 %% mcl_om:boot/1 (mcl_om >= 0.18.0, which added a streamer-backed

@@ -1,8 +1,9 @@
-%% @doc `mcl-tube/info', the procedure mcl_om 0.28 answers for this service with
-%% no code of its own: who it is, its versions and what it advertises.
+%% @doc `mcl-tube/info' and `mcl-tube/get_limits', the procedures mcl_om answers
+%% for this service with no code of its own: who it is, its versions, what it
+%% advertises, and the inbound guard's limits.
 %%
-%% Built from this service's real info/0, its real capabilities/0 with `info'
-%% added the way mcl_om:boot/2 adds it, and the org in config/sys.config.src,
+%% Built from this service's real info/0, its real capabilities/0 with `info' and
+%% `get_limits' added the way mcl_om:boot/2 adds both, and the org in config/sys.config.src,
 %% then sent through macula's own frame codec, the path a reply takes. What
 %% arrives must be text, never bytes, and name this service, its procedures and
 %% the mcl_om and macula it runs, at least 0.39 and 14.2 (mcl-tube#17, #19).

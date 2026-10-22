@@ -40,7 +40,7 @@ holds is what this node published or advertised, not a call it makes out.
 | `mcl_tube_store` | reckon-db store, single node | This service's own store, id `mcl_tube_store` at `MCL_DATA_DIR`. The evoq block in `sys.config.src` names the same id and a test compares the two |
 | `guide_tube_lifecycle` | CMD app, event sourced | `channel_aggregate` and `video_clip_aggregate`, one desk per business step: initiate, reconfigure, upload, publish, retract, archive, record a view, rehash the logo and the thumbnail |
 | `project_tube` | PRJ app | `project_tube_store` owns two ETS tables, `tube_channels` and `tube_video_clips`; `channel_lifecycle_to_channels` and `video_clip_lifecycle_to_video_clips` fill them. Rebuilt from the store on every boot |
-| `query_tube` | QRY app | The four providers: `advertise_channel_lookup`, `advertise_video_clip_lookup`, `advertise_content_lookup` and `stream_video_clip_by_id`. `tube_json_view` renders the page desks' JSON |
+| `query_tube` | QRY app | One provider per procedure of its own: `advertise_channel_lookup`, `advertise_video_clip_lookup`, `advertise_content_lookup` and `stream_video_clip_by_id`. `tube_json_view` renders the page desks' JSON |
 | `tube_content_store` | local content cache | Clip thumbnails and channel logos by hex MCID, which is the SHA-384 of the bytes. `tube_content_put` refuses bytes that do not hash to their id |
 | `on_video_clip_published_publish_clip` | `evoq_event_handler` | One of four mesh handlers under `guide_tube_lifecycle_sup`, all publishing through `tube_mesh_publisher`: the retract and archive withdraw a clip, `channel_announced_v1_to_mesh` publishes a channel, and `channel_heartbeat` re-announces every 60 s |
 | `mcl_om` | library, `~> 1.0` | `boot/1`: loads the node identity key, joins the realm, dials the pinned stations over QUIC, advertises its four capabilities plus the open `info` and `get_limits` it adds to every service, and serves `/health` on a Unix socket |
@@ -50,8 +50,8 @@ holds is what this node published or advertised, not a call it makes out.
 
 **Where the station list comes from.** It is not in `config/sys.config.src`: `mcl_om` reads `MACULA_STATION_SEEDS` and `MACULA_STATION_NODE_IDS` from the environment at boot, paired index for index, so this repository pins no station and the list may be any length.
 
-`config/sys.config.src` fixes the org, `mcl-tube`, which prefixes the four
-procedure names, and the realm name the catalog topics carry. The service
+`config/sys.config.src` fixes the org, `mcl-tube`, which prefixes a
+procedure's name, and the realm name the catalog topics carry. The service
 refuses to start unless `sha256(MCL_REALM_NAME)` is `MCL_REALM`, and `mcl_om`
 refuses a pool with an unpinned seed or no realm key, because either one leaves
 a node that looks healthy and reaches nobody.

@@ -93,9 +93,11 @@ fact.
 Both lists are pinned by tests (`mcl_tube_service_tests`,
 `tube_catalog_topic_tests`). A change is a new name, not an edit.
 
-Like every mcl service, it also answers `mcl-tube/info`, which mcl_om adds: its
-name, version and description, its org and claim labels, node id, the macula
-and mcl_om versions, uptime, the health word and the procedures it advertises.
+Like every mcl service, it also answers the open procedures mcl_om adds:
+`mcl-tube/info` gives its name, version and description, its org and claim
+labels, node id, the macula and mcl_om versions, uptime, the health word and the
+procedures it advertises; `mcl-tube/get_limits` gives the inbound guard's limits
+and current-window stats.
 Open to any mesh caller, public facts only.
 
 ## Configuration
@@ -122,9 +124,9 @@ What an operator does, in order:
    volume `mcl-tube-secrets`; keep it, because the next step is tied to it.
 2. **Have the realm grant this node its provider authorization.** Serving an
    org-namespaced procedure needs a realm-issued grant (D25) naming this node's
-   id, and a person admits it on the realm. Until then nothing is advertised,
-   every call resolves to nothing, and `/health` is degraded, naming each
-   procedure still missing one under `provider_grants`. A new identity is a
+   id, and a person admits it on the realm. Until then the realm has not
+   authorized this node, calls resolve to nothing, and `/health` is degraded,
+   naming the procedures still missing an authorization under `provider_grants`. A new identity is a
    new, unadmitted node.
 3. Reach the owner UI over a tunnel:
    `ssh -L 8491:127.0.0.1:8491 <box>`, then browse to `http://localhost:8491/`.
@@ -132,7 +134,7 @@ What an operator does, in order:
 ## Health
 
 `/health` answers whether callers can **reach** the service. mcl_om reports
-every procedure the realm has not granted this node a provider authorization
+the procedures the realm has not granted this node a provider authorization
 for: degraded at once when no delegation names this node (an operator has to
 grant it), after a 60 s grace window for any other refusal, so a lookup that
 fails once does not flap.
