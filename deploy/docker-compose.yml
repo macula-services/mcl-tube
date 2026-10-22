@@ -41,7 +41,7 @@ services:
       # gigabytes, and application data belongs on the data disk.
       - ${MCL_DATA:-/bulk0/mcl-tube}:/data
     labels:
-      # Only meaningful if you run watchtower yourself. Harmless otherwise.
+      # Nothing here depends on it: no watchtower runs on the fleet.
       - "com.centurylinklabs.watchtower.enable=true"
     environment:
       # No default. A service that guesses its realm announces itself where

@@ -53,13 +53,14 @@
 <text class="t-desc" x="48" y="140">Opens this service's own reckon-db store from mcl_tube_service:event_store/0,</text>
 <text class="t-desc" x="48" y="156">then calls mcl_om:boot/1. The three departments start before it, so every</text>
 <text class="t-desc" x="48" y="172">projection is registered before the store replays.</text>
-<rect class="b-sys" x="32" y="222" width="540" height="136" rx="10"/>
+<rect class="b-sys" x="32" y="222" width="540" height="152" rx="10"/>
 <text class="t-code" x="48" y="250">mcl_tube_service</text>
 <text class="t-type" x="48" y="268">[mcl_om_service behaviour]</text>
-<text class="t-desc" x="48" y="292">The mcl_om_service callbacks: start, stop, health, capabilities,</text>
-<text class="t-desc" x="48" y="308">identity_spec, plus event_store/0 and data_dir/0. capabilities/0</text>
-<text class="t-desc" x="48" y="324">declares four procedures of its own, each confidential =&gt; required and</text>
-<text class="t-desc" x="48" y="340">sealed with this node's ML-KEM key; mcl_om adds info and get_limits.</text>
+<text class="t-desc" x="48" y="292">The mcl_om_service callbacks: start, stop, health,</text>
+<text class="t-desc" x="48" y="308">capabilities, identity_spec, plus event_store/0 and data_dir/0.</text>
+<text class="t-desc" x="48" y="324">capabilities/0 declares four procedures of its own, each</text>
+<text class="t-desc" x="48" y="340">confidential =&gt; required and sealed with this node's ML-KEM key;</text>
+<text class="t-desc" x="48" y="356">mcl_om adds info and get_limits.</text>
 <rect class="b-cmp" x="32" y="390" width="540" height="120" rx="10"/>
 <text class="t-code" x="48" y="418">mcl_tube_sup</text>
 <text class="t-type" x="48" y="436">[supervisor, one_for_one]</text>
@@ -129,14 +130,15 @@
 <path class="edge" d="M740 574V606" marker-end="url(#a)"/>
 <text class="t-rel" x="748" y="598">serves logos and thumbnails from</text>
 <path class="edge" d="M1128 128H1140V740H900V758" marker-end="url(#a)"/>
-<text class="t-rel" x="908" y="747">publishes through</text>
-<rect class="b-mac" x="32" y="962" width="352" height="136" rx="10"/>
+<text class="t-rel" x="908" y="754">publishes through</text>
+<rect class="b-mac" x="32" y="962" width="352" height="152" rx="10"/>
 <text class="t-code" x="48" y="990">mcl_om</text>
 <text class="t-type" x="48" y="1008">[library, ~&gt; 1.0]</text>
 <text class="t-desc" x="48" y="1032">boot/1: loads the node identity key,</text>
 <text class="t-desc" x="48" y="1048">joins the realm, dials the pinned</text>
-<text class="t-desc" x="48" y="1064">stations over QUIC, advertises its four</text>
-<text class="t-desc" x="48" y="1080">plus info and get_limits, serves /health.</text>
+<text class="t-desc" x="48" y="1064">stations over QUIC, advertises what</text>
+<text class="t-desc" x="48" y="1080">capabilities/0 returns, adds info and get_limits</text>
+<text class="t-desc" x="48" y="1096">and serves /health.</text>
 <rect class="b-mac" x="404" y="962" width="352" height="136" rx="10"/>
 <text class="t-code" x="420" y="990">macula</text>
 <text class="t-type" x="420" y="1008">[library, ~&gt; 15.6, wire 1.0]</text>

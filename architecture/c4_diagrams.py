@@ -142,7 +142,7 @@ def context():
           ["Runs the box, sets MCL_REALM, the", "realm key and the station seeds, and",
            "has the realm grant this node a D25", "provider authorization per procedure"],
           person=True)
-    d.box("b-sys", 420, 230, 320, 152, "mcl-tube", "[mcl_om mesh service, own box]",
+    d.box("b-sys", 420, 230, 320, 152, "mcl-tube", "[mcl_om mesh service]",
           ["Serves its own sealed procedures under", "mcl-tube/ and the owner web UI on",
            "8491. Owns a reckon-db store and an", "event-sourced catalog, and announces",
            "it on four facts."])
@@ -187,11 +187,12 @@ def components():
           ["Opens this service's own reckon-db store from mcl_tube_service:event_store/0,",
            "then calls mcl_om:boot/1. The three departments start before it, so every",
            "projection is registered before the store replays."], code=True)
-    d.box("b-sys", 32, 222, 540, 136, "mcl_tube_service", "[mcl_om_service behaviour]",
-          ["The mcl_om_service callbacks: start, stop, health, capabilities,",
-           "identity_spec, plus event_store/0 and data_dir/0. capabilities/0",
-           "declares four procedures of its own, each confidential => required and",
-           "sealed with this node's ML-KEM key; mcl_om adds info and get_limits."], code=True)
+    d.box("b-sys", 32, 222, 540, 152, "mcl_tube_service", "[mcl_om_service behaviour]",
+          ["The mcl_om_service callbacks: start, stop, health,",
+           "capabilities, identity_spec, plus event_store/0 and data_dir/0.",
+           "capabilities/0 declares four procedures of its own, each",
+           "confidential => required and sealed with this node's ML-KEM key;",
+           "mcl_om adds info and get_limits."], code=True)
     d.box("b-cmp", 32, 390, 540, 120, "mcl_tube_sup", "[supervisor, one_for_one]",
           ["One child: a cowboy listener through ranch:child_spec mcl_tube_http, on",
            "MCL_TUBE_HTTP_IP and MCL_TUBE_HTTP_PORT (127.0.0.1:8491 by default).",
@@ -240,13 +241,14 @@ def components():
     d.edge("M740 222V254"); d.text("t-rel", 748, 246, "its events are projected")
     d.edge("M740 390V422"); d.text("t-rel", 748, 414, "every desk reads through project_tube_store")
     d.edge("M740 574V606"); d.text("t-rel", 748, 598, "serves logos and thumbnails from")
-    d.edge("M1128 128H1140V740H900V758"); d.text("t-rel", 908, 747, "publishes through")
+    d.edge("M1128 128H1140V740H900V758"); d.text("t-rel", 908, 754, "publishes through")
 
-    d.box("b-mac", 32, 962, 352, 136, "mcl_om", "[library, ~> 1.0]",
+    d.box("b-mac", 32, 962, 352, 152, "mcl_om", "[library, ~> 1.0]",
           ["boot/1: loads the node identity key,",
            "joins the realm, dials the pinned",
-           "stations over QUIC, advertises its four",
-           "plus info and get_limits, serves /health."], code=True)
+           "stations over QUIC, advertises what",
+           "capabilities/0 returns, adds info and get_limits",
+           "and serves /health."], code=True)
     d.box("b-mac", 404, 962, 352, 136, "macula", "[library, ~> 15.6, wire 1.0]",
           ["QUIC transport and the RPC dispatch to",
            "a provider that answers by name; the",

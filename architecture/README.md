@@ -7,7 +7,7 @@ without reading it.*
 reckon-db store, event-sources the channel and clip lifecycles, projects them
 into an in-memory read model, and answers four sealed procedures of its own plus
 the open `info` and `get_limits` `mcl_om` adds to every service, and the owner
-web UI on 8491. It calls nothing outside the mesh.
+web UI on 8491 by default. It calls nothing outside the mesh.
 
 ## Level 1: system context
 
@@ -15,12 +15,12 @@ web UI on 8491. It calls nothing outside the mesh.
 
 | Element | Kind | Role |
 | --- | --- | --- |
-| mcl-tube | In scope | Serves `mcl-tube/lookup_channel`, `lookup_video_clip`, `lookup_content` and the `watch_video_clip` stream, all `confidential => required`, plus the owner web UI on 8491. One OTP release in one container, an `mcl_om` mesh service on its own box |
-| Owner | Person | Creates a channel and uploads, publishes, retracts and archives clips through the local web UI, which has no authentication of its own and binds loopback |
+| mcl-tube | In scope | Serves `mcl-tube/lookup_channel`, `lookup_video_clip`, `lookup_content` and the `watch_video_clip` stream, all `confidential => required`, plus the owner web UI on 8491 by default. One OTP release in one container, an `mcl_om` mesh service |
+| Owner | Person | Creates a channel and uploads, publishes, retracts and archives clips through the local web UI, which has no authentication of its own and binds loopback by default |
 | Viewer | Person | Any mesh caller: an app that looks a channel, a clip or its content up, and streams a published clip. Every SDK seals by default, so a caller that does not seal is refused with `sealed_required` |
 | Service operator | Person | Runs the box, sets `MCL_REALM`, `MCL_REALM_KEY` and the station seeds, and has the realm grant this node a D25 provider authorization for the org `mcl-tube` |
 | macula-realm | Macula infrastructure | Endorses the node's identity key and issues the provider grant for each org-namespaced procedure |
-| Macula stations, mesh DHT | Macula infrastructure | The pinned seeds in `MACULA_STATION_SEEDS` carry every call and fact over QUIC; the DHT holds one advertisement per procedure, its own four and `mcl_om`'s `info` and `get_limits`, each naming this node's ML-KEM key |
+| Macula stations, mesh DHT | Macula infrastructure | The pinned seeds in `MACULA_STATION_SEEDS` carry every call and fact over QUIC; the DHT holds an advertisement per procedure, its own four and `mcl_om`'s `info` and `get_limits`, each naming this node's ML-KEM key |
 | A catalogue, the portal's | External system | Subscribes to the four catalog facts under `io.macula/mcl-tube/tube/catalog/`, lists a channel or clip without asking, and expires a listing nobody re-announced |
 
 The service calls nothing outside the mesh: a stream reads a clip off its own
