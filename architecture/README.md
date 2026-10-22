@@ -33,7 +33,7 @@ holds is what this node published or advertised, not a call it makes out.
 | Component | Technology | Responsibility |
 | --- | --- | --- |
 | `mcl_tube_app` | OTP application | Opens the store from `mcl_tube_service:event_store/0`, then `mcl_om:boot/1`. The three departments start before it, so every projection is registered before the store replays |
-| `mcl_tube_service` | the `mcl_om_service` behaviour | The six callbacks `mcl_om` resolves by name, plus `event_store/0` and `data_dir/0`. `capabilities/0` declares the four procedures and names each provider module, so the providers are wired here and nowhere else |
+| `mcl_tube_service` | the `mcl_om_service` behaviour | The six callbacks `mcl_om` resolves by name, plus `event_store/0` and `data_dir/0`. `capabilities/0` declares the four procedures of its own and names each provider module, so the providers are wired here and nowhere else |
 | `mcl_tube_sup` | supervisor, `one_for_one` | One child: a cowboy listener on `MCL_TUBE_HTTP_IP`:`MCL_TUBE_HTTP_PORT` (127.0.0.1:8491), carrying the owner pages and `query_tube_sup:routes/0` on the same socket |
 | `tube_owner_ui_routes` | cowboy handlers | `tube_dashboard_page`, `tube_channel_configure_page`, `tube_video_clip_upload_page`, `tube_video_clip_actions` and `tube_owner_content_page`, with `tube_multipart` and `tube_owner_http`. Every write dispatches an evoq command |
 | `mcl_tube_store` | reckon-db store, single node | This service's own store, id `mcl_tube_store` at `MCL_DATA_DIR`. The evoq block in `sys.config.src` names the same id and a test compares the two |

@@ -29,7 +29,7 @@ on the mesh can find it and watch it, with no platform in between.
 ## Status
 
 Runs on macula 15 through `mcl_om` 1.0, and opens its own reckon-db store
-(`mcl_tube_store`). Its advertisements name an ML-KEM key and **every procedure requires a sealed
+(`mcl_tube_store`). Its advertisements name an ML-KEM key and **every procedure of its own requires a sealed
 caller**: lookups and the watch stream are sealed end to end, and a caller that
 does not seal is refused with `sealed_required`. Every macula SDK seals by
 default.
@@ -40,7 +40,7 @@ default.
   be published), publishes, retracts and archives them, through a web UI
   served locally by the service.
 - **Anyone** on the mesh looks a channel, a clip or a piece of content (a
-  thumbnail, a logo) up, and streams a published clip, over four procedures.
+  thumbnail, a logo) up, and streams a published clip, over four procedures of its own.
 - The catalog is **announced** on four facts, so a catalogue (the portal's)
   can list channels and clips without asking.
 
