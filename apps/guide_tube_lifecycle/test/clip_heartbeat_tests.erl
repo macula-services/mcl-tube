@@ -20,7 +20,7 @@ pages_move_through_the_list_and_wrap_test() ->
     ?assertEqual({[e], 0}, channel_heartbeat:next_page(Ids, 4, 2)).
 
 %% The list shrinks when clips are retracted: a cursor past its end starts
-%% over rather than announcing nothing.
+%% over rather than reporting an empty page.
 a_cursor_past_the_end_starts_over_test() ->
     ?assertEqual({[a, b], 2}, channel_heartbeat:next_page([a, b, c], 7, 2)).
 

@@ -44,7 +44,7 @@ start(_Opts) ->
 stop(_State) -> ok.
 
 %% Nothing of the service's own can fail here. Whether callers can REACH it
-%% (each procedure's realm-issued D25 provider grant) is reported by mcl_om's
+%% (the realm-issued D25 provider grant covering its procedures) is reported by mcl_om's
 %% /health itself, combined with this verdict.
 health() -> ok.
 

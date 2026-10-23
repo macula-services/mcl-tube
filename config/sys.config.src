@@ -1,4 +1,4 @@
-%% Substituted by relx at boot; every ${VAR} must resolve or the node will not
+%% Every ${VAR} must resolve at boot, or the node will not
 %% start with a malformed term. That is the correct failure: a service with a
 %% half-configured realm announces itself where nobody can attribute it, which
 %% looks exactly like a healthy node.
@@ -29,10 +29,11 @@
         %% HEALTHCHECK reaches it with curl --unix-socket.
         {health_socket,     "/run/mcl/health.sock"},
         {capability_topic,  <<"_mesh.cap.">>},
-        %% The org the four procedures are served under: `mcl-tube/<name>'.
+        %% The org a procedure is served under: `mcl-tube/<name>', its own
+        %% four and mcl_om's info and get_limits alike.
         %% One org per service, named after the repo. The realm must have
-        %% granted THIS node a provider authorization for it (D25), or nothing
-        %% is advertised and /health says so.
+        %% granted THIS node a provider authorization for it (D25), or the realm
+        %% refuses it and /health says so.
         {org,               <<"mcl-tube">>},
         %% THE REALM IS AN APPLICATION ENV, NOT A SHELL VARIABLE, and this file
         %% is the only place the two meet. mcl_om_identity:realm() reads
@@ -45,12 +46,14 @@
         %% SIGNING KEY, 64-hex-per-32-bytes, as carried. mcl_om decodes it and
         %% pins it as macula:connect/2's `realm_trust'.
         %%
-        %% Without it every org-namespaced advertisement this service resolves
-        %% is refused with `no_realm_key', direct dial answers `{unresolved,
-        %% no_trusted_advertisement}', and the boot claim never reaches the
-        %% realm: no pending row, no delegation, nothing callable. The node
-        %% stays green and answers /health throughout, which is why mcl_om
-        %% now refuses to start a pool without it rather than letting a
+        %% With the WRONG key the signer match fails: every org-namespaced
+        %% advertisement this service resolves is refused with
+        %% `org_directory_wrong_realm' (`no_realm_key' is the other clause, no
+        %% key at all for this realm), direct dial answers
+        %% `{unresolved, no_trusted_advertisement}', and the boot claim never
+        %% reaches the realm: no pending row, no delegation, and no peer resolves it,
+        %% while the node answers /health throughout. That failure mode is why
+        %% mcl_om refuses to start a pool with no key at all, rather than let a
         %% service look healthy and be unreachable.
         %%
         %% Public material. It is the half everyone verifies against, not a
@@ -87,7 +90,7 @@
         %% advertisements carry an ML-KEM key, so callers seal lookups and the
         %% watch stream end to end and a station relays only ciphertext. A
         %% property of the service, so a literal here, not a per-box variable.
-        %% Every capability is `required' (mcl_tube_service:capabilities/0,
+        %% Its own four are `required' (mcl_tube_service:capabilities/0,
         %% #17), which mcl_om refuses at boot unless this is `enabled'.
         {kem_advertise, enabled}
     ]},
