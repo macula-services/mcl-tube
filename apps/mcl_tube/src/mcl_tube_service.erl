@@ -2,8 +2,8 @@
 %%
 %% Video channels over the mesh. An owner uploads and publishes clips through
 %% the local web UI; anyone looks a channel, a clip or its content up, and
-%% streams a clip, over four org-namespaced procedures under `mcl-tube'. The
-%% catalog is announced on io.macula/mcl-tube/tube/catalog/*_v1.
+%% streams a clip, over four org-namespaced procedures of its own under
+%% `mcl-tube'. The catalog is announced on io.macula/mcl-tube/tube/catalog/*_v1.
 %%
 %% SIX CALLBACKS, ALL REQUIRED. mcl_om resolves them BY NAME at startup, so the
 %% `-behaviour' attribute below turns a missing one into a compile error.
@@ -48,9 +48,9 @@ stop(_State) -> ok.
 %% /health itself, combined with this verdict.
 health() -> ok.
 
-%% The four procedures, registered by mcl_om as `mcl-tube/<name>' (the org
-%% comes from config). The watch is a stream, served by macula_streamer; the
-%% others are request and reply.
+%% The four procedures of its own, registered by mcl_om as `mcl-tube/<name>'
+%% (the org comes from config). The watch is a stream, served by
+%% macula_streamer; the others are request and reply.
 %%
 %% ⚠ EVERY ONE REQUIRES A SEALED CALLER (#17). Its advertisement names this
 %% node's ML-KEM key (`kem_advertise' in sys.config.src) and a clear call or

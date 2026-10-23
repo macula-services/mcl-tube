@@ -59,9 +59,9 @@ info_version_matches_the_application_test() ->
 %% The RPC contract: what callers dial
 %%==============================================================================
 
-%% The four procedures, org-qualified the way mcl_om registers them. This is
-%% the contract the portal's watch and thumbnail controllers call. A change
-%% here is a new name, not an edit.
+%% The four procedures of its own, org-qualified the way mcl_om registers
+%% them. This is the contract the portal's watch and thumbnail controllers
+%% call. A change here is a new name, not an edit.
 the_procedures_are_the_published_contract_test() ->
     ?assertEqual([<<"mcl-tube/lookup_channel">>, <<"mcl-tube/lookup_content">>,
                   <<"mcl-tube/lookup_video_clip">>, <<"mcl-tube/watch_video_clip">>],

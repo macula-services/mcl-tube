@@ -56,11 +56,11 @@
 <rect class="b-sys" x="32" y="222" width="540" height="152" rx="10"/>
 <text class="t-code" x="48" y="250">mcl_tube_service</text>
 <text class="t-type" x="48" y="268">[mcl_om_service behaviour]</text>
-<text class="t-desc" x="48" y="292">The mcl_om_service callbacks: info, start, stop, health,</text>
-<text class="t-desc" x="48" y="308">capabilities, identity_spec, plus event_store/0 and data_dir/0.</text>
-<text class="t-desc" x="48" y="324">capabilities/0 declares four procedures of its own, each</text>
-<text class="t-desc" x="48" y="340">confidential =&gt; required and sealed with this node's ML-KEM key;</text>
-<text class="t-desc" x="48" y="356">mcl_om adds info and get_limits.</text>
+<text class="t-desc" x="48" y="292">The mcl_om_service callbacks: start, stop, health, capabilities,</text>
+<text class="t-desc" x="48" y="308">identity_spec, plus event_store/0 and data_dir/0; mcl_om advertises</text>
+<text class="t-desc" x="48" y="324">info and get_limits as open procedures. capabilities/0 declares four</text>
+<text class="t-desc" x="48" y="340">procedures of its own, each confidential =&gt; required and sealed</text>
+<text class="t-desc" x="48" y="356">with this node's ML-KEM key.</text>
 <rect class="b-cmp" x="32" y="390" width="540" height="120" rx="10"/>
 <text class="t-code" x="48" y="418">mcl_tube_sup</text>
 <text class="t-type" x="48" y="436">[supervisor, one_for_one]</text>
