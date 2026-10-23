@@ -8,7 +8,7 @@
 %% the stream" (macula_content_transfer's own module doc). Nothing else
 %% answers a LATER, unrelated caller's request for the same bytes.
 %% Confirmed live 2026-08-28: a direct dial to the exact station that
-%% received the original put still returned `not_found'. `tube.lookup_content'
+%% received the original put still returned `not_found'. `mcl-tube/lookup_content'
 %% (advertise_content_lookup) serves from this local copy instead.
 %%
 %% ⚠ AN MCID IS THE SHA-384 OF ITS BYTES (macula D24, CNSA 2.0). Only a raw
