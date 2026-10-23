@@ -144,8 +144,8 @@ def context():
           person=True)
     d.box("b-sys", 420, 230, 320, 152, "mcl-tube", "[mcl_om mesh service]",
           ["Serves its own sealed procedures under", "mcl-tube/ and the owner web UI on",
-           "8491. Owns a reckon-db store and an", "event-sourced catalog, and announces",
-           "it on four facts."])
+           "8491 by default. Owns a reckon-db", "store and an event-sourced catalog,",
+           "and announces it on four facts."])
     d.box("b-mac", 40, 460, 300, 120, "macula-realm", "[Macula infrastructure]",
           ["Endorses the node's identity key and", "issues the D25 provider grant for",
            "each org-namespaced procedure"])
@@ -159,7 +159,7 @@ def context():
 
     d.edge("M190 150V300H420")
     d.text("t-rel", 198, 172, "uploads and publishes")
-    d.text("t-rel", 198, 188, "through the UI on 8491")
+    d.text("t-rel", 198, 188, "through the UI on 8491 by default")
     d.edge("M580 150V230")
     d.text("t-rel", 588, 186, "seals a call to")
     d.text("t-rel", 588, 202, "mcl-tube/<name>")
@@ -188,7 +188,7 @@ def components():
            "then calls mcl_om:boot/1. The three departments start before it, so every",
            "projection is registered before the store replays."], code=True)
     d.box("b-sys", 32, 222, 540, 152, "mcl_tube_service", "[mcl_om_service behaviour]",
-          ["The mcl_om_service callbacks: start, stop, health,",
+          ["The mcl_om_service callbacks: info, start, stop, health,",
            "capabilities, identity_spec, plus event_store/0 and data_dir/0.",
            "capabilities/0 declares four procedures of its own, each",
            "confidential => required and sealed with this node's ML-KEM key;",

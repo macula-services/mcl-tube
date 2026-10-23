@@ -72,9 +72,9 @@
 <text class="t-type" x="436" y="276">[mcl_om mesh service]</text>
 <text class="t-desc" x="436" y="300">Serves its own sealed procedures under</text>
 <text class="t-desc" x="436" y="316">mcl-tube/ and the owner web UI on</text>
-<text class="t-desc" x="436" y="332">8491. Owns a reckon-db store and an</text>
-<text class="t-desc" x="436" y="348">event-sourced catalog, and announces</text>
-<text class="t-desc" x="436" y="364">it on four facts.</text>
+<text class="t-desc" x="436" y="332">8491 by default. Owns a reckon-db</text>
+<text class="t-desc" x="436" y="348">store and an event-sourced catalog,</text>
+<text class="t-desc" x="436" y="364">and announces it on four facts.</text>
 <rect class="b-mac" x="40" y="460" width="300" height="120" rx="10"/>
 <text class="t-name" x="56" y="488">macula-realm</text>
 <text class="t-type" x="56" y="506">[Macula infrastructure]</text>
@@ -98,7 +98,7 @@
 <text class="t-desc" x="806" y="578">is expired.</text>
 <path class="edge" d="M190 150V300H420" marker-end="url(#a)"/>
 <text class="t-rel" x="198" y="172">uploads and publishes</text>
-<text class="t-rel" x="198" y="188">through the UI on 8491</text>
+<text class="t-rel" x="198" y="188">through the UI on 8491 by default</text>
 <path class="edge" d="M580 150V230" marker-end="url(#a)"/>
 <text class="t-rel" x="588" y="186">seals a call to</text>
 <text class="t-rel" x="588" y="202">mcl-tube/&lt;name&gt;</text>
