@@ -1,4 +1,4 @@
-%% @doc RPC provider: tube.lookup_content. Serves a durably-persisted
+%% @doc RPC provider: mcl-tube/lookup_content. Serves a durably-persisted
 %% clip thumbnail or channel logo by its hex-encoded MCID, straight from
 %% `tube_content_store' -- see that module for why this exists instead
 %% of relying on `macula:get_content/2' (a one-time transfer, not a
