@@ -41,7 +41,7 @@ services:
       # gigabytes, and application data belongs on the data disk.
       - ${MCL_DATA:-/bulk0/mcl-tube}:/data
     labels:
-      # The label is inert unless a watchtower with label-enable runs on this box.
+      # Nothing reads this label: the fleet runs no watchtower.
       - "com.centurylinklabs.watchtower.enable=true"
     environment:
       # No default. A service that guesses its realm announces itself where

@@ -188,11 +188,11 @@ def components():
            "then calls mcl_om:boot/1. The three departments start before it, so every",
            "projection is registered before the store replays."], code=True)
     d.box("b-sys", 32, 222, 540, 152, "mcl_tube_service", "[mcl_om_service behaviour]",
-          ["The mcl_om_service callbacks: info, start, stop, health,",
-           "capabilities, identity_spec, plus event_store/0 and data_dir/0.",
-           "capabilities/0 declares four procedures of its own, each",
-           "confidential => required and sealed with this node's ML-KEM key;",
-           "mcl_om adds info and get_limits."], code=True)
+          ["mcl_om_service callbacks: start/1, stop/1, health/0, capabilities/0,",
+           "identity_spec/0, info/0; mcl_om advertises info and get_limits on every",
+           "node. This module also exports event_store/0 and data_dir/0.",
+           "capabilities/0 declares four procedures of its own, each confidential",
+           "=> required and sealed with this node's ML-KEM key."], code=True)
     d.box("b-cmp", 32, 390, 540, 120, "mcl_tube_sup", "[supervisor, one_for_one]",
           ["One child: a cowboy listener through ranch:child_spec mcl_tube_http, on",
            "MCL_TUBE_HTTP_IP and MCL_TUBE_HTTP_PORT (127.0.0.1:8491 by default).",
