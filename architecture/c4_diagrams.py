@@ -243,13 +243,13 @@ def components():
     d.edge("M740 574V606"); d.text("t-rel", 748, 598, "serves logos and thumbnails from")
     d.edge("M1128 128H1140V740H900V758"); d.text("t-rel", 908, 754, "publishes through")
 
-    d.box("b-mac", 32, 962, 352, 152, "mcl_om", "[library, ~> 1.0]",
+    d.box("b-mac", 32, 962, 352, 152, "mcl_om", "[library, ~> 1.6]",
           ["boot/1: loads the node identity key,",
            "joins the realm, dials the pinned",
            "stations over QUIC, advertises what",
            "capabilities/0 returns, adds info and get_limits",
            "and serves /health."], code=True)
-    d.box("b-mac", 404, 962, 352, 136, "macula", "[library, ~> 15.6, wire 1.0]",
+    d.box("b-mac", 404, 962, 352, 136, "macula", "[library, ~> 18.0, wire 1.0]",
           ["QUIC transport and the RPC dispatch to",
            "a provider that answers by name; the",
            "streamer, the publisher, and the signed",

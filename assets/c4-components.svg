@@ -133,7 +133,7 @@
 <text class="t-rel" x="908" y="754">publishes through</text>
 <rect class="b-mac" x="32" y="962" width="352" height="152" rx="10"/>
 <text class="t-code" x="48" y="990">mcl_om</text>
-<text class="t-type" x="48" y="1008">[library, ~&gt; 1.0]</text>
+<text class="t-type" x="48" y="1008">[library, ~&gt; 1.6]</text>
 <text class="t-desc" x="48" y="1032">boot/1: loads the node identity key,</text>
 <text class="t-desc" x="48" y="1048">joins the realm, dials the pinned</text>
 <text class="t-desc" x="48" y="1064">stations over QUIC, advertises what</text>
@@ -141,7 +141,7 @@
 <text class="t-desc" x="48" y="1096">and serves /health.</text>
 <rect class="b-mac" x="404" y="962" width="352" height="136" rx="10"/>
 <text class="t-code" x="420" y="990">macula</text>
-<text class="t-type" x="420" y="1008">[library, ~&gt; 15.6, wire 1.0]</text>
+<text class="t-type" x="420" y="1008">[library, ~&gt; 18.0, wire 1.0]</text>
 <text class="t-desc" x="420" y="1032">QUIC transport and the RPC dispatch to</text>
 <text class="t-desc" x="420" y="1048">a provider that answers by name; the</text>
 <text class="t-desc" x="420" y="1064">streamer, the publisher, and the signed</text>

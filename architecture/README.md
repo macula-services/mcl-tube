@@ -43,8 +43,8 @@ holds is what this node published or advertised, not a call it makes out.
 | `query_tube` | QRY app | One provider per procedure of its own: `advertise_channel_lookup`, `advertise_video_clip_lookup`, `advertise_content_lookup` and `stream_video_clip_by_id`. `tube_json_view` renders the page desks' JSON |
 | `tube_content_store` | local content cache | Clip thumbnails and channel logos by hex MCID, which is the SHA-384 of the bytes. `tube_content_put` refuses bytes that do not hash to their id |
 | `on_video_clip_published_publish_clip` | `evoq_event_handler` | One of four mesh handlers under `guide_tube_lifecycle_sup`, all publishing through `tube_mesh_publisher`: the retract and archive withdraw a clip, `channel_announced_v1_to_mesh` publishes a channel, and `channel_heartbeat` re-announces every 60 s |
-| `mcl_om` | library, `~> 1.0` | `boot/1`: loads the node identity key, joins the realm, dials the pinned stations over QUIC, advertises its four capabilities plus the open `info` and `get_limits` it adds to every service, and serves `/health` on a Unix socket |
-| macula | library, `~> 15.6`, wire 1.0 | QUIC transport and the RPC dispatch to a provider that answers by name; the streamer, the publisher, and the signed records the mesh DHT holds |
+| `mcl_om` | library, `~> 1.6` | `boot/1`: loads the node identity key, joins the realm, dials the pinned stations over QUIC, advertises its four capabilities plus the open `info` and `get_limits` it adds to every service, and serves `/health` on a Unix socket |
+| macula | library, `~> 18.0`, wire 1.0 | QUIC transport and the RPC dispatch to a provider that answers by name; the streamer, the publisher, and the signed records the mesh DHT holds |
 | `evoq` / `reckon_evoq` / `reckon_db` | libraries, `~> 1.26` / `~> 2.7` / `~> 5.4` | Event sourcing for the two aggregates and the two projections, over this service's own store |
 | `MCL_DATA_DIR` | environment, a host volume | The store, the clips and the content cache; `deploy/docker-compose.yml` mounts `/bulk0/mcl-tube` there and the identity key in the `mcl-tube-secrets` volume |
 

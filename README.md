@@ -28,7 +28,7 @@ on the mesh can find it and watch it, with no platform in between.
 
 ## Status
 
-Runs on macula 15 through `mcl_om` 1.0, and opens its own reckon-db store
+Runs on macula 18 through `mcl_om` 1.6, and opens its own reckon-db store
 (`mcl_tube_store`). Its advertisements name an ML-KEM key and **every procedure of its own requires a sealed
 caller**: lookups and the watch stream are sealed end to end, and a caller that
 does not seal is refused with `sealed_required`. Every macula SDK seals by
