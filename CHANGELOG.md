@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.6.0 - 2026-10-30
+
+- **macula 18 and mcl_om 1.6** (macula-services/mcl-om#42). The floors move to
+  `mcl_om ~> 1.6` and `macula ~> 18.0`. macula arrives through mcl_om, but a
+  top-level pin wins in rebar3, so both are raised together.
+- **Every procedure now names its callers** (macula 18, macula-io/macula#147).
+  `lookup_channel`, `lookup_video_clip`, `lookup_content` and
+  `watch_video_clip` carry `auth => open`: any identified caller that reaches
+  the mesh may look a channel up and stream it, which is exactly what this
+  service has always served. The class is now typed in the source rather than
+  left to the SDK's old default, and mcl_om 1.6 refuses the boot of a
+  handler-bearing capability that names none, so a box without this release
+  would not have come up on the new substrate at all.
+- **Confidentiality is unchanged and stays a separate rule.**
+  `confidential => required` still refuses a clear call with `sealed_required`
+  (#17): `open` decides who may ask, sealing decides how they must ask.
+- **No subscription moved.** This service declares none, so macula 18's
+  requirement that a topic subscription name its sources has nothing to apply
+  to here.
+- Minor rather than patch: a SDK major is a deployment change, and this release
+  runs only on a box carrying mcl_om 1.6.
+
 ## 0.5.0 - 2026-10-17
 
 - **Wire 1.0: on macula 15.6 / mcl_om 1.0.** A 15 node neither reads nor handshakes with a 14 node, so this build speaks wire 1.0 only and is held off every live box until the flag day (macula-fleet#27). The publisher and streamer the lifecycle uses keep their signatures; their registrations now return once a station acknowledges them (macula#12).

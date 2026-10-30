@@ -32,7 +32,7 @@
 
 info() ->
     #{name => <<"mcl-tube">>,
-      version => <<"0.5.0">>,
+      version => <<"0.6.0">>,
       description => <<"Video channels over the mesh: owners publish clips, anyone looks them up and streams them">>}.
 
 %% The realm name the catalog topics carry must be the realm the pool is in,
@@ -57,15 +57,23 @@ health() -> ok.
 %% open is refused with `sealed_required', from the first second after boot:
 %% a viewer's lookups and video never cross the mesh in the clear. Every SDK
 %% seals by default, so a refused caller is one that asked for the clear.
+%%
+%% ⚠ AND EVERY ONE NAMES ITS CALLERS (macula 18, macula#147). `open' is stated
+%% rather than assumed: any identified caller that reaches the mesh may look a
+%% channel or a clip up and stream it, which is what this service has always
+%% served, and it is typed in the source so the SDK's refusal of an unnamed
+%% class never fires on a deployed box. Confidentiality is a separate rule and
+%% unchanged — `open' widens who may ask, `confidential => required' still
+%% decides how they must ask.
 capabilities() ->
     [#{name => <<"lookup_channel">>, version => 1, confidential => required,
-       handler => {advertise_channel_lookup, []}},
+       handler => {advertise_channel_lookup, []}, auth => open},
      #{name => <<"lookup_video_clip">>, version => 1, confidential => required,
-       handler => {advertise_video_clip_lookup, []}},
+       handler => {advertise_video_clip_lookup, []}, auth => open},
      #{name => <<"lookup_content">>, version => 1, confidential => required,
-       handler => {advertise_content_lookup, []}},
+       handler => {advertise_content_lookup, []}, auth => open},
      #{name => <<"watch_video_clip">>, version => 1, confidential => required,
-       handler => {stream_video_clip_by_id, []}, kind => streamer}].
+       handler => {stream_video_clip_by_id, []}, kind => streamer, auth => open}].
 
 %% THE AUTHORITY THIS SERVICE ASKS THE REALM FOR, and deliberately nothing more.
 %% Ask for exactly the topics you publish and subscribe to. Popped, an attacker

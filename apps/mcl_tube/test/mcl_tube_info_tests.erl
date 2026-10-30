@@ -26,14 +26,16 @@ info_round_trip_test_() ->
           ?_assertEqual([{text, C} || C <- [<<(?ORG)/binary, "/info">> | Own]],
                         maps:get(capabilities, Reply)),
           ?_assertEqual([], [V || V <- lists:flatten(maps:values(Reply)), is_binary(V)]),
-          ?_assert(at_least(maps:get(mcl_om_version, Reply), [1, 0])),
-          ?_assert(at_least(maps:get(macula_version, Reply), [15, 6]))]
+          ?_assert(at_least(maps:get(mcl_om_version, Reply), [1, 6])),
+          ?_assert(at_least(maps:get(macula_version, Reply), [18, 0]))]
      end}.
 
-%% A floor, not an exact release: the constraints (~> 1.0, ~> 15.6) take any
-%% later minor. mcl_om 1.0 is the macula-15 line (wire 1.0), and the major
-%% moved with the wire from 0.39; macula 15.6 is wire 1.0 itself, from 14.2.
-%% Same major, minor at least the floor's.
+%% A floor, not an exact release: the constraints (~> 1.6, ~> 18.0) take any
+%% later minor. The major is part of the floor because both lines moved with
+%% the wire and then with the caller rules: mcl_om 1.0 was the macula-15 line
+%% and 1.6 is the macula-18 one (mcl-om#41), macula 18.0 refuses an advertise
+%% that names no call class (macula#147). Same major, minor at least the
+%% floor's.
 at_least({text, Vsn}, [Major, Minor]) ->
     [Ma, Mi | _] = [binary_to_integer(P) || P <- binary:split(Vsn, <<".">>, [global])],
     Ma =:= Major andalso Mi >= Minor.
